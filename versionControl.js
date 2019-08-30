@@ -1,10 +1,10 @@
 var updates = {
     "0.5.1": [
-        "https://raw.githubusercontent.com/denys00/alchdev/master/version0_5_1/inits.js",
-        "https://raw.githubusercontent.com/denys00/alchdev/master/version0_5_1/fantom.js",
-        "https://raw.githubusercontent.com/denys00/alchdev/master/version0_5_1/groupblock.js",
-        "https://raw.githubusercontent.com/denys00/alchdev/master/version0_5_1/saveload.js",
-        "https://raw.githubusercontent.com/denys00/alchdev/master/version0_5_1/border.js"
+        "version0_5_1/inits.js",
+        "version0_5_1/fantom.js",
+        "version0_5_1/groupblock.js",
+        "version0_5_1/saveload.js",
+        "version0_5_1/border.js"
     ]
 }
 
@@ -14,7 +14,7 @@ var scripts = updates[settings.version];
 function createScriptElement(src) {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src = src;
+    script.src = "https://cdn.jsdelivr.net/gh/denys00/alchdev/" + src;
     return script;
 }
 
