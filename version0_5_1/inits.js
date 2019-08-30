@@ -9,7 +9,8 @@ function destroyElement(element, anim = true){
 }
 function react2(r, b = false) {
     var reagents = r.sort().join('+');
-    var results = [];
+	var results = [];
+	console.log("b is "+b);
     if (b || reactions[reagents]) {
         var resultsTemp = []
         if (b) resultsTemp = r;
@@ -167,7 +168,7 @@ function react2(r, b = false) {
 
         destroyElement($('#board :data(toKill,1)'));
         destroyElement($('#board :data(maybeKill,1)'));
-        logReaction(results.join(', '), reagents);
+        if(!b) logReaction(results.join(', '), reagents);
         message(reagents, 'highlight');
         return results;
     } else {
