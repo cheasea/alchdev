@@ -39,7 +39,7 @@ function gameInit(){
 	wrongs = test1.wrongs;
 	element_count = total.length;
 	refreshStat();
-
+	if(settings.debug == "true") console.log("Game Inited.");
 	//so.. we are ready, lets go
 	placeElements(react(inits, true),{top: $('#stack').offset().top+$('#stack').height()+200,
                     left: $('body').width()/2-100}, true);
