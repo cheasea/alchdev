@@ -5,12 +5,13 @@ $('body').selectable({
     stop: onSelectStop,
 });
 
-function react(r) {
+function react(r, b = false) {
     var reagents = r.sort().join('+');
     var results = [];
-    if (reactions[reagents]) {
+    if (b || reactions[reagents]) {
         var resultsTemp = []
-        for (var i in reactions[reagents]) {
+        if(b) resultsTemp = r;
+        else for (var i in reactions[reagents]) {
             resultsTemp.push(reactions[reagents][i])
         }
         for (var i = 0; i < resultsTemp.length; i++) {
