@@ -218,7 +218,7 @@ function gameInit() {
 		var total = test1.total;
 		finals = test1.finals;
 		wrongs = test1.wrongs;
-		if(element_count == 0) element_count = total.length;
+		element_count = total.length;
 		refreshStat();
 		if(settings.debug == "true") console.log("Game Inited.");
 		//so.. we are ready, lets go
