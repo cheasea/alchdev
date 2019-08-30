@@ -14,7 +14,7 @@ if (settings.version) {
 
     function createScriptElement(src) {
         var script = document.createElement("script");
-        script.src = "https://cdn.jsdelivr.net/gh/denys00/alchdev/" + src;
+        script.src = "https://cdn.jsdelivr.net/gh/denys00/alchdev@latest/" + src;
         return script;
     }
 
