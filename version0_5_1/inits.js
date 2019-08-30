@@ -6,8 +6,8 @@ function destroyElement(element, anim = true){
 	else element.remove();
 	element.data("isDead", 1);
 }
-
-function gameInit(){
+gameInit();
+function gameInit() {
 	destroyElement($('#board').children('.element'), false);
 	$("#vote_stats").hide();
 	$("#vote_result").hide();
