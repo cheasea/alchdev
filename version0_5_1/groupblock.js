@@ -61,7 +61,7 @@ function react(r, b = false) {
                         }, 250);
                     }
 
-                    var elem = $('#board .element:data(elementName, ' + data.name + '")')[0];
+                    var elem = $('#board .element:data(elementName,"' + data.name + '")')[0];
 
                     if (!elem || !elem.classList.contains('group_block')) {
                         resultsTemp.push(data.name)
