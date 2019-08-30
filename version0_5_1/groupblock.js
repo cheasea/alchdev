@@ -10,10 +10,11 @@ function react(r, b = false) {
     var results = [];
     if (b || reactions[reagents]) {
         var resultsTemp = []
-        if(b) resultsTemp = r;
-        else for (var i in reactions[reagents]) {
-            resultsTemp.push(reactions[reagents][i])
-        }
+        if (b) resultsTemp = r;
+        else
+            for (var i in reactions[reagents]) {
+                resultsTemp.push(reactions[reagents][i])
+            }
         for (var i = 0; i < resultsTemp.length; i++) {
             if (name = parseConditions(resultsTemp[i])) {
                 // BEGIN processing counters
@@ -60,7 +61,7 @@ function react(r, b = false) {
                         }, 250);
                     }
 
-                    var elem = $('#board .element:data(elementName, ' + data.name + '")')[0];
+                    var elem = $('#board .element:data(elementName,"' + data.name + '")')[0];
 
                     if (!elem || !elem.classList.contains('group_block')) {
                         resultsTemp.push(data.name)
@@ -172,4 +173,20 @@ function react(r, b = false) {
         message(reagents, 'highlight');
         return 0;
     }
+}
+
+function onDrop(event, ui) {
+    var pos = $(this).offset();
+    var result = react([ui.helper.data("elementName"), $(this).data("elementName")]);
+    if (result != 0) {
+        placeElements(result, pos);
+        destroyElement(ui.helper);
+        destroyElement($(this));
+        refreshHint();
+
+        var a = 0;
+    } else {
+        result = 'no reaction';
+    }
+    updateCounters();
 }
