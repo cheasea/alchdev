@@ -14,7 +14,7 @@ if (settings.version) {
 
     function createScriptElement(src) {
         var script = document.createElement("script");
-        script.src = "https://gitcdn.xyz/repo/denys00/alchdev/master/" + src;
+        script.src = "https://gitcdn.xyz/cdn/denys00/alchdev/master/" + src;
         return script;
     }
 
