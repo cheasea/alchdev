@@ -13,7 +13,6 @@ var scripts = updates[settings.version];
 
 function createScriptElement(src) {
     var script = document.createElement("script");
-    script.type = "text/javascript";
     script.src = "https://cdn.jsdelivr.net/gh/denys00/alchdev/" + src;
     return script;
 }
