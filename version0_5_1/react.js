@@ -7,7 +7,13 @@ function destroyElement(element, anim = true){
 	else element.remove();
 	element.data("isDead", 1);
 }
-function react2(r, b = false) {
+$('body').selectable({
+    cancel: '.element, .ui-dialog, #abyss, #info, #stack',
+    distance: 2,
+    filter: '.element:not(:animated):not(.group_block)',
+    stop: onSelectStop,
+});
+function react(r, b = false) {
     var reagents = r.sort().join('+');
     var results = [];
     if (b || reactions[reagents]) {
@@ -176,6 +182,21 @@ function react2(r, b = false) {
         return 0;
     }
 }
+function onDrop(event, ui) {
+    var pos = $(this).offset();
+    var result = react([ui.helper.data("elementName"), $(this).data("elementName")]);
+    if (result != 0) {
+        placeElements(result, pos);
+        destroyElement(ui.helper);
+        destroyElement($(this));
+        refreshHint();
+
+        var a = 0;
+    } else {
+        result = 'no reaction';
+    }
+    updateCounters();
+}
 function gameInit() {
 	if(!inited) {
         inited = true;
@@ -225,7 +246,7 @@ function gameInit() {
 		
 		if(settings.debug == "true") console.log("Game Inited.");
 		//so.. we are ready, lets go
-		placeElements(react2(inits, true),{top: $('#stack').offset().top+$('#stack').height()+200,
+		placeElements(react(inits, true),{top: $('#stack').offset().top+$('#stack').height()+200,
 						left: $('body').width()/2-100}, true);
 		updateCounters();
 	}
