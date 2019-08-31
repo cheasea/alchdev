@@ -207,12 +207,6 @@ function gameInit() {
                     refreshHint();
                 }
             });
-            $("body").selectable({
-                filter: '#board .element',
-                distance: 2,
-                stop: onSelectStop,
-                cancel: '.ui-dialog, #stack, #info, #abyss, .element'
-            });
             $('#stack-btn').hide();
             $("#help").dialog({
                 autoOpen: false,
