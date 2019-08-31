@@ -1,11 +1,15 @@
 var inited = false;
-function destroyElement(element, anim = true){
-	element=element.filter('.element').not('.static');//filter unkillable statics
-	element.droppable( "destroy" );
-	//element.effect(destroy_effects[Math.floor(Math.random()*destroy_effects.length)],{},1000, function(){element.remove();})
-	if(anim) element.fadeOut(1000, function(){element.remove();});
-	else element.remove();
-	element.data("isDead", 1);
+
+function destroyElement(element, anim = true) {
+    element = element.filter('.element').not('.static'); //filter unkillable statics
+    element.draggable('disable');
+    element.droppable('disable');
+    //element.effect(destroy_effects[Math.floor(Math.random()*destroy_effects.length)],{},1000, function(){element.remove();})
+    if (anim) element.fadeOut(1000, function () {
+        element.remove();
+    });
+    else element.remove();
+    element.data("isDead", 1);
 }
 $('body').selectable({
     cancel: '.element, .ui-dialog, #abyss, #info, #stack',
@@ -13,6 +17,7 @@ $('body').selectable({
     filter: '.element:not(:animated):not(.group_block)',
     stop: onSelectStop,
 });
+
 function react(r, b = false) {
     var reagents = r.sort().join('+');
     var results = [];
@@ -173,7 +178,7 @@ function react(r, b = false) {
 
         destroyElement($('#board :data(toKill,1)'));
         destroyElement($('#board :data(maybeKill,1)'));
-        if(!b) logReaction(results.join(', '), reagents);
+        if (!b) logReaction(results.join(', '), reagents);
         message(reagents, 'highlight');
         return results;
     } else {
@@ -182,6 +187,7 @@ function react(r, b = false) {
         return 0;
     }
 }
+
 function onDrop(event, ui) {
     var pos = $(this).offset();
     var result = react([ui.helper.data("elementName"), $(this).data("elementName")]);
@@ -197,44 +203,71 @@ function onDrop(event, ui) {
     }
     updateCounters();
 }
+
 function gameInit() {
-	if(!inited) {
+    if (!inited) {
         inited = true;
         destroyElement($('#board').children('.element'), false);
-        if(finals.length == 0) {
+        if (finals.length == 0) {
             $("#vote_stats").hide();
             $("#vote_result").hide();
-            $("#abyss").droppable({drop: function(e, ui){q
-                    destroyElement(ui.helper); 
-                    refreshHint();	
-                }});
+            $("#abyss").droppable({
+                drop: function (e, ui) {
+                    q
+                    destroyElement(ui.helper);
+                    refreshHint();
+                }
+            });
             $("body").selectable({
-                filter:'#board .element', 
-                distance:2,
+                filter: '#board .element',
+                distance: 2,
                 stop: onSelectStop,
                 cancel: '.ui-dialog, #stack, #info, #abyss, .element'
-                });
+            });
             $('#stack-btn').hide();
-            $("#help").dialog({ autoOpen: false, position:'right', open: renderHint });
-            $("#element_hint").dialog({ autoOpen: false, width:320 });
-            $("#payment_dialog").dialog({ autoOpen: false, width: 'auto' }).bind('dialogclose', function() {getHintCount();});
-            $("#recipe_list").dialog({ autoOpen: false, position:'left'});
-            $("#err_msg").dialog({ autoOpen: false});
-            $("#info_msg").dialog({ autoOpen: false, width:500});
-            $("#welcome_dialog").dialog({ autoOpen: ($.cookie('welcomed')?false:true), width:800  });
-            $("#elementFilter").keyup(function(event) {
+            $("#help").dialog({
+                autoOpen: false,
+                position: 'right',
+                open: renderHint
+            });
+            $("#element_hint").dialog({
+                autoOpen: false,
+                width: 320
+            });
+            $("#payment_dialog").dialog({
+                autoOpen: false,
+                width: 'auto'
+            }).bind('dialogclose', function () {
+                getHintCount();
+            });
+            $("#recipe_list").dialog({
+                autoOpen: false,
+                position: 'left'
+            });
+            $("#err_msg").dialog({
+                autoOpen: false
+            });
+            $("#info_msg").dialog({
+                autoOpen: false,
+                width: 500
+            });
+            $("#welcome_dialog").dialog({
+                autoOpen: ($.cookie('welcomed') ? false : true),
+                width: 800
+            });
+            $("#elementFilter").keyup(function (event) {
                 filterStack($("#elementFilter").val());
             });
-            $("#showHelp").click(function() {
+            $("#showHelp").click(function () {
                 if ($('#help').dialog('isOpen')) $('#help').dialog('close');
                 else $('#help').dialog('open');
-                
+
                 reachGoal('SHOW_HINTS');
             });
-            
+
             applySettings(settings);
             toggleSort($('#order').val());
-            
+
             sortKeys(reactions);
             var test1 = test();
             var total = test1.total;
@@ -243,13 +276,15 @@ function gameInit() {
             element_count = total.length;
             refreshStat();
         }
-		
-		if(settings.debug == "true") console.log("Game Inited.");
-		//so.. we are ready, lets go
-		placeElements(react(inits, true),{top: $('#stack').offset().top+$('#stack').height()+200,
-						left: $('body').width()/2-100}, true);
-		updateCounters();
-	}
+
+        if (settings.debug == "true") console.log("Game Inited.");
+        //so.. we are ready, lets go
+        placeElements(react(inits, true), {
+            top: $('#stack').offset().top + $('#stack').height() + 200,
+            left: $('body').width() / 2 - 100
+        }, true);
+        updateCounters();
+    }
 }
 
 gameInit();
