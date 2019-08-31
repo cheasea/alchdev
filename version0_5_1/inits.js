@@ -179,8 +179,8 @@ function react2(r, b = false) {
 function gameInit() {
 	if(!inited) {
         inited = true;
+        destroyElement($('#board').children('.element'), false);
         if(finals.length == 0) {
-            destroyElement($('#board').children('.element'), false);
             $("#vote_stats").hide();
             $("#vote_result").hide();
             $("#abyss").droppable({drop: function(e, ui){q
