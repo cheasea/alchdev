@@ -26,6 +26,7 @@ function addElement(name, place, no_discover) {
         scroll: false
     });
     a.droppable({
+        accept: '.element:not(:data(isDead,1))',
         drop: onDrop
     });
     a.click(function () {});
