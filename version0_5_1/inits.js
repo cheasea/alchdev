@@ -179,7 +179,7 @@ function react2(r, b = false) {
 function gameInit() {
 	if(!inited) {
         inited = true;
-        if(finals.length > 0) {
+        if(finals.length == 0) {
             destroyElement($('#board').children('.element'), false);
             $("#vote_stats").hide();
             $("#vote_result").hide();
