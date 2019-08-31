@@ -1,6 +1,6 @@
 function save(to) {
     var elements = [];
-    $('#board').children('.element').not(':data(isDead,1)').each(function () {
+    $('.element').filter(':not(:data(isDead,1))').each(function () {
         elements.push({
             'name': $(this).data('elementName'),
             'offset': $(this).offset()
