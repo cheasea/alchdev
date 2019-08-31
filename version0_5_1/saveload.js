@@ -18,11 +18,11 @@ $('#save a')[0].onclick = () => {
 function stopGame() {
     $('.element').draggable('disable');
     $('.element').droppable('disable');
-    $('.element').selectable('disable');
+    $('body').selectable('disable');
 }
 
 function runGame() {
     $('.element').draggable('enable');
     $('.element').droppable('enable');
-    $('.element').selectable('enable');
+    $('body').selectable('enable');
 }
