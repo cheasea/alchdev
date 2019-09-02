@@ -4,25 +4,42 @@ function getModId() {
     return res[1];
 }
 
+let isSaving = false;
+
 $('#save a')[0].onclick = () => {
-    $('#save').append('<span id="save_msg">(игра сохраняется)</span>');
+    if (isSaving) return;
+    
+    isSaving = true;
     stopGame();
 
-    setTimeout(() => {
-        runGame();
-        save('/versions/' + getModId() + '/save/');
-        $('#save_msg').remove();
+    $('#save').append('<span id="save_msg">(игра сохраняется<span id="loader"></span>)</span>');
+
+    let checkingAnimation = setInterval(() => {
+        let count = 0;
+        let animation = $('.element:animated');
+
+        if (!animation[0]) {
+            save(`/versions/${getModId()}/save`);
+            $('#save_msg').remove();
+
+            clearInterval(checkingAnimation);
+            runGame();
+            isSaving = false;
+        } else {
+            if (count <= 3) $('#loader').append('.');
+            count++;
+        }
     }, 500);
 }
 
 function stopGame() {
     $('.element').draggable('disable');
     $('.element').droppable('disable');
-    $('.element').selectable('disable');
+    $('body').selectable('disable');
 }
-
+    
 function runGame() {
     $('.element').draggable('enable');
     $('.element').droppable('enable');
-    $('.element').selectable('enable');
-} 
+    $('body').selectable('enable');
+}
