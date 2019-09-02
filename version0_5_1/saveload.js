@@ -19,7 +19,7 @@ $('#save a')[0].onclick = () => {
         let animation = $('.element:animated');
 
         if (!animation[0]) {
-            save(`/versions/${getModId()}/save`);
+            save(`/versions/${getModId()}/save/`);
             $('#save_msg').remove();
 
             clearInterval(checkingAnimation);
