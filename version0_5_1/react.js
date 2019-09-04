@@ -178,7 +178,7 @@ function react(r, b = false) {
 }
 
 function onDrop(event, ui) {
-    let isReady = ui.helper.data('isDead') !== 1 || $(this).data('isDead') !== 1;
+    let isReady = ui.helper[0].data('isDead') !== 1 || $(this).data('isDead') !== 1;
 
     if (!isReady) {
         return;
