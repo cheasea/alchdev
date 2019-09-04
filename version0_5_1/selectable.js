@@ -3,8 +3,8 @@ function onSelectStop() {
     let x = 0, y = 0;
 
     let selected = $('.ui-selected')
-          .not(':data(isDead, 1)')
-          .not(':data(no-reaction, false)');
+          .not(':data("isDead", 1)')
+          .not(':data("no-reaction", true)');
     
     selected.each(function() {
         $(this).data('no-reaction', true);
@@ -42,6 +42,7 @@ function onSelectStop() {
         'top': y
     }, 500, function() {
         let elem = $(this);
+        elem.data('no-reaction', true);
         destroyElement(elem);
     });
 
