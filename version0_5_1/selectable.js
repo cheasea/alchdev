@@ -6,7 +6,7 @@ function onSelectStop() {
           .not(':data(isDead, 1)')
           .not(':data(no-reaction, false)');
     
-    selected.each(() => {
+    selected.each(function() {
         $(this).data('no-reaction', true);
 
         let name = $(this).data('elementName');
@@ -23,14 +23,14 @@ function onSelectStop() {
     result = react(reagents);
 
     if (!result) {
-        selected.each(() => {
+        selected.each(function() {
             $(this).data('no-reaction', false);
         });
 
         return;
     }
 
-    selected.each(() => {
+    selected.each(function() {
         $(this).not('.static').selectable('destroy');
     });
 
