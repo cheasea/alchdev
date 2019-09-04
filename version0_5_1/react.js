@@ -180,7 +180,7 @@ function react(r, b = false) {
 function onDrop(event, ui) {
     let isReady = ui.helper.data('no-reaction') || $(this).data('no-reaction');
 
-    if (isReady) {
+    if (!isReady) {
         return;
     }
 

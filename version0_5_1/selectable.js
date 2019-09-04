@@ -40,7 +40,7 @@ function onSelectStop() {
     selected.animate({
         'left': x,
         'top': y
-    }, 500, () => {
+    }, 500, function() {
         let elem = $(this);
         destroyElement(elem);
     });
