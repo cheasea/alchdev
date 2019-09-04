@@ -8,7 +8,6 @@ function addElement(name, place, no_discover) {
         a.addClass('final');
     a.data('image', '');
     a.data("elementName", name);
-    a.data('no-reaction', false);
     if (inArray(name, statics)) a.addClass('static');
     if (!no_discover) discoverElement(name);
 

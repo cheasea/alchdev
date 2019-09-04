@@ -2,12 +2,10 @@ function onSelectStop() {
     let reagents = [];
     let x = 0, y = 0;
 
-    let selected = $('.ui-selected')
-          .not(':data("isDead", 1)')
-          .not(':data("no-reaction", true)');
+    let selected = $('.ui-selected').not(':data("isDead", 1)');
     
     selected.each(function() {
-        $(this).data('no-reaction', true);
+        $(this).not('.static').data('isDead', 1);
 
         let name = $(this).data('elementName');
         let pos = {
@@ -24,7 +22,7 @@ function onSelectStop() {
 
     if (!result) {
         selected.each(function() {
-            $(this).data('no-reaction', false);
+            $(this).data('isDead', 0);
         });
 
         return;
@@ -42,7 +40,6 @@ function onSelectStop() {
         'top': y
     }, 500, function() {
         let elem = $(this);
-        elem.data('no-reaction', true);
         destroyElement(elem);
     });
 
