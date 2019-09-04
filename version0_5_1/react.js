@@ -178,18 +178,26 @@ function react(r, b = false) {
 }
 
 function onDrop(event, ui) {
-    var pos = $(this).offset();
-    var result = react([ui.helper.data("elementName"), $(this).data("elementName")]);
-    if (result != 0) {
-        placeElements(result, pos);
-        destroyElement(ui.helper);
-        destroyElement($(this));
-        refreshHint();
+    let isReady = ui.helper.data('no-reaction') || $(this).data('no-reaction');
 
-        var a = 0;
-    } else {
-        result = 'no reaction';
+    if (!isReady) {
+        return;
     }
+
+    let reagents = [ui.helper.data('elementName'), $(this).data('elementName')];
+    let pos = $(this).offset();
+    let result = react(reagents);
+
+    if (!result) {
+        return;
+    }
+
+    /* Reaction */
+    destroyElement($(this));
+    destroyElement(ui.helper);
+    placeElements(result, pos);
+
+    refreshHint();
     updateCounters();
 }
 
