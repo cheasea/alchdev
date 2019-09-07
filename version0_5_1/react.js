@@ -1,7 +1,7 @@
 var inited = false;
 
 $('body').selectable({
-    cancel: '.element, .ui-dialog, #abyss, #info, #stack',
+    cancel: '.element:not(:data(isDead,1)), .ui-dialog, #abyss, #info, #stack',
     distance: 2,
     filter: '.element:not(:animated):not(.group_block)',
     stop: onSelectStop,
