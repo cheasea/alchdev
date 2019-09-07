@@ -1,4 +1,5 @@
-if (settings.version) {
+function versionCheck() {
+    if (!settings.version) return;
     var updates = {
         "0.5.1": [
             "version0_5_1/selectable.js",
@@ -22,3 +23,5 @@ if (settings.version) {
     for (link of scripts)
         head.appendChild(createScriptElement(link));
 }
+
+versionCheck();
