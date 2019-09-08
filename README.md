@@ -1,4 +1,2 @@
 # alchdev
 revolution
-
-Привет.
