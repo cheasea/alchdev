@@ -3,7 +3,7 @@ function onSelectStop() {
     let x = 0,
         y = 0;
 
-    let selected = $('.ui-selected');
+    let selected = $('.ui-selected').not(':data("isDead", 1)');
 
     selected.each(function () {
         $(this).not('.static').data('isDead', 1);
