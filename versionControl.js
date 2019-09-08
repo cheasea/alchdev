@@ -31,7 +31,7 @@ function versionCheck() {
     }
 
     for (name of scripts.files)
-        head.appendChild(createScriptElement(sctipts.folder + "/" + name));
+        head.appendChild(createScriptElement(scripts.folder + "/" + name));
 }
 
 versionCheck();
