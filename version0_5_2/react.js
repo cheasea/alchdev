@@ -1,5 +1,3 @@
-let inited = false;
-
 function react(r, b = false) {
     var reagents = r.sort().join('+');
     var results = [];
