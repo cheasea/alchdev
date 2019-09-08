@@ -1,4 +1,8 @@
 $('body').selectable({
+    cancel: '.element:not(:data(isDead,1)), .ui-dialog, #abyss, #info, #stack',
+    distance: 2,
+    filter: '.element:not(.group_block):not(#stack .element):not(:data(isDead,1))',
+    stop: onSelectStop,
     selecting: function (e, ui) {
         var el = $(ui.selecting);
         el.css('margin-top', "-" + el.css('border-top-width'));

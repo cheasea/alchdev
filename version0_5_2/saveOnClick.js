@@ -1,9 +1,3 @@
-function getModId() {
-    var regex = /[^\d]*(\d+)[^\d]*/gm;
-    var res = regex.exec($('#load')[0].onclick.toString());
-    return res[1];
-}
-
 let isSaving = false;
 
 $('#save a')[0].onclick = () => {
@@ -30,16 +24,4 @@ $('#save a')[0].onclick = () => {
             count++;
         }
     }, 500);
-}
-
-function stopGame() {
-    $('.element').draggable('disable');
-    $('.element').droppable('disable');
-    $('body').selectable('disable');
-}
-    
-function runGame() {
-    $('.element').draggable('enable');
-    $('.element').droppable('enable');
-    $('body').selectable('enable');
 }
