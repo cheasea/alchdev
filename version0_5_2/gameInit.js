@@ -1,5 +1,3 @@
-var inited = false;
-
 function gameInit() {
     if (!inited) {
         inited = true;
