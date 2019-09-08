@@ -1,6 +1,12 @@
-var head = document.getElementsByTagName('head')[0];
-var style = document.createElement("link");
-style.rel = "stylesheet";
-style.type = "text/css";
-style.href = "https://gitcdn.xyz/cdn/denys00/alchdev/master/version0_5_1/css/border.css";
-head.append(style);
+$('body').selectable({
+    selecting: function (e, ui) {
+        var el = $(ui.selecting);
+        el.css('margin-top', "-" + el.css('border-top-width'));
+        el.css('margin-left', "-" + el.css('border-top-width'));
+    },
+    unselecting: function (e, ui) {
+        var el = $(ui.unselecting);
+        el.css('margin-top', "0px");
+        el.css('margin-left', "0px");
+    }
+})
