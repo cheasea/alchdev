@@ -1,10 +1,11 @@
 function onSelectStop() {
     let reagents = [];
-    let x = 0, y = 0;
+    let x = 0,
+        y = 0;
 
-    let selected = $('.ui-selected').not(':data("isDead", 1)');
-    
-    selected.each(function() {
+    let selected = $('.ui-selected');
+
+    selected.each(function () {
         $(this).not('.static').data('isDead', 1);
 
         let name = $(this).data('elementName');
@@ -21,14 +22,14 @@ function onSelectStop() {
     result = react(reagents);
 
     if (!result) {
-        selected.each(function() {
+        selected.each(function () {
             $(this).data('isDead', 0);
         });
 
         return;
     }
 
-    selected.each(function() {
+    selected.each(function () {
         $(this).not('.static').selectable('destroy');
     });
 
@@ -38,7 +39,7 @@ function onSelectStop() {
     selected.animate({
         'left': x,
         'top': y
-    }, 500, function() {
+    }, 500, function () {
         let elem = $(this);
         destroyElement(elem);
     });
