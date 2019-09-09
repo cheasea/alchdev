@@ -111,6 +111,12 @@ function runGame() {
     $('body').selectable('enable');
 }
 
+var marginToZero = function (e, ui) {
+    var el = $(ui.unselecting);
+    el.css('margin-top', "0px");
+    el.css('margin-left', "0px");
+}
+
 $('body').selectable({
     cancel: '.element:not(:data(isDead,1)), .ui-dialog, #abyss, #info, #stack',
     distance: 2,
@@ -121,11 +127,8 @@ $('body').selectable({
         el.css('margin-top', "-" + el.css('border-top-width'));
         el.css('margin-left', "-" + el.css('border-top-width'));
     },
-    unselecting: function (e, ui) {
-        var el = $(ui.unselecting);
-        el.css('margin-top', "0px");
-        el.css('margin-left', "0px");
-    }
+    unselecting: marginToZero,
+    selected: marginToZero
 })
 
 function react(r, b = false) {
