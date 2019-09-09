@@ -24,15 +24,15 @@ function versionCheck() {
 
     if (!scripts) return;
 
-    function createScriptElement(folder, scriptName) {
+    function createScriptElement(src) {
         var script = document.createElement("script");
-        script.src = "https://denys00.github.io/alchdev/" + folder + "/" + scriptName;
-        if (scriptName == "gameInit.js") script.setAttribute("defer", "defer");
+        script.src = "https://denys00.github.io/alchdev/" + src;
+        script.defer = true;
         return script;
     }
 
     for (name of scripts.files)
-        head.appendChild(createScriptElement(scripts.folder, name));
+        head.appendChild(createScriptElement(scripts.folder + "/" + name));
 }
 
 versionCheck();
