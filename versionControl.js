@@ -10,6 +10,7 @@ function versionCheck() {
 
     var script = document.createElement("script");
     script.src = "https://denys00.github.io/alchdev/" + scripts;
+    script.defer = true;
 
     document.head.appendChild(script);
 }
