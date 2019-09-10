@@ -365,6 +365,9 @@ function test(type) {
                 removeFromArray(leftsiders[j], finals, true);
             if (type == 'finals') return finals;
 
+            console.log(leftsiders);
+            console.log(leftsiders[j].charAt(0) != '-', !inArray(leftsiders[j], elements), !inArray(leftsiders[j], wrongs))
+
             if (leftsiders[j].charAt(0) != '-' && !inArray(leftsiders[j], elements) && !inArray(leftsiders[j], wrongs)) {
                 wrongs.push(leftsiders[j]);
             }
