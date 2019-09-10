@@ -1,3 +1,5 @@
+$('#err_msg').dialog('close');
+
 function onSelectStop() {
     let reagents = [];
     let x = 0,
@@ -513,4 +515,8 @@ function addElement(name, place, no_discover) {
     if (!$.browser.msie) a.corner();
     a.topZIndex();
     return a;
+}
+
+if (wrongs.length > 0) {
+    errMsg('В этом моде не удастся открыть все элементы, потому что некоторые из них невозможно получить.');
 }
