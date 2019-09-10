@@ -455,3 +455,62 @@ function addElement(name, place, no_discover) {
     a.topZIndex();
     return a;
 }
+
+function test(type) {
+    var elements = []; //inits.slice();
+    var cleanName;
+    for (var i in inits) {
+        if (!inArray(inits[i], elements)) {
+            elements.push(inits[i]);
+        }
+    }
+    for (var i in reactions) {
+        for (var j in reactions[i]) {
+            var counterParsed = reactions[i][j].match(matchCounter);
+            if (counterParsed && counterParsed[1] != undefined) {
+                if (counterParsed[5]) elements = elements.concat(counterParsed[5].split(","));
+                if (counterParsed[9]) elements = elements.concat(counterParsed[9].split(","));
+            }
+            cleanName = clearName(reactions[i][j])
+            if (cleanName.charAt(0) != '-' && !inArray(cleanName, elements)) {
+                elements.push(cleanName);
+            }
+        }
+    }
+    if (type == 'total') return elements;
+    var wrongs = [];
+    var finals = [];
+    if (type === undefined || type == 'unstyled') {
+        update_dictionary(elements, finals);
+    }
+    for (var i in reactions) {
+        var leftsiders = i.split('+');
+        for (var j in leftsiders) {
+            if (leftsiders[j].charAt(0) != '-')
+                removeFromArray(leftsiders[j], finals, true);
+            if (type == 'finals') return finals;
+
+            if (leftsiders[j].charAt(0) != '-' && !inArray(leftsiders[j], elements) && !inArray(leftsiders[j], wrongs)) {
+                wrongs.push(leftsiders[j]);
+            }
+        }
+    }
+    if (type == 'wrongs') return wrongs;
+
+
+    var unstyled = [];
+    if (type === undefined || type == 'unstyled') {
+        for (var i in elements) {
+            if (elements[i].charAt(0) != '-' && classes[elements[i]] === undefined)
+                unstyled.push(elements[i]);
+        }
+    }
+    if (type == 'unstyled') return unstyled;
+    var result = [];
+    result.total = elements;
+    result.unstyled = unstyled;
+    result.wrongs = wrongs;
+    result.finals = finals;
+
+    return result;
+}
