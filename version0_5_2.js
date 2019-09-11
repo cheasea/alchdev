@@ -1,5 +1,17 @@
 $('#err_msg').dialog('close');
 
+function cloneElement(elem){
+	if (!settings.clone) return;
+	
+	let name = elem.data('elementName');
+	let pos = elem.offset();
+
+	if (counters[name]) return;
+
+	placeElements([name, name], pos);
+	destroyElement(elem);
+}
+
 function onSelectStop() {
     let reagents = [];
     let x = 0,
