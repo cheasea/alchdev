@@ -331,6 +331,9 @@ function onDrop(event, ui) {
 
 let inited = false;
 
+var wrongs = [];
+var finals = [];
+
 function test(type) {
     var elements = []; //inits.slice();
     var cleanName;
@@ -353,8 +356,6 @@ function test(type) {
         }
     }
     if (type == 'total') return elements;
-    var wrongs = [];
-    var finals = [];
     if (type === undefined || type == 'unstyled') {
         update_dictionary(elements, finals);
     }
@@ -364,9 +365,6 @@ function test(type) {
             if (leftsiders[j].charAt(0) != '-')
                 removeFromArray(leftsiders[j], finals, true);
             if (type == 'finals') return finals;
-
-            console.log(leftsiders);
-            console.log(leftsiders[j].charAt(0) != '-', !inArray(leftsiders[j], elements), !inArray(leftsiders[j], wrongs))
 
             if (leftsiders[j].charAt(0) != '-' && !inArray(leftsiders[j], elements) && !inArray(leftsiders[j], wrongs)) {
                 wrongs.push(leftsiders[j]);
