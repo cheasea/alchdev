@@ -1,15 +1,15 @@
 $('#err_msg').dialog('close');
 
-function cloneElement(elem){
-	if (!settings.clone) return;
-	
-	let name = elem.data('elementName');
-	let pos = elem.offset();
+function cloneElement(elem) {
+    if (!settings.clone) return;
 
-	if (counters[name]) return;
+    let name = elem.data('elementName');
+    let pos = elem.offset();
 
-	placeElements([name, name], pos);
-	destroyElement(elem);
+    if (counters[name]) return;
+
+    placeElements([name, name], pos);
+    destroyElement(elem);
 }
 
 function onSelectStop() {
@@ -163,7 +163,7 @@ function react(r, b = false) {
                 var counterParsed = resultsTemp[i].match(matchCounter)
                 if (counterParsed && counterParsed[1] != undefined) {
                     var counter = {
-                        "name": counterParsed[1],
+                        "name": settings.output[counterParsed[1]] || counterParsed[1],
                         "min": counterParsed[3],
                         "max": counterParsed[7],
                         "minResult": counterParsed[5],
@@ -361,7 +361,7 @@ function test(type) {
                 if (counterParsed[5]) elements = elements.concat(counterParsed[5].split(","));
                 if (counterParsed[9]) elements = elements.concat(counterParsed[9].split(","));
             }
-            cleanName = clearName(reactions[i][j])
+            cleanName = clearName(reactions[i][j]);
             if (cleanName.charAt(0) != '-' && !inArray(cleanName, elements)) {
                 elements.push(cleanName);
             }
