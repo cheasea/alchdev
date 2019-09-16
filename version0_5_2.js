@@ -1,5 +1,7 @@
 $('#err_msg').dialog('close');
 
+if (!settings.output) settings.output = {};
+
 function pulsate(el) {
     if (el.data('pulsating')) return;
     el.data('pulsating', true)
