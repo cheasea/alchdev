@@ -483,7 +483,11 @@ function gameInit() {
 gameInit();
 
 function addElement(name, place, no_discover) {
-    var cleanName = name.replace(/\[.+\]$/, '');
+    if (settings.output[name]) {
+        var cleanName = settings.output[name];
+    } else {
+        var cleanName = name.replace(/\[.+\]$/, '');
+    }
     var a = $('<div/>', {
         'class': 'element ' + classes[name],
         'title': cleanName
