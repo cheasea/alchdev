@@ -328,6 +328,22 @@ function react(r, b = false) {
     }
 }
 
+function applySettings(settings) {
+    $(document).unbind("dblclick");
+    if (settings['add']) {
+        $(document).bind("dblclick", function (e) {
+            placeElements(inits, {
+                top: e.pageY,
+                left: e.pageX
+            });
+            refreshHint();
+            e.stopPropagation();
+        });
+    } else {
+        $(document).bind("dblclick", function (e) {});
+    }
+}
+
 function onDrop(event, ui) {
     let isReady = ui.helper.data('isDead') !== 1 && $(this).data('isDead') !== 1;
 
