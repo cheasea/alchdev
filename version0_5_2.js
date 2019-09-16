@@ -1,5 +1,15 @@
 $('#err_msg').dialog('close');
 
+function pulsate(el) {
+    if (el.data('pulsating')) return;
+    el.data('pulsating', true)
+    el.effect('pulsate', {
+        "times": 4
+    }, 250, function () {
+        $(this).data('pulsating', false);
+    });
+}
+
 function cloneElement(elem) {
     if (!settings.clone) return;
 
@@ -198,9 +208,8 @@ function react(r, b = false) {
                                 data.value = parseInt(counter.value.substr(1))
                                 break;
                         }
-                        e.effect('pulsate', {
-                            "times": 4
-                        }, 250);
+
+                        pulsate(e);
                     }
 
                     var elem = $('#board .element:data(elementName,"' + data.name + '")')[0];
@@ -535,5 +544,5 @@ function addElement(name, place, no_discover) {
 }
 
 if (wrongs.length > 0) {
-    errMsg('В этом моде не удастся открыть все элементы, потому что некоторые из них невозможно получить.');
+    errMsg('В этом моде не удастся открыть все элементы, потому что некоторые из них невозможно получить: ' + wrongs.join(","));
 }
