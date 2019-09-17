@@ -1,6 +1,6 @@
 $('#err_msg').dialog('close');
 
-matchCounter = /set\s(\S+)(\smin\s(-?\d+)?(\s?\((.*?)\))?)?(\smax\s(-?\d+)?(\s?\((.*?)\))?)?\s*([-|\+|=|*|/]\s?\d+)?/;
+matchCounter = /set\s(\S+)(\smin\s(-?\d+)?(\s?\((.*?)\))?)?(\smax\s(-?\d+)?(\s?\((.*?)\))?)?\s*([-|\+|=|*|/]\s?\d+(?:\.\d+)?)?/;
 
 if (!settings.output) settings.output = {};
 
@@ -222,19 +222,19 @@ function react(r, b = false) {
                         var e = $('#board .element:data(elementName,"' + data.name + '")')
                         switch (counter.value.toString().charAt(0)) {
                             case "+":
-                                data.value += parseInt(counter.value.substr(1))
+                                data.value += parseFloat(counter.value.substr(1))
                                 break;
                             case "-":
-                                data.value -= parseInt(counter.value.substr(1))
+                                data.value -= parseFloat(counter.value.substr(1))
                                 break;
                             case "=":
-                                data.value = parseInt(counter.value.substr(1))
+                                data.value = parseFloat(counter.value.substr(1))
                                 break;
                             case "*":
-                                data.value *= parseInt(counter.value.substr(1))
+                                data.value *= parseFloat(counter.value.substr(1))
                                 break;
                             case "/":
-                                data.value /= parseInt(counter.value.substr(1))
+                                data.value /= parseFloat(counter.value.substr(1))
                                 break;
                         }
 
