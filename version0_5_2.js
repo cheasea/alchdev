@@ -2,6 +2,8 @@ $('#err_msg').dialog('close');
 
 if (!settings.output) settings.output = {};
 
+var customOutputRegex = /(?=.*)@(?=.*)/g;
+
 function pulsate(el) {
     if (el.data('pulsating')) return;
     el.data('pulsating', true)
@@ -22,6 +24,23 @@ function cloneElement(elem) {
 
     placeElements([name, name], pos);
     destroyElement(elem);
+}
+
+function getCounterOutput(i) {
+    var c = counters[i];
+    var counterName = settings.output[c.name];
+    if (counterName) {
+        if (counterName.match(customOutputRegex)) return counterName.replace(customOutputRegex, c.value)
+    }
+    return c.name + " (" + c.value + ")"
+}
+
+function updateCounters() {
+    for (var i in counters) {
+        var e = $('#board .element:data(elementName,"' + i + '")')
+        if (e)
+            e.text(getCounterOutput(i))
+    }
 }
 
 function onSelectStop() {
@@ -175,7 +194,7 @@ function react(r, b = false) {
                 var counterParsed = resultsTemp[i].match(matchCounter)
                 if (counterParsed && counterParsed[1] != undefined) {
                     var counter = {
-                        "name": settings.output[counterParsed[1]] || counterParsed[1],
+                        "name": counterParsed[1],
                         "min": counterParsed[3],
                         "max": counterParsed[7],
                         "minResult": counterParsed[5],
@@ -185,7 +204,7 @@ function react(r, b = false) {
                     var data = counters[counter.name]
                     if (!data) {
                         data = {}
-                        data.name = counter.name
+                        data.name = counter.name;
                         data.value = 0
                         if (data.value < data.min) data.value = data.min
                         if (data.value > data.max) data.value = data.max
@@ -208,6 +227,9 @@ function react(r, b = false) {
                                 break;
                             case "=":
                                 data.value = parseInt(counter.value.substr(1))
+                                break;
+                            case "*":
+                                data.value *= parseInt(counter.value.substr(1))
                                 break;
                         }
 
