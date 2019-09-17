@@ -2,7 +2,7 @@ $('#err_msg').dialog('close');
 
 if (!settings.output) settings.output = {};
 
-var customOutputRegex = /(?=.*)@(?=.*)/g;
+var customOutputRegex = new RegExp("(?=.*)" + (settings.counterOutput || "@") + "(?=.*)", "g");
 
 function pulsate(el) {
     if (el.data('pulsating')) return;
@@ -461,7 +461,6 @@ function gameInit() {
             $("#vote_result").hide();
             $("#abyss").droppable({
                 drop: function (e, ui) {
-                    q
                     destroyElement(ui.helper);
                     refreshHint();
                 }
