@@ -1,5 +1,7 @@
 $('#err_msg').dialog('close');
 
+matchCounter = /set\s(\S+)(\smin\s(-?\d+)?(\s?\((.*?)\))?)?(\smax\s(-?\d+)?(\s?\((.*?)\))?)?\s*([-|\+|=|*|/]\s?\d+)?/;
+
 if (!settings.output) settings.output = {};
 
 var customOutputRegex = new RegExp("(?=.*)" + (settings.counterOutput || "@") + "(?=.*)", "g");
@@ -230,6 +232,9 @@ function react(r, b = false) {
                                 break;
                             case "*":
                                 data.value *= parseInt(counter.value.substr(1))
+                                break;
+                            case "/":
+                                data.value /= parseInt(counter.value.substr(1))
                                 break;
                         }
 
