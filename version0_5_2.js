@@ -6,6 +6,36 @@ if (!settings.output) settings.output = {};
 
 var customOutputRegex = new RegExp("(?=.*)" + (settings.counterOutput || "@") + "(?=.*)", "g");
 
+function discoverElement(elem, verbose) {
+    let counter = elem.match(matchCounter);
+    let name;
+
+    if (counter) {
+        name = counter[1];
+    } else {
+        name = elem;
+    }
+
+    if (inArray(name, opened)) return;
+
+    opened.push(name);
+
+    if (verbose === undefined || verbose === true) {
+        message(name, 'highlight');
+    }
+
+    if (settings['stack']) {
+        if (!inArray(name, statics)) addToStack(name);
+
+        if (opened.length === 50) {
+            infoMsg('Вы открыли довольно много элементов и, возможно, они уже не помещаются у вас на экране или создают неудобства. Попробуйте включить сортировку по группам нажав <a href="#" onclick="toggleSort(\'group\')">здесь</a> или как показано на рисунке: <br><img src="/img/help/groups.PNG"/>');
+        }
+    }
+
+    $('#save').show();
+    refreshStat();
+}
+
 function pulsate(el) {
     if (el.data('pulsating')) return;
     el.data('pulsating', true)
@@ -519,7 +549,9 @@ function gameInit() {
             var total = test1.total;
             finals = test1.finals;
             wrongs = test1.wrongs;
-            element_count = total.length;
+            element_count = total.filter(elem => {
+                return !elem.match(matchCounter);
+            }).length;
             refreshStat();
         }
 
