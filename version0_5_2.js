@@ -1,10 +1,9 @@
 $('#err_msg').dialog('close');
 
-matchCounter = /set\s(\S+)(\smin\s(-?\d+)?(\s?\((.*?)\))?)?(\smax\s(-?\d+)?(\s?\((.*?)\))?)?\s*([-|\+|=|*|/]\s?\d+(?:\.\d+)?)?/;
-
-if (!settings.output) settings.output = {};
-
-var customOutputRegex = new RegExp("(?=.*)" + (settings.counterOutput || "@") + "(?=.*)", "g");
+$('#order_group').empty();
+$('#order_123').empty();
+$('#order_abc').empty();
+var opened = [];
 
 function discoverElement(elem, verbose) {
     let counter = elem.match(matchCounter);
@@ -56,23 +55,6 @@ function cloneElement(elem) {
 
     placeElements([name, name], pos);
     destroyElement(elem);
-}
-
-function getCounterOutput(i) {
-    var c = counters[i];
-    var counterName = settings.output[c.name];
-    if (counterName) {
-        if (counterName.match(customOutputRegex)) return counterName.replace(customOutputRegex, c.value)
-    }
-    return c.name + " (" + c.value + ")"
-}
-
-function updateCounters() {
-    for (var i in counters) {
-        var e = $('#board .element:data(elementName,"' + i + '")')
-        if (e)
-            e.text(getCounterOutput(i))
-    }
 }
 
 function onSelectStop() {
@@ -252,19 +234,13 @@ function react(r, b = false) {
                         var e = $('#board .element:data(elementName,"' + data.name + '")')
                         switch (counter.value.toString().charAt(0)) {
                             case "+":
-                                data.value += parseFloat(counter.value.substr(1))
+                                data.value += parseInt(counter.value.substr(1))
                                 break;
                             case "-":
-                                data.value -= parseFloat(counter.value.substr(1))
+                                data.value -= parseInt(counter.value.substr(1))
                                 break;
                             case "=":
-                                data.value = parseFloat(counter.value.substr(1))
-                                break;
-                            case "*":
-                                data.value *= parseFloat(counter.value.substr(1))
-                                break;
-                            case "/":
-                                data.value /= parseFloat(counter.value.substr(1))
+                                data.value = parseInt(counter.value.substr(1))
                                 break;
                         }
 
@@ -568,11 +544,7 @@ function gameInit() {
 gameInit();
 
 function addElement(name, place, no_discover) {
-    if (settings.output[name]) {
-        var cleanName = settings.output[name];
-    } else {
-        var cleanName = name.replace(/\[.+\]$/, '');
-    }
+    var cleanName = name.replace(/\[.+\]$/, '');
     var a = $('<div/>', {
         'class': 'element ' + classes[name],
         'title': cleanName
