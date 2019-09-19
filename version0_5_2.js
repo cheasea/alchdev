@@ -365,7 +365,7 @@ function applySettings(settings) {
     $(document).unbind("dblclick");
     if (settings['add']) {
         $(document).bind("dblclick", function (e) {
-            placeElements(inits, {
+            placeElements(react(inits, true), {
                 top: e.pageY,
                 left: e.pageX
             });
@@ -466,7 +466,7 @@ function test(type) {
 function gameInit() {
     if (!inited) {
         inited = true;
-        destroyElement($('#board').children('.element'), false);
+        $('#board').children('.element').remove();
         if (finals.length == 0) {
             $("#vote_stats").hide();
             $("#vote_result").hide();
