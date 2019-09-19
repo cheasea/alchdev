@@ -557,7 +557,7 @@ function addElement(name, place, no_discover) {
     if (!no_discover) discoverElement(name);
 
     // a.html(parseBBCode($('<div/>').text(name).html()));
-    textOrImage(a, cleanName);
+    textOrImage(a, name);
 
     if (place !== undefined) {
 
