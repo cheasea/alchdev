@@ -598,6 +598,7 @@ function addElement(name, place, no_discover) {
 }
 
 function placeElements(names, place, firstPush){
+	let isInitial = (names === inits);
 	var x = place.left, y = place.top;
 	var c = names.length;
 	var pi = Math.PI, a = 2*pi/c;
@@ -606,6 +607,7 @@ function placeElements(names, place, firstPush){
 	
 	for(var i in names){
 		var staticElement = inArray(names[i], statics);
+		if (isInitial && counters[names[i]]) continue;
 		if($('#board .element:data(elementName,"'+names[i]+'")').length)
 		if(!staticElement ||(staticElement && !inArray(names[i], opened))){
 			top = Math.floor((c-1)*radius*Math.sin(start_angle+i*a));
