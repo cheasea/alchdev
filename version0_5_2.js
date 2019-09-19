@@ -5,6 +5,39 @@ $('#order_123').empty();
 $('#order_abc').empty();
 var opened = [];
 
+function placeElements(names, place, firstPush){
+    var x = place.left, y = place.top;
+    var c = names.length;
+    var pi = Math.PI, a = 2*pi/c;
+    var top, left, radius=20, start_angle=Math.random()*2*pi;
+    var e;
+    
+    for(var i in names){
+        var staticElement = inArray(names[i], statics);
+        if($('#board .element:data(elementName,"'+names[i]+'")').length)
+        if(!staticElement ||(staticElement && !inArray(names[i], opened))){
+            top = Math.floor((c-1)*radius*Math.sin(start_angle+i*a));
+            left = Math.floor((c-1)*radius*Math.cos(start_angle+i*a));
+            // do not put elements behind screen edges
+            if(place.left + left<0)
+                left = left-(place.left + left);
+            if(place.left + left>$(window).width()-30)
+                left = $(window).width() - place.left - 30;
+            if(place.top + top < $('#tools').position().top+$('#tools').height())
+                top = top-(place.top + top)+ $('#tools').position().top+$('#tools').height();
+            top<0 ? top = "-="+(-top)+"px" : top = "+="+top+"px";
+            left<0 ? left = "-="+(-left)+"px" : left = "+="+left+"px";
+            e = addElement(names[i], {"top":y, "left":x});
+            var anim = {top: top, left: left};
+            if (!$.browser.msie){
+                e.css('opacity','0');
+                anim.opacity = 1;
+            }
+            e.animate(anim, 600);
+        }
+    }
+}
+
 function discoverElement(elem, verbose) {
     let counter = elem.match(matchCounter);
     let name;
@@ -244,7 +277,13 @@ function react(r, b = false) {
                                 break;
                         }
 
-                        pulsate(e);
+                        let isCounter = r.find(item => {
+                            return counters[item];
+                        });
+
+                        if (!isCounter) {
+                            pulsate(e);
+                        }
                     }
 
                     var elem = $('#board .element:data(elementName,"' + data.name + '")')[0];
