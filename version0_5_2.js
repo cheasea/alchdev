@@ -11,56 +11,64 @@ function textOrImage(a, name, checkingValue = true) {
     let filename;
     let counterText;
 
-    if (labels[name]){
+    if (labels[name]) {
         filename = MEDIA_URL + labels[name];
     }
-    
+
     if (counters[name] && checkingValue) {
-      counterText = `${name} (${counters[name].value})`;
+        counterText = `${name} (${counters[name].value})`;
     }
 
-    if (filename && settings.images){
-      let img = $('<img/>', {src: filename, 'class': 'element-icon'});
-      img.mousedown(function (e) {
-        e.preventDefault();
-      });
-        
-      a.append(img);
-      a.addClass('img-element');
-      a.data('image', filename);
-        
-      img.error(function() {  
-        if (counterText) a.text(counterText) 
-        else a.text(cleanName);
-          
-        a.removeClass('img-element');
-        a.removeClass('img-stack-element');
-        a.data('image', false);
-        });     
-    } else{
-        if (counterText) a.text(counterText) 
+    if (filename && settings.images) {
+        let img = $('<img/>', {
+            src: filename,
+            'class': 'element-icon'
+        });
+        img.mousedown(function (e) {
+            e.preventDefault();
+        });
+
+        a.append(img);
+        a.addClass('img-element');
+        a.data('image', filename);
+
+        img.error(function () {
+            if (counterText) a.text(counterText)
+            else a.text(cleanName);
+
+            a.removeClass('img-element');
+            a.removeClass('img-stack-element');
+            a.data('image', false);
+        });
+    } else {
+        if (counterText) a.text(counterText)
         else a.text(cleanName);
     }
 }
 
-function createShortcut(name, checkingValue){
+function createShortcut(name, checkingValue) {
     var o = $("<span/>", {
-        'class': 'element '+classes[name]
+        'class': 'element ' + classes[name]
     });
-    if(inArray(name, finals))
-        o.addClass('final');    
+    if (inArray(name, finals))
+        o.addClass('final');
     textOrImage(o, name, checkingValue);
-    if(o.data('image')){
-        o.attr('title',name)
+    if (o.data('image')) {
+        o.attr('title', name)
         o.addClass('img-stack-element');
         o.removeClass('img-element');
-    }else
-        o.attr('title', ((recipes[name]===undefined)? '' : recipes[name].join('; ')));
+    } else
+        o.attr('title', ((recipes[name] === undefined) ? '' : recipes[name].join('; ')));
     o.draggable({
         distance: 5,
-        helper: function(){ return addElement(name, {top: 0, left: 0}); },
-        stop: function(event, ui){
-            if (!ui.helper.data("isDead")){
+        helper: function () {
+            return addElement(name, {
+                top: 0,
+                left: 0
+            });
+        },
+        stop: function (event, ui) {
+            if (!ui.helper.data("isDead")) {
                 addElement(name, ui.helper.offset()).appendTo('#board');
                 refreshHint();
             }
@@ -70,82 +78,94 @@ function createShortcut(name, checkingValue){
     return o;
 }
 
-function addToStack(name){
+function addToStack(name) {
     var preHeight = $('#order_123').height();
     // discover order
     var o = createShortcut(name, false);
     o.appendTo($('#order_123'));
-    
+
     // alphabetical order
     var o = createShortcut(name, false);
-    var i=0;
+    var i = 0;
     var sorted = opened.slice(0).sort();
-    if(sorted.length>1){
-        while( name > sorted[i]) i++;
-        if(i<1)
+    if (sorted.length > 1) {
+        while (name > sorted[i]) i++;
+        if (i < 1)
             o.prependTo($('#order_abc'));
         else
-            o.insertAfter($('#order_abc').children('.element:eq('+(i-1)+')'));
-    }else 
+            o.insertAfter($('#order_abc').children('.element:eq(' + (i - 1) + ')'));
+    } else
         o.appendTo($('#order_abc'));
-        
+
     // groups order
-    
+
     var o = createShortcut(name, false);
-    
-    if(classes[name]){
-        if($.isArray(classes[name]))
+
+    if (classes[name]) {
+        if ($.isArray(classes[name]))
             var cur_class = classes[name][0].split(' ')[0];
         else
-            var cur_class = classes[name].split(' ')[0];    
-    }
-    else
+            var cur_class = classes[name].split(' ')[0];
+    } else
         var cur_class = 'abstract';
-    
+
     if (classes[name])
-        var group = '_'+cur_class;
+        var group = '_' + cur_class;
     else
         var group = '_no_group';
-    if($('#order_group').children('.'+group).size()===0){
-        var groupBox = $('<span/>', {'class':group+' element '+classes[name], text:'['+classes_strings[cur_class]+']', style:'display:inline-block;'}).appendTo($('#order_group'));
-        var ul = $('<div/>',{'class':classes[name]+' group_block'}).appendTo(groupBox);
+    if ($('#order_group').children('.' + group).size() === 0) {
+        var groupBox = $('<span/>', {
+            'class': group + ' element ' + classes[name],
+            text: '[' + classes_strings[cur_class] + ']',
+            style: 'display:inline-block;'
+        }).appendTo($('#order_group'));
+        var ul = $('<div/>', {
+            'class': classes[name] + ' group_block'
+        }).appendTo(groupBox);
 
-        groupBox.mouseenter(function(){
+        groupBox.mouseenter(function () {
             ul.show(200);
             ul.topZIndex();
         });
-        groupBox.mouseleave(function(){
+        groupBox.mouseleave(function () {
             ul.hide(200);
 
         });
-        groupBox.click(function(){// show group-dialog - box with elements
-            
-            if(!$('#gd'+group).length){
-                $('<div/>', {id:'gd'+group, 'class':'gd'}).dialog({zIndex:0, stack: false});
-                $('#gd'+group).dialog('widget').topZIndex().addClass('no-select');
-                $('#gd'+group).dialog('widget').click(function(){$(this).topZIndex();});
-                $('#order_group').children('.'+group).children('.group_block').children('.element').each(
-                function(index) {
-                    createShortcut($(this).data('elementName')).appendTo($('#gd'+group));
+        groupBox.click(function () { // show group-dialog - box with elements
+
+            if (!$('#gd' + group).length) {
+                $('<div/>', {
+                    id: 'gd' + group,
+                    'class': 'gd'
+                }).dialog({
+                    zIndex: 0,
+                    stack: false
                 });
-            }else{
-                $('#gd'+group).dialog('open');
+                $('#gd' + group).dialog('widget').topZIndex().addClass('no-select');
+                $('#gd' + group).dialog('widget').click(function () {
+                    $(this).topZIndex();
+                });
+                $('#order_group').children('.' + group).children('.group_block').children('.element').each(
+                    function (index) {
+                        createShortcut($(this).data('elementName')).appendTo($('#gd' + group));
+                    });
+            } else {
+                $('#gd' + group).dialog('open');
             }
 
         });
-        
+
     }
-    if(!groupBox) var groupBox = $('#order_group').children('.'+group);
-    if(!ul) var ul = groupBox.children('.group_block');
+    if (!groupBox) var groupBox = $('#order_group').children('.' + group);
+    if (!ul) var ul = groupBox.children('.group_block');
     var li = ul.append(o);
-    if($('#gd'+group).length){
-        createShortcut(name).appendTo($('#gd'+group));
+    if ($('#gd' + group).length) {
+        createShortcut(name).appendTo($('#gd' + group));
     }
-    
+
     //and resize window after all
     var postHeight = $('#order_123').height();
-    if(typeof(VK) != 'undefined' && VK.callMethod)
-    {
+    if (typeof (VK) != 'undefined' && VK.callMethod) {
         var deltaHeight = postHeight - preHeight;
         var newHeight = $(window).height() + deltaHeight;
         VK.callMethod('resizeWindow', $(window).width(), newHeight);
@@ -399,7 +419,7 @@ function react(r, b = false) {
                             } else {
                                 elem.data('no-counter', 0);
                             }
-                            
+
                             return counters[item];
                         });
 
@@ -596,7 +616,7 @@ function test(type) {
         var leftsiders = i.split('+');
         for (var j in leftsiders) {
             if (leftsiders[j].charAt(0) != '-')
-                removeFromArray(leftsiders[j], finals, true);
+                removeFromArray(leftsiders[j], finals, false);
             if (type == 'finals') return finals;
 
             if (leftsiders[j].charAt(0) != '-' && !inArray(leftsiders[j], elements) && !inArray(leftsiders[j], wrongs)) {
