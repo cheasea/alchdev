@@ -618,7 +618,7 @@ function placeElements(names, place, firstPush) {
     for (var i in names) {
         var staticElement = inArray(names[i], statics);
 
-        if (counters[names[i]] && $(`#board .element:data(elementName,"${names[i]}"):data(no-counter,0)`)[0])) {
+        if (counters[names[i]] && $(`#board .element:data(elementName,"${names[i]}"):data(no-counter,0)`)[0]) {
             continue;
         }
 
