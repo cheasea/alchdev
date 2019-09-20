@@ -58,6 +58,10 @@ function textOrImage(a, name, checkingValue = true) {
         a.addClass('img-element');
         a.data('image', filename);
 
+        if (counters[name] && labels[name]) {
+            updateCounters();
+        }
+
         img.error(function () {
             if (counterText) a.text(counterText)
             else a.text(cleanName);
