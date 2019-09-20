@@ -245,6 +245,14 @@ function react(r, b = false) {
                         }
 
                         let isCounter = r.find(item => {
+                            let elem = $(`#board .element:data(elementName,"${data.name}")`);
+
+                            if (counters[item]) {
+                                elem.data('no-counter', 1);
+                            } else {
+                                elem.data('no-counter', 0);
+                            }
+                            
                             return counters[item];
                         });
 
@@ -609,6 +617,11 @@ function placeElements(names, place, firstPush) {
 
     for (var i in names) {
         var staticElement = inArray(names[i], statics);
+
+        if (counters[names[i]] && $(`#board .element:data(elementName,"${names[i]}"):data(no-counter,0)`)[0])) {
+            continue;
+        }
+
         if (!staticElement || (staticElement && !inArray(names[i], opened))) {
             top = Math.floor((c - 1) * radius * Math.sin(start_angle + i * a));
             left = Math.floor((c - 1) * radius * Math.cos(start_angle + i * a));
