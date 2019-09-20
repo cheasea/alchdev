@@ -25,7 +25,7 @@ function updateCounters() {
                 span.appendTo($(elem));
                 textValue = span;
             } else {
-                textValue.text(`(${counters[i].value})`);
+                $(textValue).text(`(${counters[i].value})`);
             }
         }
     }
