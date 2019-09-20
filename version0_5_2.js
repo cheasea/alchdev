@@ -5,7 +5,7 @@ $('#order_123').empty();
 $('#order_abc').empty();
 var opened = [];
 
-function textOrImage(a, name, checkingValue) {
+function textOrImage(a, name, checkingValue = true) {
     let filename;
     let counterText;
 
