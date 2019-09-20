@@ -6,6 +6,8 @@ $('#order_abc').empty();
 var opened = [];
 
 function textOrImage(a, name, checkingValue = true) {
+    let cleanName = name.replace(/\[.+\]$/, '');
+
     let filename;
     let counterText;
 
@@ -29,7 +31,7 @@ function textOrImage(a, name, checkingValue = true) {
         
       img.error(function() {  
         if (counterText) a.text(counterText) 
-        else a.text(name);
+        else a.text(cleanName);
           
         a.removeClass('img-element');
         a.removeClass('img-stack-element');
@@ -37,7 +39,7 @@ function textOrImage(a, name, checkingValue = true) {
         });     
     } else{
         if (counterText) a.text(counterText) 
-        else a.text(name);
+        else a.text(cleanName);
     }
 }
 
