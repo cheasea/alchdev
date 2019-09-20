@@ -5,6 +5,32 @@ $('#order_123').empty();
 $('#order_abc').empty();
 var opened = [];
 
+function updateCounters() {
+    for (let i in counters) {
+        let elem = $(`#board .element:data(elementName,"${i}")`);
+
+        if (!elem[0]) continue;
+
+        if (!labels[counters[i].name]) {
+            elem.text(`${counters[i].name} (${counters[i].value})`);
+        } else {
+            let textValue = elem.children()[1];
+
+            if (!textValue) {
+                let span = $('<span>', {
+                    'class': 'value'
+                });
+
+                span.text(`(${counters[i].value})`);
+                span.appendTo($(elem));
+                textValue = span;
+            } else {
+                textValue.text(`(${counters[i].value})`);
+            }
+        }
+    }
+}
+
 function textOrImage(a, name, checkingValue = true) {
     let cleanName = name.replace(/\[.+\]$/, '');
 
