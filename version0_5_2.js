@@ -5,6 +5,42 @@ $('#order_123').empty();
 $('#order_abc').empty();
 var opened = [];
 
+function textOrImage(a, name) {
+    let filename;
+    let counterText;
+
+    if (labels[name]){
+        filename = MEDIA_URL + labels[name];
+    }
+    
+    if (counters[name]) {
+      counterText = `${name} (${counters[name].value})`;
+    }
+
+    if (filename && settings.images){
+      let img = $('<img/>', {src: filename, 'class': 'element-icon'});
+      img.mousedown(function (e) {
+        e.preventDefault();
+      });
+        
+      a.append(img);
+      a.addClass('img-element');
+      a.data('image', filename);
+        
+      img.error(function() {  
+        if (counterText) a.text(counterText) 
+        else a.text(name);
+          
+        a.removeClass('img-element');
+        a.removeClass('img-stack-element');
+        a.data('image', false);
+        });     
+    } else{
+        if (counterText) a.text(counterText) 
+        else a.text(name);
+    }
+}
+
 function discoverElement(elem, verbose) {
     let counter = elem.match(matchCounter);
     let name;
