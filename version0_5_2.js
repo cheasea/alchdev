@@ -5,7 +5,7 @@ $('#order_123').empty();
 $('#order_abc').empty();
 var opened = [];
 
-function textOrImage(a, name) {
+function textOrImage(a, name, checkingValue) {
     let filename;
     let counterText;
 
@@ -13,7 +13,7 @@ function textOrImage(a, name) {
         filename = MEDIA_URL + labels[name];
     }
     
-    if (counters[name]) {
+    if (counters[name] && checkingValue) {
       counterText = `${name} (${counters[name].value})`;
     }
 
