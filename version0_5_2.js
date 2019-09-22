@@ -864,7 +864,7 @@ function placeElements(names, place, firstPush) {
 
         let counter = item.match(matchCounter);
 
-        if (counter && !$(`#board .element:data(elementName,"${counter[1]}")`)[0]) {
+        if (counter && $(`#board .element:data(elementName,"${counter[1]}")`)[0]) {
             return false;
         }
         
@@ -880,9 +880,9 @@ function placeElements(names, place, firstPush) {
     let a = 2 * Math.PI / c;
 
     for (var i in filtered) {
-        var staticElement = inArray(names[i], statics);
+        var staticElement = inArray(filtered[i], statics);
 
-        if (!staticElement || (staticElement && !inArray(names[i], opened))) {
+        if (!staticElement || (staticElement && !inArray(filtered[i], opened))) {
             top = Math.floor((c - 1) * radius * Math.sin(start_angle + i * a));
             left = Math.floor((c - 1) * radius * Math.cos(start_angle + i * a));
             // do not put elements behind screen edges
@@ -894,7 +894,7 @@ function placeElements(names, place, firstPush) {
                 top = top - (place.top + top) + $('#tools').position().top + $('#tools').height();
             top < 0 ? top = "-=" + (-top) + "px" : top = "+=" + top + "px";
             left < 0 ? left = "-=" + (-left) + "px" : left = "+=" + left + "px";
-            e = addElement(names[i], {
+            e = addElement(filtered[i], {
                 "top": y,
                 "left": x
             });
