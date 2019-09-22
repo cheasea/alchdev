@@ -600,13 +600,8 @@ var wrongs = [];
 var finals = [];
 
 function test(type) {
-    var elements = []; //inits.slice();
+    var elements = react(inits, b); //inits.slice();
     var cleanName;
-    for (var i in inits) {
-        if (!inArray(inits[i], elements)) {
-            elements.push(inits[i]);
-        }
-    }
     for (var i in reactions) {
         for (var j in reactions[i]) {
             var counterParsed = reactions[i][j].match(matchCounter);
