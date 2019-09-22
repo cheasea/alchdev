@@ -531,14 +531,8 @@ function react(r, b = false) {
                         e.data('maybeKill', '1');
                     }
                 } else {
-                    if (!classes[name] || !classes[name].match('group_block')) {
-                        results.push(name);
-                    } else {
-                        addElement(name, {
-                            x: 0,
-                            y: 0
-                        });
-                    }
+                    results.push(name);
+
                     if (!inArray(name, r)) {
                         var reaction = reagents; //+' = '+reactions[reagents].join(', ');
                         update_recipes(name, reaction);
