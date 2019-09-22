@@ -855,10 +855,8 @@ function addElement(name, place, no_discover) {
 function placeElements(names, place, firstPush) {
     var x = place.left,
         y = place.top;
-    var pi = Math.PI,
-        a = 2 * pi / c;
     var top, left, radius = 20,
-        start_angle = Math.random() * 2 * pi;
+        start_angle = Math.random() * 2 * Math.PI;
     var e;
 
     let filtered = names.filter(item => {
@@ -876,6 +874,7 @@ function placeElements(names, place, firstPush) {
     });
 
     let c = filtered.length;
+    let a = 2 * Math.PI / c;
 
     for (var i in filtered) {
         var staticElement = inArray(names[i], statics);
