@@ -7,6 +7,16 @@ $('#order_123').empty();
 $('#order_abc').empty();
 var opened = [];
 
+function countElements(name) {
+    let counter = name.match(matchCounter);
+
+    if (counter) {
+        elements[counter[1]] = true;
+    } else {
+        elements[name] = true;
+    }
+}
+
 function textOrImage(a, name, checkingValue = true) {
     let cleanName = name.replace(/\[.+\]$/, '');
 
@@ -750,9 +760,19 @@ function gameInit() {
             var total = test1.total;
             finals = test1.finals;
             wrongs = test1.wrongs;
-            element_count = total.filter(elem => {
-                return !elem.match(matchCounter);
-            }).length;
+            let elements = {};
+
+            for (let elem of inits) {
+                countElements(elem);
+            }
+
+            for (let r in reactions) {
+                reactions[r].forEach(elem => {
+                    countElements(elem);
+                });
+            }
+
+            element_count = Object.keys(elements).length;
             refreshStat();
         }
 
