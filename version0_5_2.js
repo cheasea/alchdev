@@ -762,7 +762,6 @@ function gameInit() {
             var total = test1.total;
             finals = test1.finals;
             wrongs = test1.wrongs;
-            let elements = {};
 
             for (let elem of inits) {
                 countElements(elem);
