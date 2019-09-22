@@ -869,7 +869,7 @@ function placeElements(names, place, firstPush) {
             });
 
             return false;
-        } else if (classes[item] !== 'group_block') {
+        } else if (classes[item] === 'group_block') {
             addElement(item, {
                 'top': 0,
                 'left': 0
