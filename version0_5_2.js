@@ -855,19 +855,30 @@ function addElement(name, place, no_discover) {
 function placeElements(names, place, firstPush) {
     var x = place.left,
         y = place.top;
-    var c = names.length;
     var pi = Math.PI,
         a = 2 * pi / c;
     var top, left, radius = 20,
         start_angle = Math.random() * 2 * pi;
     var e;
 
-    for (var i in names) {
-        var staticElement = inArray(names[i], statics);
-
-        if (counters[names[i]] && $(`#board .element:data(elementName,"${names[i]}"):data(no-counter,0)`)[0]) {
-            continue;
+    let filtered = names.filter(item => {
+        if (counters[item] && $(`#board .element:data(elementName,"${item}"):data(no-counter,0)`)[0]) {
+            return false;
         }
+
+        let counter = item.match(matchCounter);
+
+        if (counter && $(`#board .element:data(elementName,"${counter[1]}")`)[0]) {
+            return false;
+        }
+
+        return true;
+    });
+
+    let c = filtered.length;
+
+    for (var i in filtered) {
+        var staticElement = inArray(names[i], statics);
 
         if (!staticElement || (staticElement && !inArray(names[i], opened))) {
             top = Math.floor((c - 1) * radius * Math.sin(start_angle + i * a));
