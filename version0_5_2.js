@@ -864,7 +864,7 @@ function placeElements(names, place, firstPush) {
 
         let counter = item.match(matchCounter);
 
-        if (counter && $(`#board .element:data(elementName,"${counter[1]}")`)[0]) {
+        if (counter && !$(`#board .element:data(elementName,"${counter[1]}")`)[0]) {
             return false;
         }
         
