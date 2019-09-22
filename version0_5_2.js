@@ -303,6 +303,7 @@ function onSelectStop() {
 
 function destroyElement(element, anim = true) {
     element = element.filter('.element').not('.static'); //filter unkillable statics
+    element.data("isDead", 1);
     element.draggable('disable');
     element.droppable('disable');
     //element.effect(destroy_effects[Math.floor(Math.random()*destroy_effects.length)],{},1000, function(){element.remove();})
@@ -310,7 +311,6 @@ function destroyElement(element, anim = true) {
         element.remove();
     });
     else element.remove();
-    element.data("isDead", 1);
 }
 
 function getModId() {
@@ -821,6 +821,7 @@ function addElement(name, place, no_discover) {
     a.draggable({
         scroll: false,
         start: function () {
+            if ($(this).data('isDead')) return;
             $(this).stop();
             $(this).css('opacity', 1)
         }
