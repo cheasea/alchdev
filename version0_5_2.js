@@ -450,11 +450,7 @@ function react(r, b = false) {
                         }
                     }
 
-                    var elem = $('#board .element:data(elementName,"' + data.name + '")')[0];
-
-                    if (!elem || !elem.classList.contains('group_block')) {
-                        resultsTemp.push(data.name)
-                    }
+                    resultsTemp.push(data.name)
 
                     if (data.value < data.min) {
                         if (data.minResult !== undefined) {
@@ -500,8 +496,7 @@ function react(r, b = false) {
                             else { //clear identical elements
                                 name = name.substr(1);
                                 var classExists = false
-                                var l
-                                for (l in classes_strings)
+                                var l                                for (l in classes_strings)
                                     if (classes_strings[l] == name) {
                                         classExists = true
                                         break
@@ -859,6 +854,8 @@ function placeElements(names, place, firstPush) {
         start_angle = Math.random() * 2 * Math.PI;
     var e;
 
+    let c = 0;
+
     let filtered = names.filter(item => {
         if (counters[item] && $(`#board .element:data(elementName,"${item}"):data(no-counter,0)`)[0]) {
             return false;
@@ -869,11 +866,16 @@ function placeElements(names, place, firstPush) {
         if (counter && $(`#board .element:data(elementName,"${counter[1]}")`)[0]) {
             return false;
         }
+        
+        if (counter && classes[counter[1]] !== 'group_block') {
+            c++;
+        } else if (classes[item] !== 'group_block') {
+            c++;
+        }
 
         return true;
     });
 
-    let c = filtered.length;
     let a = 2 * Math.PI / c;
 
     for (var i in filtered) {
