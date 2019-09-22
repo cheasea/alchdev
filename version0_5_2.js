@@ -7,6 +7,8 @@ $('#order_123').empty();
 $('#order_abc').empty();
 var opened = [];
 
+let elements = {};
+
 function countElements(name) {
     let counter = name.match(matchCounter);
 
