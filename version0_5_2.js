@@ -496,7 +496,7 @@ function react(r, b = false) {
                             else { //clear identical elements
                                 name = name.substr(1);
                                 var classExists = false
-                                var l;                              
+                                var l;
                                 for (l in classes_strings)
                                     if (classes_strings[l] == name) {
                                         classExists = true
@@ -720,22 +720,22 @@ function gameInit() {
                     let filtered = inits.map(item => {
                         let counter = item.match(matchCounter);
 
-                            if (counter || counters[item]) {
-                                let name;
+                        if (counter || counters[item]) {
+                            let name;
 
-                                if (counter) {
-                                    name = counter[1];
-                                } else {
-                                    name = item;
-                                }
-
-                                if (spawned.indexOf(name) !== -1) return;
-
-                                spawned.push(name);
-                                return name;
+                            if (counter) {
+                                name = counter[1];
                             } else {
-                                return item;
+                                name = item;
                             }
+
+                            if (spawned.indexOf(name) !== -1) return;
+
+                            spawned.push(name);
+                            return name;
+                        } else {
+                            return item;
+                        }
                     });
 
                     filtered = filtered.filter(item => {
@@ -744,8 +744,8 @@ function gameInit() {
 
                     console.log(filtered);
                     placeElements(filtered, {
-                        top: e.pageY, 
-                      left: e.pageX
+                        top: e.pageY,
+                        left: e.pageX
                     });
 
                     refreshHint();
@@ -819,7 +819,11 @@ function addElement(name, place, no_discover) {
         }, 0);
     }
     a.draggable({
-        scroll: false
+        scroll: false,
+        start: function () {
+            $(this).stop();
+            $(this).css('opacity', 1)
+        }
     });
     a.droppable({
         accept: '.element:not(:data(isDead,1))',
@@ -859,7 +863,7 @@ function placeElements(names, place, firstPush) {
         if (counter && $(`#board .element:data(elementName,"${counter[1]}")`)[0]) {
             return false;
         }
-        
+
         if (counter && classes[counter[1]] === 'group_block') {
             addElement(counter[1], {
                 'top': 0,
