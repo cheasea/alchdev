@@ -22,7 +22,13 @@ function countElements(name) {
 }
 
 function textOrImage(a, name, checkingValue = true) {
-    let cleanName = name.replace(/\[.+\]$/, '');
+    let cleanName;
+
+    if (name.match(/.+\[.+\]/)) {
+        cleanName = name.replace(/\[.+\]$/, '');
+    } else {
+        cleanName = name;
+    }
 
     let filename;
     let counterText;
@@ -792,7 +798,14 @@ function gameInit() {
 gameInit();
 
 function addElement(name, place, no_discover) {
-    var cleanName = name.replace(/\[.+\]$/, '');
+    let cleanName;
+
+    if (name.match(/.+\[.+\]/)) {
+        cleanName = name.replace(/\[.+\]$/, '');
+    } else {
+        cleanName = name;
+    }
+
     var a = $('<div/>', {
         'class': 'element ' + classes[name],
         'title': cleanName
