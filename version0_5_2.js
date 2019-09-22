@@ -12,6 +12,8 @@ let elements = {};
 function countElements(name) {
     let counter = name.match(matchCounter);
 
+    if (name[0] === '-') return;
+
     if (counter) {
         elements[counter[1]] = true;
     } else {
