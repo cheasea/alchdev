@@ -496,7 +496,8 @@ function react(r, b = false) {
                             else { //clear identical elements
                                 name = name.substr(1);
                                 var classExists = false
-                                var l                                for (l in classes_strings)
+                                var l;                              
+                                for (l in classes_strings)
                                     if (classes_strings[l] == name) {
                                         classExists = true
                                         break
