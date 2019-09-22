@@ -7,6 +7,29 @@ $('#order_123').empty();
 $('#order_abc').empty();
 var opened = [];
 
+if (settings['add']) {
+    $(document).unbind('dblclick');
+    $(document).bind('dblclick', function (e) {
+        let filtered = inits.map(item => {
+            let counter = item.match(matchCounter);
+
+            if (counter) {
+                return counter[1];
+            } else {
+                return item;
+            }
+        });
+
+        placeElements(filtered, {
+            top: e.pageY, 
+            left: e.pageX
+        });
+
+        refreshHint();
+        e.stopPropagation();
+    });
+}
+
 function textOrImage(a, name, checkingValue = true) {
     let cleanName = name.replace(/\[.+\]$/, '');
 
