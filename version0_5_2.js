@@ -849,8 +849,6 @@ function placeElements(names, place, firstPush) {
         start_angle = Math.random() * 2 * Math.PI;
     var e;
 
-    let c = 0;
-
     let filtered = names.filter(item => {
         if (counters[item] && $(`#board .element:data(elementName,"${item}"):data(no-counter,0)`)[0]) {
             return false;
@@ -881,6 +879,7 @@ function placeElements(names, place, firstPush) {
         return true;
     });
 
+    let c = filtered.length;
     let a = 2 * Math.PI / c;
 
     for (var i in filtered) {
