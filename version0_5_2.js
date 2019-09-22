@@ -862,10 +862,20 @@ function placeElements(names, place, firstPush) {
             return false;
         }
         
-        if (counter && classes[counter[1]] !== 'group_block') {
-            c++;
+        if (counter && classes[counter[1]] === 'group_block') {
+            addElement(counter[1], {
+                'top': 0,
+                'left': 0
+            });
+
+            return false;
         } else if (classes[item] !== 'group_block') {
-            c++;
+            addElement(item, {
+                'top': 0,
+                'left': 0
+            });
+
+            return false;
         }
 
         return true;
