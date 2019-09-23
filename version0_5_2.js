@@ -30,8 +30,12 @@ function countElements(name) {
     if (name[0] === '-') return;
 
     if (counter) {
+        if (allElements[counter[1]]) return;
+
         allElements[counter[1]] = {};
     } else {
+        if (allElements[name]) return;
+
         allElements[name] = {};
     }
 }
