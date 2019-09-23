@@ -600,7 +600,7 @@ var wrongs = [];
 var finals = [];
 
 function test(type) {
-    let elements;
+    let elements = [];
     let cleanName;
 
     for (let i in inits) {
