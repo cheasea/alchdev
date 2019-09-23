@@ -603,6 +603,13 @@ function test(type) {
     let elements = inits;
 
     var cleanName;
+
+    for (let i in inits) {
+        if (!inArray(inits[i], elements)) {
+            elements.push(inits[i]);
+        }
+    }
+
     for (var i in reactions) {
         for (var j in reactions[i]) {
             var counterParsed = reactions[i][j].match(matchCounter);
