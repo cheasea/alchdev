@@ -29,6 +29,10 @@ function countElements(name) {
 
     if (name[0] === '-') return;
 
+    if (!counter) {
+        name = name.replace(matchCond, '');
+    }
+
     if (counter) {
         if (allElements[counter[1]]) return;
 
