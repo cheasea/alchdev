@@ -600,9 +600,8 @@ var wrongs = [];
 var finals = [];
 
 function test(type) {
-    let elements = inits;
-
-    var cleanName;
+    let elements;
+    let cleanName;
 
     for (let i in inits) {
         if (!inArray(inits[i], elements)) {
