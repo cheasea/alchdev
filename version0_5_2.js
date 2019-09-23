@@ -7,7 +7,7 @@ $('#order_123').empty();
 $('#order_abc').empty();
 var opened = [];
 
-let elements = {};
+let allElements = {};
 
 function countElements(name) {
     let counter = name.match(matchCounter);
@@ -15,9 +15,9 @@ function countElements(name) {
     if (name[0] === '-') return;
 
     if (counter) {
-        elements[counter[1]] = {};
+        allElements[counter[1]] = {};
     } else {
-        elements[name] = {};
+        allElements[name] = {};
     }
 }
 
@@ -744,7 +744,6 @@ function gameInit() {
                         return (typeof item !== 'undefined')
                     });
 
-                    console.log(filtered);
                     placeElements(filtered, {
                         top: e.pageY,
                         left: e.pageX
@@ -774,12 +773,12 @@ function gameInit() {
 
                 r.split('+').forEach(elem => {
                     countElements(elem);
-                    elements[elem].hasReaction = true;
-                    console.log(elements[elem]);
+                    allElements[elem].hasReaction = true;
+                    console.log(allElements[elem]);
                 });
             }
 
-            element_count = Object.keys(elements).length;
+            element_count = Object.keys(allElements).length;
             refreshStat();
         }
 
@@ -808,7 +807,7 @@ function addElement(name, place, no_discover) {
         'class': 'element ' + classes[name],
         'title': cleanName
     }).appendTo('#board');
-    if (elements[name].hasReaction !== true) 
+    if (allElements[name].hasReaction !== true) 
         a.addClass('final');
     a.data('image', '');
     a.data("elementName", name);
