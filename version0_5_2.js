@@ -565,6 +565,8 @@ function react(r, b = false) {
         }
         //start reaction
 
+        if (results.length === 0) return 0;
+
         destroyElement($('#board :data(toKill,1)'));
         destroyElement($('#board :data(maybeKill,1)'));
         if (!b) logReaction(results.join(', '), reagents);
