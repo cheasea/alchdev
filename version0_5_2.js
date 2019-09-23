@@ -552,6 +552,7 @@ function react(r, b = false) {
                     } else { //only one minus - unnecessary element
                         var e = $('#board .element:data(elementName,"' + name + '")').not('.ui-selected').not(':data(toKill,1)').not(':data(maybeKill,1)').first();
                         e.data('maybeKill', '1');
+                        destroyElement($(e));
                     }
                 } else {
                     results.push(name);
