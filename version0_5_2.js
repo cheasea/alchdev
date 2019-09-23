@@ -767,7 +767,7 @@ function gameInit() {
                 });
 
                 r.split('+').forEach(elem => {
-                    elements[r].hasReaction = true;
+                    elements[elem].hasReaction = true;
                 });
             }
 
