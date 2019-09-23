@@ -9,6 +9,21 @@ var opened = [];
 
 let allElements = {};
 
+for (let elem of inits) {
+    countElements(elem);
+}
+
+for (let r in reactions) {
+    reactions[r].forEach(elem => {
+        countElements(elem);
+    });
+
+    r.split('+').forEach(elem => {
+        countElements(elem);
+        allElements[elem].hasReaction = true;
+    });
+}
+
 function countElements(name) {
     let counter = name.match(matchCounter);
 
@@ -761,22 +776,6 @@ function gameInit() {
             var total = test1.total;
             finals = test1.finals;
             wrongs = test1.wrongs;
-
-            for (let elem of inits) {
-                countElements(elem);
-            }
-
-            for (let r in reactions) {
-                reactions[r].forEach(elem => {
-                    countElements(elem);
-                });
-
-                r.split('+').forEach(elem => {
-                    countElements(elem);
-                    allElements[elem].hasReaction = true;
-                    console.log(allElements[elem]);
-                });
-            }
 
             element_count = Object.keys(allElements).length;
             refreshStat();
