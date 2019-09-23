@@ -15,9 +15,9 @@ function countElements(name) {
     if (name[0] === '-') return;
 
     if (counter) {
-        elements[counter[1]] = true;
+        elements[counter[1]] = {};
     } else {
-        elements[name] = true;
+        elements[name] = {};
     }
 }
 
@@ -765,6 +765,10 @@ function gameInit() {
                 reactions[r].forEach(elem => {
                     countElements(elem);
                 });
+
+                r.split('+').forEach(elem => {
+                    elements[r].hasReaction = true;
+                });
             }
 
             element_count = Object.keys(elements).length;
@@ -796,7 +800,7 @@ function addElement(name, place, no_discover) {
         'class': 'element ' + classes[name],
         'title': cleanName
     }).appendTo('#board');
-    if (inArray(name, finals))
+    if (elements[name].hasReaction !== true)
         a.addClass('final');
     a.data('image', '');
     a.data("elementName", name);
