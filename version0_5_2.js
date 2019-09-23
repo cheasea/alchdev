@@ -775,6 +775,7 @@ function gameInit() {
                 r.split('+').forEach(elem => {
                     countElements(elem);
                     elements[elem].hasReaction = true;
+                    console.log(elements[elem]);
                 });
             }
 
@@ -807,7 +808,7 @@ function addElement(name, place, no_discover) {
         'class': 'element ' + classes[name],
         'title': cleanName
     }).appendTo('#board');
-    if (elements[name].hasReaction !== true)
+    if (elements[name].hasReaction !== true) 
         a.addClass('final');
     a.data('image', '');
     a.data("elementName", name);
