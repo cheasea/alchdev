@@ -577,11 +577,9 @@ function react(r, b = false) {
         destroyElement($('#board :data(toKill,1)'));
         destroyElement($('#board :data(maybeKill,1)'));
         if (!b) logReaction(results.join(', '), reagents);
-        message(reagents, 'highlight');
         return results;
     } else {
         logReaction(false, reagents);
-        message(reagents, 'highlight');
         return 0;
     }
 }
