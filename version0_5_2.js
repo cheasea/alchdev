@@ -1,6 +1,7 @@
 $('#err_msg').dialog('close');
 
-$('#info').empty()
+$('#info').empty();
+$('#board').empty();
 
 $('#order_group').empty();
 $('#order_123').empty();
