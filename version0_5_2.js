@@ -808,9 +808,7 @@ function gameInit() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    gameInit();
-});
+gameInit();
 
 function addElement(name, place, no_discover) {
     let cleanName;
