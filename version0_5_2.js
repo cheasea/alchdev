@@ -25,6 +25,14 @@ for (let r in reactions) {
     });
 }
 
+function deleteElements(name) {
+    name.each(function() {
+        $(this).fadeOut(1000, function() {
+            $(this).remove();
+        });
+    });
+}
+
 function countElements(name) {
     let counter = name.match(matchCounter);
 
@@ -560,8 +568,8 @@ function react(r, b = false) {
                             return 0;
                         }
                     } else { //only one minus - unnecessary element
-                        var e = $('#board .element:data(elementName,"' + name + '")').not('.ui-selected').not(':data(toKill,1)').not(':data(maybeKill,1)').first();
-                        e.data('maybeKill', '1');
+                        var e = $('#board .element:data(elementName,"' + name + '")');
+                        e.data('toDelete', true);
                     }
                 } else {
                     results.push(name);
@@ -574,6 +582,12 @@ function react(r, b = false) {
             }
         }
         //start reaction
+
+        let toDelete = $('#board :data(toDelete)');
+
+        if (toDelete[0]) {
+            deleteElements(toDelete);
+        }
 
         destroyElement($('#board :data(toKill,1)'));
         destroyElement($('#board :data(maybeKill,1)'));
