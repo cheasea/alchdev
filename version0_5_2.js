@@ -324,6 +324,7 @@ function onSelectStop() {
     refreshHint();
     updateCounters();
 }
+
 function destroyElement(element, anim = true) {
     element = element.filter('.element').not('.static').not(':data(isDeleting, 1)'); 
 
@@ -335,10 +336,12 @@ function destroyElement(element, anim = true) {
     element.droppable('disable');
 
     if (anim) {
+        element.stop();
         element.fadeOut(1000, function() {
             element.remove();
         });
     } else {
+        element.stop();
         element.remove();
     }
 }
