@@ -336,12 +336,12 @@ function destroyElement(element, anim = true) {
     element.droppable('disable');
 
     if (anim) {
-        element.stop();
+        element.fadeIn(0);
         element.fadeOut(1000, function() {
             element.remove();
         });
     } else {
-        element.stop();
+        element.fadeIn(0);
         element.remove();
     }
 }
