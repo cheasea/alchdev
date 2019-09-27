@@ -596,8 +596,8 @@ function react(r, b = false) {
 
         if (results.length === 0) return 0;
 
-        if (messages[reagents]) message(reagents, 'highlight');
         if (!b) logReaction(results.join(', '), reagents);
+        if (messages[reagents]) message(reagents, 'highlight');
         
         return results;
     } else {
