@@ -27,6 +27,7 @@ for (let r in reactions) {
 
 function deleteElements(name) {
     name.each(function() {
+        $(this).data('isDead', 1);
         $(this).draggable('disable');
         $(this).fadeOut(1000, function() {
             $(this).remove();
