@@ -1,7 +1,5 @@
 $('#err_msg').dialog('close');
 
-$('title').text($('title').text().replace('Алхимия 0.5 beta', 'Алхимия 0.5.2 patched'));
-
 $('#info').empty();
 $('#board').empty();
 
