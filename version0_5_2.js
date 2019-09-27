@@ -27,6 +27,7 @@ for (let r in reactions) {
 
 function deleteElements(name) {
     name.each(function() {
+        $(this).draggable('disable');
         $(this).fadeOut(1000, function() {
             $(this).remove();
         });
@@ -594,7 +595,9 @@ function react(r, b = false) {
 
         if (results.length === 0) return 0;
 
+        if (messages[reagents]) message(reagents, 'highlight');
         if (!b) logReaction(results.join(', '), reagents);
+        
         return results;
     } else {
         logReaction(false, reagents);
