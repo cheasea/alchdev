@@ -51,8 +51,6 @@ function countElements(name) {
 
         let [min, max] = [counter[5], counter[9]];
 
-        console.log(counter);
-
         if (min) {
             min.split(',').forEach(item => {
                 if (allElements[item]) return;
