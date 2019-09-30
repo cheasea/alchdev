@@ -45,9 +45,29 @@ function countElements(name) {
     }
 
     if (counter) {
-        if (allElements[counter[1]]) return;
+        if (!allElements[counter[1]]) {
+            allElements[counter[1]] = {};
+        }
 
-        allElements[counter[1]] = {};
+        let [min, max] = [counter[5], counter[9]];
+
+        console.log(counter);
+
+        if (min) {
+            min.split(',').forEach(item => {
+                if (allElements[item]) return;
+
+                allElements[item] = {};
+            });
+        }
+
+        if (max) {
+            max.split(',').forEach(item => {
+                if (allElements[item]) return;
+
+                allElements[item] = {};
+            });
+        }
     } else {
         if (allElements[name]) return;
 
