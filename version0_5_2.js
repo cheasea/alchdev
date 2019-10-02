@@ -612,6 +612,10 @@ function react(r, b = false) {
         destroyElement($('#board :data(toKill,1)'));
         destroyElement($('#board :data(maybeKill,1)'));
 
+        if (!reactions[reagents] && messages[reagents]) {
+            message(reagents, 'highlight');
+        }
+
         if (results.length === 0) return 0;
 
         if (!b) logReaction(results.join(', '), reagents);
