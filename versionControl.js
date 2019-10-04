@@ -4,7 +4,8 @@ function versionCheck() {
     if (settings.version === 'last') settings.version = '0.5.2';
 
     var updates = {
-        "0.5.2": "version0_5_2.js"
+        "0.5.2": "version0_5_2.js",
+        "a0.6": "version0_6.js"
     }
 
     var scripts = updates[settings.version];
