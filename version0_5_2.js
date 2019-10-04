@@ -45,9 +45,27 @@ function countElements(name) {
     }
 
     if (counter) {
-        if (allElements[counter[1]]) return;
+        if (!allElements[counter[1]]) {
+            allElements[counter[1]] = {};
+        }
 
-        allElements[counter[1]] = {};
+        let [min, max] = [counter[5], counter[9]];
+
+        if (min) {
+            min.split(',').forEach(item => {
+                if (allElements[item]) return;
+
+                allElements[item] = {};
+            });
+        }
+
+        if (max) {
+            max.split(',').forEach(item => {
+                if (allElements[item]) return;
+
+                allElements[item] = {};
+            });
+        }
     } else {
         if (allElements[name]) return;
 
@@ -593,6 +611,10 @@ function react(r, b = false) {
 
         destroyElement($('#board :data(toKill,1)'));
         destroyElement($('#board :data(maybeKill,1)'));
+
+        if (!reactions[reagents] && messages[reagents]) {
+            message(reagents, 'highlight');
+        }
 
         if (results.length === 0) return 0;
 
