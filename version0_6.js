@@ -19,9 +19,14 @@ class Element {
     constructor(str) {
         this.name = str; // название, к которому обращаются
         this.cleanName = name.replace(/\[.+\]$/, ''); // название, которое видит пользователь
-        this.class = classes[this.name];
 
-        this.html = []; // div элементов в поле
+        this.class = classes[this.name];
+        
+        if (settings.images) {
+            this.image = labels[this.name];
+        }
+
+        this.html = [];
     }
 
     add(x, y) {
@@ -31,6 +36,7 @@ class Element {
         elem.style.transition = 'opacity 1s, translate 1s';
         elem.style.opacity = 0;
         elem.style.borderRadius = '10px';
+        elem.style.zIndex = '1';
 
         /* Custom properties */
         elem.style.position = 'abstract';
@@ -38,7 +44,17 @@ class Element {
         elem.style.left = `${x}px`;
 
         elem.classList = 'element ' + this.class;
-        elem.innerHTML = this.name;
+
+        if (this.image) {
+            let img = document.createElement('img');
+
+            img.src = MEDIA_URL + this.image;
+
+            elem.appendChild(img);
+            elem.classList += ' element-icon img-element';
+        } else {
+            elem.innerHTML = this.name;
+        }
 
         elem.setAttribute('name', this.name);
         this.html.push(elem);
@@ -47,8 +63,11 @@ class Element {
 
         $(elem).draggable({
             scroll: false,
-            start: function() {
+            start: function () {
+                let value = $('.element').length + 1;
+
                 $(this).stop();
+                $(this).css('z-index', value);
                 $(this)[0].style.transition = 'opacity 1s';
             }
         });
@@ -77,6 +96,7 @@ class Element {
         elem.style.opacity = 0;
     }
 
+    // to это объект со свойствами x и y - координаты, куда нужно передвинуть элемент
     move(to) {
         let elem = this.html[0];
 
@@ -84,7 +104,7 @@ class Element {
 
         elem.style.transition = 'opacity 1s, top 1s, left 1s';
 
-        elem.addEventListener('transitionend', function() {
+        elem.addEventListener('transitionend', function () {
             elem.style.transition = 'opacity 1s';
         });
 
@@ -92,3 +112,16 @@ class Element {
         elem.style.left = `${to.x}px`;
     }
 }
+
+class Reaction {
+    constructor (reagents, products) {
+        this.reagents = reagents.split("+");
+        this.products;
+    }
+}
+
+let reactionList = [];
+let elementList = [];
+
+for (r in reactions) reactionObjects.push(Reaction(r, reactions[r]));
+for (r in reactions) reactionObjects.push(Reaction(r, reactions[r]));
