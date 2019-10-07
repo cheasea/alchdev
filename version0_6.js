@@ -195,7 +195,7 @@ function onDrop(event, ui) {
 
     let reagents = [ui.helper.data('elementName'), $(this).data('elementName')];
     let pos = $(this).offset();
-    let result = allReactions[reagents].result;
+    let result = allReactions[reagents.join('+')].result;
 
     if (!result) {
         return;
