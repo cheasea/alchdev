@@ -14,6 +14,63 @@
 
 
 let board = document.getElementById('board');
+let allElements = {};
+let allReactions = {};
+
+for (let elem of inits) {
+    countElements(elem);
+}
+
+for (let r in reactions) {
+    allReactions[r] = new Reaction(r, reactions[r]);
+
+    reactions[r].forEach(elem => {
+        countElements(elem);
+    });
+
+    r.split('+').forEach(elem => {
+        countElements(elem);
+        allElements[elem].hasReaction = true;
+    });
+}
+
+function countElements(name) {
+    let counter = name.match(matchCounter);
+
+    if (name[0] === '-') return;
+
+    if (!counter) {
+        name = name.replace(matchCond, '');
+    }
+
+    if (counter) {
+        if (!allElements[counter[1]]) {
+            allElements[counter[1]] = new Element(item);
+        }
+
+        let [min, max] = [counter[5], counter[9]];
+
+        if (min) {
+            min.split(',').forEach(item => {
+                if (allElements[item]) return;
+
+                allElements[item] = new Element(item);
+            });
+        }
+
+        if (max) {
+            max.split(',').forEach(item => {
+                if (allElements[item]) return;
+
+                allElements[item] = new Element(item);
+            });
+        }
+    } else {
+        if (allElements[name]) return;
+
+        allElements[name] = new Element(item);
+    }
+}
 
 function deleteElement(html) {
     $(html).draggable('disable');
@@ -36,7 +93,7 @@ function onDrop(event, ui) {
 
     let reagents = [ui.helper.data('elementName'), $(this).data('elementName')];
     let pos = $(this).offset();
-    let result = react(reagents);
+    let result = allReactions[reagents].result;
 
     if (!result) {
         return;
@@ -45,7 +102,62 @@ function onDrop(event, ui) {
     /* Reaction */
     deleteElement($(this));
     deleteElement(ui.helper);
-    placeElements(result, pos);
+    allReactions[result].run(pos);
+
+    refreshHint();
+    updateCounters();
+}
+
+function onSelectStop() {
+    let reagents = [];
+    let x = 0,
+        y = 0;
+
+    let selected = $('.ui-selected').not(':data("isDead", 1)');
+
+    selected.each(function () {
+        $(this).not('.static').data('isDead', 1);
+
+        let name = $(this).data('elementName');
+        let pos = {
+            x: $(this).offset().left,
+            y: $(this).offset().top
+        };
+
+        x += pos.x;
+        y += pos.y;
+        reagents.push(name);
+    });
+
+    result = allReactions[reagents].result;
+
+    if (!result) {
+        selected.each(function () {
+            $(this).data('isDead', 0);
+        });
+
+        return;
+    }
+
+    selected.each(function () {
+        $(this).not('.static').selectable('destroy');
+    });
+
+    x = Math.floor(x / selected.length);
+    y = Math.floor(y / selected.length);
+
+    selected.animate({
+        'left': x,
+        'top': y
+    }, 500, function () {
+        let elem = $(this);
+        deleteElement(elem);
+    });
+
+    allReactions[result].run({
+        x: x,
+        y: y
+    });
 
     refreshHint();
     updateCounters();
@@ -141,14 +253,14 @@ class Element {
 }
 
 class Reaction {
-    constructor (reagents, products) {
-        this.reagents = reagents.split("+");
-        this.products;
+    constructor(reagents, products) {
+        this.reagents = reagents.split('+');
+        this.result = this.products;
+    }
+
+    run(pos) {
+        this.result.forEach(item => {
+            allElements[item].add(pos);
+        });
     }
 }
-
-let reactionList = [];
-let elementList = [];
-
-for (r in reactions) reactionObjects.push(Reaction(r, reactions[r]));
-for (r in reactions) reactionObjects.push(Reaction(r, reactions[r]));
