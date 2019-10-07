@@ -15,12 +15,24 @@
 
 let board = document.getElementById('board');
 
+function deleteElement(html) {
+    $(html).draggable('disable');
+    $(html).droppable('disable');
+    $(html).data('isDead', 1);
+
+    html.addEventListener('transitionend', function() {
+        html.remove();
+    });
+
+    html.style.opacity = 0;
+}
+
 class Element {
     constructor(str) {
         this.name = str; // название, к которому обращаются
         this.cleanName = name.replace(/\[.+\]$/, ''); // название, которое видит пользователь
 
-        this.class = classes[this.name];
+        this.class = classes[this.name] || '';
         
         if (settings.images) {
             this.image = labels[this.name];
@@ -63,7 +75,7 @@ class Element {
 
         $(elem).draggable({
             scroll: false,
-            start: function () {
+            start: function() {
                 let value = $('.element').length + 1;
 
                 $(this).stop();
@@ -85,18 +97,9 @@ class Element {
 
         if (!elem) return;
 
-        $(elem).draggable('disable');
-        $(elem).droppable('disable');
-        $(elem).data('isDead', 1);
-
-        elem.addEventListener('transitionend', function () {
-            elem.remove();
-        });
-
-        elem.style.opacity = 0;
+        deleteElement(elem);
     }
 
-    // to это объект со свойствами x и y - координаты, куда нужно передвинуть элемент
     move(to) {
         let elem = this.html[0];
 
