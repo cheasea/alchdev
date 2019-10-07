@@ -27,6 +27,30 @@ function deleteElement(html) {
     html.style.opacity = 0;
 }
 
+function onDrop(event, ui) {
+    let isReady = ui.helper.data('isDead') !== 1 && $(this).data('isDead') !== 1;
+
+    if (!isReady) {
+        return;
+    }
+
+    let reagents = [ui.helper.data('elementName'), $(this).data('elementName')];
+    let pos = $(this).offset();
+    let result = react(reagents);
+
+    if (!result) {
+        return;
+    }
+
+    /* Reaction */
+    deleteElement($(this));
+    deleteElement(ui.helper);
+    placeElements(result, pos);
+
+    refreshHint();
+    updateCounters();
+}
+
 class Element {
     constructor(str) {
         this.name = str; // название, к которому обращаются
@@ -68,7 +92,7 @@ class Element {
             elem.innerHTML = this.name;
         }
 
-        elem.setAttribute('name', this.name);
+        $(elem).data('elementName', name);
         this.html.push(elem);
 
         board.appendChild(elem);
