@@ -109,7 +109,7 @@ class Element {
 class Reaction {
     constructor(reagents, products) {
         this.reagents = reagents.split('+');
-        this.result = this.products;
+        this.result = products;
     }
 
     run(pos) {
