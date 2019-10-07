@@ -175,15 +175,23 @@ function countElements(name) {
 }
 
 function deleteElement(html) {
-    $(html).draggable('disable');
-    $(html).droppable('disable');
-    $(html).data('isDead', 1);
+    let elem;
 
-    html.addEventListener('transitionend', function() {
-        html.remove();
+    if (html[0]) {
+        elem = html[0];
+    } else {
+        elem = html;
+    }
+
+    $(elem).draggable('disable');
+    $(elem).droppable('disable');
+    $(elem).data('isDead', 1);
+
+    elem.addEventListener('transitionend', function() {
+        elem.remove();
     });
 
-    html.style.opacity = 0;
+    elem.style.opacity = 0;
 }
 
 function onDrop(event, ui) {
