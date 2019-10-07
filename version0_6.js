@@ -202,17 +202,18 @@ function onDrop(event, ui) {
     }
 
     let reagents = [ui.helper.data('elementName'), $(this).data('elementName')];
-    let pos = $(this).offset();
-    let result = allReactions[reagents.join('+')].result;
+    let reaction = allReactions[reagents.join('+')];
 
-    if (!result) {
+    if (!reaction) {
         return;
     }
+
+    let pos = $(this).offset();
 
     /* Reaction */
     deleteElement($(this));
     deleteElement(ui.helper);
-    allReactions[result].run(pos);
+    reaction.run(pos);
 
     refreshHint();
     updateCounters();
