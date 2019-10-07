@@ -170,7 +170,7 @@ function countElements(name) {
     } else {
         if (allElements[name]) return;
 
-        allElements[name] = new Element(item);
+        allElements[name] = new Element(name);
     }
 }
 
