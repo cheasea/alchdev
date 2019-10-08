@@ -114,7 +114,7 @@ class Reaction {
 
     run(pos) {
         this.result.forEach(item => {
-            allElements[item].add(pos);
+            allElements[item].add(pos.x, pos.y);
         });
     }
 }
