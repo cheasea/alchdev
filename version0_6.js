@@ -497,7 +497,7 @@ function react(r, b = false) {
                                 allCounters[name].value = (getValue + +setValue[2]).toFixed(length);
                                 break;
                             case '-':
-                                allCounters[name].value = (getValue + +setValue[2]).toFixed(length);
+                                allCounters[name].value = (getValue - +setValue[2]).toFixed(length);
                                 break;
                         }
 
