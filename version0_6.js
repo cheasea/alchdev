@@ -484,17 +484,17 @@ function react(r, b = false) {
 
                     if (setValue) {
                         let operation = setValue[1];
-                        let value = +allCounters[name].value;
+                        let getValue = +allCounters[name].value;
 
                         switch (operation) {
                             case '=': 
                                 allCounters[name].value = setValue[2];
                                 break;
                             case '+':
-                                allCounters[name].value = value + setValue[2];
+                                allCounters[name].value = getValue + +setValue[2];
                                 break;
                             case '-':
-                                allCounters[name].value = value + setValue[2];
+                                allCounters[name].value = getValue + +setValue[2];
                                 break;
                         }
                     }
