@@ -485,7 +485,7 @@ function react(r, b = false) {
                     if (setValue) {
                         let operation = setValue[1];
                         let getValue = +allCounters[name].value;
-                        let length = setValue[2].length - 2;
+                        let length = +setValue[2].length - 2;
 
                         switch (operation) {
                             case '=': 
