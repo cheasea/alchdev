@@ -481,7 +481,7 @@ function react(r, b = false) {
                     }
 
                     let setValue = values.match(/([+|\-|=])(\d+(?:\.\d+)?)/);
-                    let elem = $(`#board .element:data(elementName,"${name}")`)[0];
+                    let elem = $(`#board .element:data(elementName,"${name}")`);
                     if (setValue) {
                         let operation = setValue[1];
                         let getValue = +allCounters[name].value;
@@ -500,11 +500,11 @@ function react(r, b = false) {
                                 allCounters[name].value = (getValue + +setValue[2]).toFixed(length);
                                 break;
 
-                            if (elem) pulsate(elem);
+                            if (elem[0]) pulsate(elem);
                         }
                     }
 
-                    if (!elem) {
+                    if (!elem[0]) {
                         resultsTemp.push(name);
                     }
                 } else if (name.charAt(0) == '-') { //name starts with at least one minus
