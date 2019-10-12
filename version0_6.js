@@ -443,6 +443,16 @@ $('body').selectable({
     }
 })
 
+function updateCounters() {
+    for (let name in allCounters) {
+        let elem = $(`#board .element:data(elementName, ${name})`);
+
+        if (!elem) continue;
+
+        elem.text(`${name} ${allCounters[name].value}`);
+    }
+}
+
 function react(r, b = false) {
     var reagents = r.sort().join('+');
     var results = [];
@@ -475,7 +485,9 @@ function react(r, b = false) {
                     allCounters[name].operation = setValue[1];
                     allCounters[name].value = setValue[2];
 
-                    resultsTemp.push(name);
+                    if (!$(`#board .element:data(elementName, ${name})`)[0]) {
+                        resultsTemp.push(name);
+                    }
                 } else if (name.charAt(0) == '-') { //name starts with at least one minus
                     name = name.substr(1);
                     if (name.charAt(0) == '-') { //second minus found - necessary element
