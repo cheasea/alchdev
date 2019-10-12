@@ -9,6 +9,7 @@ $('#order_abc').empty();
 var opened = [];
 
 let allElements = {};
+let viewCounter = /set (.+) (.+$)/;
 
 for (let elem of inits) {
     countElements(elem);
@@ -455,98 +456,10 @@ function react(r, b = false) {
         for (var i = 0; i < resultsTemp.length; i++) {
             if (name = parseConditions(resultsTemp[i])) {
                 // BEGIN processing counters
-                var counterParsed = resultsTemp[i].match(matchCounter)
-                if (counterParsed && counterParsed[1] != undefined) {
-                    var counter = {
-                        "name": counterParsed[1],
-                        "min": counterParsed[3],
-                        "max": counterParsed[7],
-                        "minResult": counterParsed[5],
-                        "maxResult": counterParsed[9],
-                        "value": counterParsed[10]
-                    }
-                    var data = counters[counter.name]
-                    if (!data) {
-                        data = {}
-                        data.name = counter.name;
-                        data.value = 0
-                        if (data.value < data.min) data.value = data.min
-                        if (data.value > data.max) data.value = data.max
-                        counters[counter.name] = data
-                    }
+                let counter = resultsTemp[i].match(viewCounter);
 
-                    if (counter.min !== undefined) data.min = counter.min
-                    if (counter.max !== undefined) data.max = counter.max
-                    if (counter.minResult !== undefined) data.minResult = counter.minResult
-                    if (counter.maxResult !== undefined) data.maxResult = counter.maxResult
-
-                    if (counter.value !== undefined) {
-                        var e = $('#board .element:data(elementName,"' + data.name + '")')
-                        switch (counter.value.toString().charAt(0)) {
-                            case "+":
-                                data.value += parseInt(counter.value.substr(1))
-                                break;
-                            case "-":
-                                data.value -= parseInt(counter.value.substr(1))
-                                break;
-                            case "=":
-                                data.value = parseInt(counter.value.substr(1))
-                                break;
-                        }
-
-                        let isCounter = r.find(item => {
-                            let elem = $(`#board .element:data(elementName,"${data.name}")`);
-
-                            if (counters[item]) {
-                                elem.data('no-counter', 1);
-                            } else {
-                                elem.data('no-counter', 0);
-                            }
-
-                            return counters[item];
-                        });
-
-                        if (!isCounter) {
-                            pulsate(e);
-                        }
-                    }
-
-                    resultsTemp.push(data.name)
-
-                    if (data.value < data.min) {
-                        if (data.minResult !== undefined) {
-                            if (data.minResult != '') {
-                                var boundResults = data.minResult.split(",")
-                                for (var k in boundResults) {
-                                    resultsTemp.push(boundResults[k])
-                                }
-                            }
-                            data.value = data.min
-                        } else {
-                            data.value += parseInt(counter.value.substr(1))
-                            logReaction('Эта реакция невозможна, т.к. ' + data.name + ' не может быть меньше ' + data.min, reagents);
-                            return 0
-                        }
-
-                    }
-
-                    if (data.value > data.max) {
-                        if (data.maxResult !== undefined) {
-                            if (data.maxResult != '') {
-                                var boundResults = data.maxResult.split(",")
-                                for (var k in boundResults) {
-                                    resultsTemp.push(boundResults[k])
-                                }
-                            }
-                            data.value = data.max
-                        } else {
-                            data.value -= parseInt(counter.value.substr(1))
-                            logReaction('Эта реакция невозможна, т.к. ' + data.name + ' не может быть больше ' + data.max, reagents);
-                            return 0
-                        }
-
-                    }
-                    // END processing counters
+                if (counter) {
+                    console.log(counter); 
                 } else if (name.charAt(0) == '-') { //name starts with at least one minus
                     name = name.substr(1);
                     if (name.charAt(0) == '-') { //second minus found - necessary element
