@@ -499,9 +499,9 @@ function react(r, b = false) {
                             case '-':
                                 allCounters[name].value = (getValue + +setValue[2]).toFixed(length);
                                 break;
-
-                            if (elem[0]) pulsate(elem);
                         }
+
+                        if (elem[0]) pulsate(elem);
                     }
 
                     if (!elem[0]) {
