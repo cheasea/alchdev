@@ -9,7 +9,6 @@ $('#order_abc').empty();
 var opened = [];
 
 let allElements = {};
-let viewCounter = /set (.+) (.+$)/;
 
 for (let elem of inits) {
     countElements(elem);
@@ -456,10 +455,11 @@ function react(r, b = false) {
         for (var i = 0; i < resultsTemp.length; i++) {
             if (name = parseConditions(resultsTemp[i])) {
                 // BEGIN processing counters
-                let counter = resultsTemp[i].match(viewCounter);
+                let counter = resultsTemp[i].match(/set (.+) (.+$)/);
 
                 if (counter) {
                     console.log(counter); 
+                    continue;
                 } else if (name.charAt(0) == '-') { //name starts with at least one minus
                     name = name.substr(1);
                     if (name.charAt(0) == '-') { //second minus found - necessary element
