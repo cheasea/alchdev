@@ -462,6 +462,10 @@ function react(r, b = false) {
                     let name = counter[1];
                     let values = counter[2];
 
+                    if (!allElements[name]) {
+                        allElements[name] = {};
+                    }
+
                     if (!allCounters[name]) {
                         allCounters[name] = {};
                     }
