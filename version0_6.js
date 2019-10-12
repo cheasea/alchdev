@@ -9,6 +9,7 @@ $('#order_abc').empty();
 var opened = [];
 
 let allElements = {};
+let allCounters = {};
 
 for (let elem of inits) {
     countElements(elem);
@@ -458,8 +459,19 @@ function react(r, b = false) {
                 let counter = resultsTemp[i].match(/set (.+) (.+$)/);
 
                 if (counter) {
-                    console.log(counter); 
-                    continue;
+                    let name = counter[1];
+                    let values = counter[2];
+
+                    if (!allCounters[name]) {
+                        allCounters[name] = {};
+                    }
+
+                    let setValue = values.match(/([+|-|=])(\d+)(?:\.\d+)?/);
+
+                    allCounters[name].operation = setValue[1];
+                    allCounters[name].value = setValue[2];
+
+                    resultsTemp.push(name);
                 } else if (name.charAt(0) == '-') { //name starts with at least one minus
                     name = name.substr(1);
                     if (name.charAt(0) == '-') { //second minus found - necessary element
