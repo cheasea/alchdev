@@ -491,7 +491,7 @@ function react(r, b = false) {
 
                         switch (operation) {
                             case '=': 
-                                allCounters[name].value = +setValue[2].toFixed(length);
+                                allCounters[name].value = (+setValue[2]).toFixed(length);
                                 break;
                             case '+':
                                 allCounters[name].value = (getValue + +setValue[2]).toFixed(length);
