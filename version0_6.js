@@ -492,7 +492,7 @@ function react(r, b = false) {
                             case '+':
                                 allCounters[name].value += setValue[2];
                                 break;
-                            case '-'
+                            case '-':
                                 allCounters[name].value -= setValue[2];
                                 break;
                         }
