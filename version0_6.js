@@ -485,16 +485,17 @@ function react(r, b = false) {
                     if (setValue) {
                         let operation = setValue[1];
                         let getValue = +allCounters[name].value;
+                        let length = allCounters[name].value.length - 2;
 
                         switch (operation) {
                             case '=': 
-                                allCounters[name].value = setValue[2];
+                                allCounters[name].value = setValue[2].toFixed(length);
                                 break;
                             case '+':
-                                allCounters[name].value = getValue + +setValue[2];
+                                allCounters[name].value = (getValue + +setValue[2]).toFixed(length);
                                 break;
                             case '-':
-                                allCounters[name].value = getValue + +setValue[2];
+                                allCounters[name].value = (getValue + +setValue[2]).toFixed(length);
                                 break;
                         }
                     }
