@@ -481,9 +481,22 @@ function react(r, b = false) {
                     }
 
                     let setValue = values.match(/([+|\-|=])(\d+(?:\.\d+)?)/);
-                    let operation = setValue[1];
 
-                    allCounters[name].value = setValue[2];
+                    if (setValue) {
+                        let operation = setValue[1];
+
+                        switch (operation) {
+                            case '=': 
+                                allCounters[name].value = setValue[2];
+                                break;
+                            case '+':
+                                allCounters[name].value += setValue[2];
+                                break;
+                            case '-'
+                                allCounters[name].value -= setValue[2];
+                                break;
+                        }
+                    }
 
                     if (!$(`#board .element:data(elementName,"${name}")`)[0]) {
                         resultsTemp.push(name);
