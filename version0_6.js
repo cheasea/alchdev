@@ -445,7 +445,7 @@ $('body').selectable({
 
 function updateCounters() {
     for (let name in allCounters) {
-        let elem = $(`#board .element:data(elementName, ${name})`);
+        let elem = $(`#board .element:data(elementName, "${name}")`);
 
         if (!elem) continue;
 
@@ -485,7 +485,7 @@ function react(r, b = false) {
                     allCounters[name].operation = setValue[1];
                     allCounters[name].value = setValue[2];
 
-                    if (!$(`#board .element:data(elementName, ${name})`)[0]) {
+                    if (!$(`#board .element:data(elementName, "${name}")`)[0]) {
                         resultsTemp.push(name);
                     }
                 } else if (name.charAt(0) == '-') { //name starts with at least one minus
