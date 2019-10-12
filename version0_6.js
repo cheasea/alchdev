@@ -449,7 +449,7 @@ function updateCounters() {
 
         if (!elem) continue;
 
-        elem.text(`${name} ${allCounters[name].value}`);
+        elem.text(`${name}: ${allCounters[name].value}`);
     }
 }
 
@@ -480,9 +480,9 @@ function react(r, b = false) {
                         allCounters[name] = {};
                     }
 
-                    let setValue = values.match(/([+|-|=])(\d+)(?:\.\d+)?/);
+                    let setValue = values.match(/([+|\-|=])(\d+(?:\.\d+)?)/);
+                    let operation = setValue[1];
 
-                    allCounters[name].operation = setValue[1];
                     allCounters[name].value = setValue[2];
 
                     if (!$(`#board .element:data(elementName,"${name}")`)[0]) {
