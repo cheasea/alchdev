@@ -519,20 +519,24 @@ function react(r, b = false) {
                             case '+':
                                 newValue = (getValue + +value).toFixed(length);
 
+                                if (!max.value) allCounters[name].value = newValue;
+
                                 if (newValue <= max.value) {
                                     allCounters[name].value = newValue;
                                 } else {
-                                    resultsTemp.push(max.result.split(', '))
+                                    if (max.result) resultsTemp.push(max.result.split(', '))
                                 }
 
                                 break;
                             case '-':
                                 newValue = (getValue - +value).toFixed(length);
 
+                                if (!min.value) allCounters[name].value = newValue;
+
                                 if (newValue >= min.value) {
                                     allCounters[name].value = newValue;
                                 } else {
-                                    resultsTemp.push(min.result.split(', '))
+                                    if (min.result) rresultsTemp.push(min.result.split(', '))
                                 }
 
                                 break;
