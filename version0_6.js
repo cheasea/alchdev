@@ -496,15 +496,18 @@ function react(r, b = false) {
 
                     if (value) {
                         let getValue = +allCounters[name].value;
+                        let length = getValue.length - 2;
+                        if (length < 0) length = 0;
+
                         switch (operation) {
                             case '=': 
-                                allCounters[name].value = (+value).toFixed(0);
+                                allCounters[name].value = (+value).toFixed(length);
                                 break;
                             case '+':
-                                allCounters[name].value = (getValue + +value).toFixed(0);
+                                allCounters[name].value = (getValue + +value).toFixed(length);
                                 break;
                             case '-':
-                                allCounters[name].value = (getValue - +value).toFixed(0);
+                                allCounters[name].value = (getValue - +value).toFixed(length);
                                 break;
                         }
 
