@@ -471,16 +471,29 @@ function react(r, b = false) {
                 if (isCounter) {
                     let counter = resultsTemp[i].split(';');
                     let name, operation, value;
+                    let min = {}, max = {};
 
                     counter.forEach(item => {
                         let isName = item.match(/set (.+)/);
                         let isValue = item.match(/([+|-|=])(\d+(?:\.\d+)?)/);
+                        let isMin = item.match(/min: (\d+(?:\.\d+)?) {(.+)}/);
+                        let isMax = item.match(/max: (\d+(?:\.\d+)?) {(.+)}/);
 
                         if (isName) name = isName[1];
 
                         if (isValue) {
                             operation = isValue[1];
                             value = isValue[2];
+                        }
+
+                        if (isMin) {
+                            min.value = isMin[1];
+                            min.result = isMin[2];
+                        }
+
+                        if (isMax) {
+                            max.value = isMax[1];
+                            max.result = isMax[2];
                         }
                     });
 
@@ -504,10 +517,24 @@ function react(r, b = false) {
                                 allCounters[name].value = (+value).toFixed(length);
                                 break;
                             case '+':
-                                allCounters[name].value = (getValue + +value).toFixed(length);
+                                newValue = (getValue + +value).toFixed(length);
+
+                                if (newValue <= max.value) {
+                                    allCounters[name].value = newValue;
+                                } else {
+                                    resultsTemp.push(max.result.split(', '))
+                                }
+
                                 break;
                             case '-':
-                                allCounters[name].value = (getValue - +value).toFixed(length);
+                                newValue = (getValue - +value).toFixed(length);
+
+                                if (newValue >= min.value) {
+                                    allCounters[name].value = newValue;
+                                } else {
+                                    resultsTemp.push(min.result.split(', '))
+                                }
+
                                 break;
                         }
 
