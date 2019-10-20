@@ -507,6 +507,11 @@ function react(r, b = false) {
 
                     let elem = $(`#board .element:data(elementName,"${name}")`);
 
+                    if (min.value) allCounters[name].min.value = min.value;
+                    if (min.result) allCounters[name].min.result = min.result;
+                    if (max.value) allCounters[name].max.value = max.value;
+                    if (max.result) allCounters[name].max.result = max.result;
+
                     if (value) {
                         let getValue = +allCounters[name].value;
                         let length = value.length - 2;
