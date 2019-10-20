@@ -496,7 +496,7 @@ function react(r, b = false) {
 
                     if (value) {
                         let getValue = +allCounters[name].value;
-                        let length = getValue.length - 2;
+                        let length = value.length - 2;
                         if (length < 0) length = 0;
 
                         switch (operation) {
