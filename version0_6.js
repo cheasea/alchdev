@@ -524,24 +524,24 @@ function react(r, b = false) {
                             case '+':
                                 newValue = (getValue + +value).toFixed(length);
 
-                                if (!max.value) allCounters[name].value = newValue;
+                                if (!allCounters[name].min.value) allCounters[name].value = newValue;
 
-                                if (newValue <= max.value) {
+                                if (newValue <= allCounters[name].min.value) {
                                     allCounters[name].value = newValue;
                                 } else {
-                                    if (max.result) resultsTemp.push(max.result.split(', '))
+                                    if (allCounters[name].max.result) resultsTemp.push(max.result.split(', '))
                                 }
 
                                 break;
                             case '-':
                                 newValue = (getValue - +value).toFixed(length);
 
-                                if (!min.value) allCounters[name].value = newValue;
+                                if (!allCounters[name].min.value) allCounters[name].value = newValue;
 
-                                if (newValue >= min.value) {
+                                if (newValue >= allCounters[name].min.value) {
                                     allCounters[name].value = newValue;
                                 } else {
-                                    if (min.result) rresultsTemp.push(min.result.split(', '))
+                                    if (allCounters[name].min.result) rresultsTemp.push(min.result.split(', '))
                                 }
 
                                 break;
