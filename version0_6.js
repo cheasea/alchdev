@@ -466,12 +466,16 @@ function react(r, b = false) {
         for (var i = 0; i < resultsTemp.length; i++) {
             if (name = parseConditions(resultsTemp[i])) {
                 // BEGIN processing counters
-                let counter = resultsTemp[i].match(/set (.+) (.+$)/);
+                let counter = resultsTemp[i].split(';');
+                let name, operation, value;
+
+                counter.forEach(item => {
+                    name = item.match(/set (.+)/)[1];
+                    operation = item.match(/([+|-|=])(\d+(?:\.\d+)?)/)[1];      
+                    value = item.match(/([+|-|=])(\d+(?:\.\d+)?)/)[2];             
+                });
 
                 if (counter) {
-                    let name = counter[1];
-                    let values = counter[2];
-
                     if (!allElements[name]) {
                         allElements[name] = {};
                     }
@@ -480,24 +484,19 @@ function react(r, b = false) {
                         allCounters[name] = {};
                     }
 
-                    let setValue = values.match(/([+|\-|=])(\d+(?:\.\d+)?)/);
                     let elem = $(`#board .element:data(elementName,"${name}")`);
-                    if (setValue) {
-                        let operation = setValue[1];
+
+                    if (value) {
                         let getValue = +allCounters[name].value;
-                        let length = +setValue[2].length - 2;
-
-                        if (length < 0) length = 0;
-
                         switch (operation) {
                             case '=': 
-                                allCounters[name].value = (+setValue[2]).toFixed(length);
+                                allCounters[name].value = (+value).toFixed(0);
                                 break;
                             case '+':
-                                allCounters[name].value = (getValue + +setValue[2]).toFixed(length);
+                                allCounters[name].value = (getValue + +value).toFixed(0);
                                 break;
                             case '-':
-                                allCounters[name].value = (getValue - +setValue[2]).toFixed(length);
+                                allCounters[name].value = (getValue - +value).toFixed(0);
                                 break;
                         }
 
