@@ -473,9 +473,15 @@ function react(r, b = false) {
                     let name, operation, value;
 
                     counter.forEach(item => {
-                        name = item.match(/set (.+)/)[1];
-                        operation = item.match(/([+|-|=])(\d+(?:\.\d+)?)/)[1];      
-                        value = item.match(/([+|-|=])(\d+(?:\.\d+)?)/)[2];             
+                        let isName = item.match(/set (.+)/);
+                        let isValue = item.match(/([+|-|=])(\d+(?:\.\d+)?)/);
+
+                        if (isName) name = isName[1];
+
+                        if (isValue) {
+                            operation = isValue[1];
+                            value = isValue[2];
+                        }
                     });
 
                     if (!allElements[name]) {
