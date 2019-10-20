@@ -466,16 +466,18 @@ function react(r, b = false) {
         for (var i = 0; i < resultsTemp.length; i++) {
             if (name = parseConditions(resultsTemp[i])) {
                 // BEGIN processing counters
-                let counter = resultsTemp[i].split(';');
-                let name, operation, value;
+                let isCounter = resultsTemp[i].match('set (.+) (.+$)');
+             
+                if (isCounter) {
+                    let counter = resultsTemp[i].split(';');
+                    let name, operation, value;
 
-                counter.forEach(item => {
-                    name = item.match(/set (.+)/)[1];
-                    operation = item.match(/([+|-|=])(\d+(?:\.\d+)?)/)[1];      
-                    value = item.match(/([+|-|=])(\d+(?:\.\d+)?)/)[2];             
-                });
+                    counter.forEach(item => {
+                        name = item.match(/set (.+)/)[1];
+                        operation = item.match(/([+|-|=])(\d+(?:\.\d+)?)/)[1];      
+                        value = item.match(/([+|-|=])(\d+(?:\.\d+)?)/)[2];             
+                    });
 
-                if (counter) {
                     if (!allElements[name]) {
                         allElements[name] = {};
                     }
