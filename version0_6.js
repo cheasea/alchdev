@@ -489,11 +489,23 @@ function react(r, b = false) {
                         if (isMin) {
                             min.value = isMin[1];
                             min.result = isMin[2];
+
+                            if (min.result) {
+                                min.result.split(', ').forEach(item => {
+                                    countElements(item);
+                                });
+                            }
                         }
 
                         if (isMax) {
                             max.value = isMax[1];
                             max.result = isMax[2];
+
+                            if (max.result) {
+                                max.result.split(', ').forEach(item => {
+                                    countElements(item);
+                                });
+                            }
                         }
                     });
 
