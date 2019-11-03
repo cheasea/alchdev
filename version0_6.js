@@ -564,7 +564,7 @@ function react(r, b = false) {
                                 if (!allCounters[name].max.value) allCounters[name].value = newValue;
 
                                 if (allCounters[name].at[newValue]) {
-                                    resultsTemp = resultsTemp.concat(llCounters[name].at[newValue].split(', '));
+                                    resultsTemp = resultsTemp.concat(allCounters[name].at[newValue].split(', '));
                                 }
 
                                 if (+newValue <= +allCounters[name].max.value) {
