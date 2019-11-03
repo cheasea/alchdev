@@ -475,7 +475,7 @@ function react(r, b = false) {
 
                     counter.forEach(item => {
                         let isName = item.match(/set (.+)/);
-                        let isValue = item.match(/\s+?([+|-|=])(\d+(?:\.\d+)?)/);
+                        let isValue = item.match(/\s+?([+|\-|=])(\d+(?:\.\d+)?)/);
                         let isMin = item.match(/\s+?min:\s+?(\d+(?:\.\d+)?)\s+?{(.+)}/);
                         let isMax = item.match(/\s+?max:\s+?(\d+(?:\.\d+)?)\s+?{(.+)}/);
 
