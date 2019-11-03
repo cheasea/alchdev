@@ -525,7 +525,7 @@ function react(r, b = false) {
                     }
                     
                     if (!allCounters[name]) {
-                        allCounters[name] = {min: {}, max: {}};
+                        allCounters[name] = {min: {}, max: {}, at: {}};
                     }
                     
                     if (min.value) allCounters[name].min.value = min.value;
