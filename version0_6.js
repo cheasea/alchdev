@@ -471,13 +471,14 @@ function react(r, b = false) {
                 if (isCounter) {
                     let counter = resultsTemp[i].split(';');
                     let name, operation, value;
-                    let min = {}, max = {};
+                    let min = {}, max = {}, at = {};
 
                     counter.forEach(item => {
                         let isName = item.match(/set (.+)/);
                         let isValue = item.match(/\s+?([+|\-|=])(\d+(?:\.\d+)?)/);
                         let isMin = item.match(/\s+?min:\s+?([+|\-]?\d+(?:\.\d+)?)\s+?{(.+)}/);
                         let isMax = item.match(/\s+?max:\s+?([+|\-]?\d+(?:\.\d+)?)\s+?{(.+)}/);
+                        let isAt = item.match(\s+?at:\s+?([+|\-]?\d+(?:\.\d+)?)\s+?{(.+)}/);
 
                         if (isName) name = isName[1];
 
@@ -507,6 +508,16 @@ function react(r, b = false) {
                                 });
                             }
                         }
+                                              
+                        if (isAt) {
+                            at[isAt[1]] = isAt[2];
+
+                            if (isAt[2]) {
+                                isAt[2].split(', ').forEach(item => {
+                                    countElements(item);
+                                });
+                            }
+                        }
                     });
 
                     if (!allElements[name]) {
@@ -526,7 +537,9 @@ function react(r, b = false) {
                             max: {
                                 value: max.value,
                                 result: max.result
-                            }
+                            },
+                                              
+                            at: at
                         };          
                     }
 
@@ -550,6 +563,10 @@ function react(r, b = false) {
                                 newValue = (getValue + +value).toFixed(length);
 
                                 if (!allCounters[name].max.value) allCounters[name].value = newValue;
+
+                                if (allCounters[name].at[newValue]) {
+                                    resultsTemp = resultsTemp.concat(llCounters[name].at[newValue].split(', '));
+                                }
 
                                 if (+newValue <= +allCounters[name].max.value) {
                                     allCounters[name].value = newValue;
