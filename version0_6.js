@@ -536,7 +536,12 @@ function react(r, b = false) {
                         },
                                               
                         at: at
-                    };          
+                    };
+
+                    if (!allCounters[name].value) {
+                        if (!value) value = 0;
+                        allCounters[name].value = value;
+                    }
 
                     let elem = $(`#board .element:data(elementName,"${name}")`);
 
