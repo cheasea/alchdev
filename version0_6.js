@@ -536,9 +536,9 @@ function react(r, b = false) {
                             case '+':
                                 newValue = (getValue + +value).toFixed(length);
 
-                                if (!allCounters[name].min.value) allCounters[name].value = newValue;
+                                if (!allCounters[name].max.value) allCounters[name].value = newValue;
 
-                                if (newValue <= allCounters[name].min.value) {
+                                if (newValue <= allCounters[name].max.value) {
                                     allCounters[name].value = newValue;
                                 } else {
                                     if (allCounters[name].max.result) {
