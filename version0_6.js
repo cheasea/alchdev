@@ -523,21 +523,20 @@ function react(r, b = false) {
                     if (!allElements[name]) {
                         allElements[name] = {};
                     }
+                    
+                    if (!allCounters[name]) {
+                        allCounters[name] = {min: {}, max: {}};
+                    }
+                    
+                    if (min.value) allCounters[name].min.value = min.value;
+                    if (min.result) allCounters[name].min.result = min.result;
+                    if (max.value) allCounters[name].max.value = max.value;
+                    if (max.result) allCounters[name].max.result = max.result;
 
-                    allCounters[name] = {
-                        min: {
-                            value: min.value,
-                            result: min.result
-                        }, 
+                    for (let value in at) {
+                        allCounters[name].at[value] = at[value];
+                    }
                             
-                        max: {
-                            value: max.value,
-                            result: max.result
-                        },
-                                              
-                        at: at
-                    };
-
                     if (!allCounters[name].value) {
                         if (!value) value = 0;
                         allCounters[name].value = value;
