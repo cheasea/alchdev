@@ -529,7 +529,7 @@ function react(r, b = false) {
                                 if (newValue <= allCounters[name].min.value) {
                                     allCounters[name].value = newValue;
                                 } else {
-                                    if (allCounters[name].max.result) resultsTemp.push(max.result.split(', '))
+                                    if (allCounters[name].max.result) resultsTemp.push(max.result.join(', '))
                                 }
 
                                 break;
@@ -541,7 +541,7 @@ function react(r, b = false) {
                                 if (newValue >= allCounters[name].min.value) {
                                     allCounters[name].value = newValue;
                                 } else {
-                                    if (allCounters[name].min.result) rresultsTemp.push(min.result.split(', '))
+                                    if (allCounters[name].min.result) rresultsTemp.push(min.result.join(', '))
                                 }
 
                                 break;
