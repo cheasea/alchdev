@@ -551,7 +551,7 @@ function react(r, b = false) {
 
                                 if (!allCounters[name].max.value) allCounters[name].value = newValue;
 
-                                if (newValue < allCounters[name].max.value) {
+                                if (+newValue <= +allCounters[name].max.value) {
                                     allCounters[name].value = newValue;
                                 } else {
                                     if (allCounters[name].max.result) {
@@ -565,7 +565,7 @@ function react(r, b = false) {
 
                                 if (!allCounters[name].min.value) allCounters[name].value = newValue;
 
-                                if (newValue > allCounters[name].min.value) {
+                                if (+newValue >= +allCounters[name].min.value) {
                                     allCounters[name].value = newValue;
                                 } else {
                                     if (allCounters[name].min.result) {
