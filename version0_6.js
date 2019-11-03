@@ -580,7 +580,11 @@ function react(r, b = false) {
                                 newValue = (getValue - +value).toFixed(length);
 
                                 if (!allCounters[name].min.value) allCounters[name].value = newValue;
-
+                                
+                                if (allCounters[name].at[newValue]) {
+                                    resultsTemp = resultsTemp.concat(allCounters[name].at[newValue].split(', '));
+                                }
+                                
                                 if (+newValue >= +allCounters[name].min.value) {
                                     allCounters[name].value = newValue;
                                 } else {
