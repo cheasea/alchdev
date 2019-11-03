@@ -514,7 +514,20 @@ function react(r, b = false) {
                     }
 
                     if (!allCounters[name]) {
-                        allCounters[name] = {min: {}, max: {}};
+                        allCounters[name] = {
+                            name: name,
+                            value: value,
+                            
+                            min: {
+                                value: min.value,
+                                result: min.result
+                            }, 
+                            
+                            max: {
+                                value: max.value,
+                                result: max.result
+                            }
+                        };          
                     }
 
                     let elem = $(`#board .element:data(elementName,"${name}")`);
