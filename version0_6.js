@@ -529,7 +529,9 @@ function react(r, b = false) {
                                 if (newValue <= allCounters[name].min.value) {
                                     allCounters[name].value = newValue;
                                 } else {
-                                    if (allCounters[name].max.result) resultsTemp.push(max.result.join(', '))
+                                    if (allCounters[name].max.result) {
+                                        resultsTemp = resultsTemp.concat(max.result.split(', '));
+                                    }
                                 }
 
                                 break;
@@ -541,7 +543,9 @@ function react(r, b = false) {
                                 if (newValue >= allCounters[name].min.value) {
                                     allCounters[name].value = newValue;
                                 } else {
-                                    if (allCounters[name].min.result) rresultsTemp.push(min.result.join(', '))
+                                    if (allCounters[name].min.result) {
+                                        resultsTemp = resultsTemp.concat(min.result.split(', '));
+                                    }
                                 }
 
                                 break;
