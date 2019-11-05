@@ -97,7 +97,6 @@ function deleteElements(name) {
     });
 }
 
-// Тест
 function countElements(name) {
     let counter = name.match(matchCounter);
 
@@ -511,7 +510,9 @@ function updateCounters() {
 
         if (!elem) continue;
 
-        elem.text(`${name}: ${allCounters[name].value}`);
+        let sameName = name.replace(/\[.+\]$/, '');
+
+        elem.text(`${sameName}: ${allCounters[name].value}`);
     }
 }
 
