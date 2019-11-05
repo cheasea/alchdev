@@ -761,6 +761,8 @@ function react(r, b = false) {
 
         if (!b) logReaction(results.join(', '), reagents);
         if (messages[reagents]) message(reagents, 'highlight');
+
+        updateCounters();
         
         return results;
     } else {
