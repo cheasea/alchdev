@@ -97,6 +97,7 @@ function deleteElements(name) {
     });
 }
 
+// Тест
 function countElements(name) {
     let counter = name.match(matchCounter);
 
