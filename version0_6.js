@@ -11,6 +11,8 @@ var opened = [];
 let allElements = {};
 let allCounters = {};
 
+let findCondition = /\(\-([+|\-|?|!])(.+)\)$/;
+
 for (let elem of inits) {
     countElements(elem);
 }
@@ -24,6 +26,36 @@ for (let r in reactions) {
         countElements(elem);
         allElements[elem].hasReaction = true;
     });
+}
+
+function parseConditions(elem){
+    let condition = elem.match(findCondition);
+    let isTest;
+
+    if (!condition) {
+        return elem;
+    }
+
+    switch(condition[1]) {
+        case '+':
+            isTest = $(`#board .element:data(elementName,"${condition[2]})"`).not(':data(isDead,1)')[0];
+            break;
+        case '-':
+            isTest = !$(`#board .element:data(elementName,"${condition[2]})"`).not(':data(isDead,1)')[0];
+            break;
+        case '?':
+            isTest = allElements[condition[2]].opened;
+            break;
+        case '!':
+            isTest = !allElements[condition[2]].opened;
+            break;
+    }
+
+    if (isTest) {
+        return elem.replace(findCondition, '');
+    } else {
+        return false;
+    }
 }
 
 function deleteElements(name) {
@@ -922,6 +954,7 @@ function addElement(name, place, no_discover) {
     }).appendTo('#board');
     if (allElements[name].hasReaction !== true) 
         a.addClass('final');
+    allElements[name].opened = true;
     a.data('image', '');
     a.data("elementName", name);
     if (inArray(name, statics)) a.addClass('static');
