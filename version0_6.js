@@ -757,12 +757,12 @@ function react(r, b = false) {
             message(reagents, 'highlight');
         }
 
+        updateCounters();
+
         if (results.length === 0) return 0;
 
         if (!b) logReaction(results.join(', '), reagents);
         if (messages[reagents]) message(reagents, 'highlight');
-
-        updateCounters();
         
         return results;
     } else {
