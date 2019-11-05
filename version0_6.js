@@ -81,7 +81,7 @@ function parseConditions(elem){
     }
 
     if (isTest) {
-        return elem.replace(findCondition, '');
+        return elem.replace(findCondition, '').replace(findCountCondition, '');
     } else {
         return false;
     }
