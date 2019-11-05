@@ -12,6 +12,7 @@ let allElements = {};
 let allCounters = {};
 
 let findCondition = /\(\-([+|\-|?|!])(.+)\)$/;
+let findCountCondition = /\((.+)\s+?(>|<|=|==|>=|<=|!=)\s+?(\d+(?:\.\d+)?)\)$/;
 
 for (let elem of inits) {
     countElements(elem);
@@ -33,22 +34,50 @@ function parseConditions(elem){
     let isTest;
 
     if (!condition) {
-        return elem;
-    }
+        condition = elem.match(findCountCondition);
 
-    switch(condition[1]) {
-        case '+':
-            isTest = $(`#board .element:data(elementName,"${condition[2]})"`).not(':data(isDead,1)')[0];
-            break;
-        case '-':
-            isTest = !$(`#board .element:data(elementName,"${condition[2]})"`).not(':data(isDead,1)')[0];
-            break;
-        case '?':
-            isTest = allElements[condition[2]].opened;
-            break;
-        case '!':
-            isTest = !allElements[condition[2]].opened;
-            break;
+        if (!condition) return elem;
+
+        let value = +allCounters[condition[1]].value;
+        let needValue = +condition[3];
+        let operation = condition[2];
+
+        switch(operation) {
+            case '>':
+                if (value > needValue) isTest = true;
+                break;
+            case '<':
+                if (value < needValue) isTest = true;
+                break;
+            case '=':
+            case '==':
+                if (value == needValue) isTest = true;
+                break;
+            case '>=':
+                if (value >= needValue) isTest = true;
+                break;
+            case '<=':
+                if (value <= needValue) isTest = true;
+                break;
+            case '!=':
+                if (value !== needValue) isTest = true;
+                break;
+        }
+    } else {
+        switch(condition[1]) {
+            case '+':
+                isTest = $(`#board .element:data(elementName,"${condition[2]})"`).not(':data(isDead,1)')[0];
+                break;
+            case '-':
+                isTest = !$(`#board .element:data(elementName,"${condition[2]})"`).not(':data(isDead,1)')[0];
+                break;
+            case '?':
+                isTest = allElements[condition[2]].opened;
+                break;
+            case '!':
+                isTest = !allElements[condition[2]].opened;
+                break;
+        }
     }
 
     if (isTest) {
@@ -74,7 +103,7 @@ function countElements(name) {
     if (name[0] === '-') return;
 
     if (!counter) {
-        name = name.replace(matchCond, '');
+        name = name.replace(findCondition, '').replace(findCountCondition, '');
     }
 
     if (counter) {
