@@ -527,7 +527,7 @@ function updateCounters() {
         if (counterOutputName)
             // если есть символ вывода значения, то выводим кастомное название
             if (counterOutputName.match(customOutputRegex)) {
-                counterOutputName.replace(
+                counterOutputName = counterOutputName.replace(
                     customOutputRegex,
                     allCounters[name].value
                 );
