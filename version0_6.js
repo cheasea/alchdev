@@ -143,13 +143,14 @@ function countElements(name) {
 }
 
 function textOrImage(a, name, checkingValue = true) {
-    let cleanName;
+    let cleanName = name;
 
-    if (name.match(/.+\[.+\]/)) {
-        cleanName = name.replace(/\[.+\]$/, '');
-    } else {
-        cleanName = name;
-    }
+    // кастомный вывод
+    if (settings.output[name])
+        cleanName = settings.output[name];
+    // иначе чистое название
+    else if (name.match(/.+\[.+\]/))
+        cleanName = name.replace(/\[.+\]$/, "");
 
     let filename;
     let counterText;
