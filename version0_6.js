@@ -14,6 +14,13 @@ let allCounters = {};
 let findCondition = /\(\-([+|\-|?|!])(.+)\)$/;
 let findCountCondition = /\((.+)\s+?(>|<|=|==|>=|<=|!=)\s+?(\d+(?:\.\d+)?)\)$/;
 
+var customOutputRegex = new RegExp(
+  "(?=.*)" + (settings.counterOutputChar || "@") + "(?=.*)",
+  "g"
+);
+
+if (!settings.output) settings.output = {};
+
 for (let elem of inits) {
     countElements(elem);
 }
@@ -510,9 +517,24 @@ function updateCounters() {
 
         if (!elem) continue;
 
-        let sameName = name.replace(/\[.+\]$/, '');
+        let sameName = name.replace(/\[.+\]$/, "");
 
-        elem.text(`${sameName}: ${allCounters[name].value}`);
+        // кастомное имя счётчика
+        var counterOutputName = settings.output[c.name];
+
+        // если счётчик есть в кастомном выводе
+        if (counterOutputName)
+            // если есть символ вывода значения, то выводим кастомное название
+            if (counterOutputName.match(customOutputRegex)) {
+                counterOutputName.replace(
+                    customOutputRegex,
+                    allCounters[name].value
+                );
+                elem.text(`${counterOutputName}`);
+            } else // иначе просто используем кастомное название
+                elem.text(`${counterOutputName}: ${allCounters[name].value}`);
+        else // если счётчика нет в кастомном выводе, то выводим чистое название
+            elem.text(`${sameName}: ${allCounters[name].value}`);
     }
 }
 
@@ -971,13 +993,14 @@ function gameInit() {
 gameInit();
 
 function addElement(name, place, no_discover) {
-    let cleanName;
+    let cleanName = name;
 
-    if (name.match(/.+\[.+\]/)) {
-        cleanName = name.replace(/\[.+\]$/, '');
-    } else {
-        cleanName = name;
-    }
+    // кастомный вывод
+    if (settings.output[name])
+        cleanName = settings.output[name];
+    // иначе чистое название
+    else if (name.match(/.+\[.+\]/))
+        cleanName = name.replace(/\[.+\]$/, "");
 
     var a = $('<div/>', {
         'class': 'element ' + classes[name],
