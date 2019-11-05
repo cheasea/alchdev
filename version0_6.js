@@ -521,7 +521,7 @@ function updateCounters() {
         let sameName = name.replace(/\[.+\]$/, "");
 
         // кастомное имя счётчика
-        var counterOutputName = settings.output[c.name];
+        var counterOutputName = settings.output[name];
 
         // если счётчик есть в кастомном выводе
         if (counterOutputName)
