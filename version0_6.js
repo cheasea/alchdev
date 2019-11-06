@@ -561,7 +561,7 @@ function react(r, b = false) {
 
                     counter.forEach(item => {
                         let isName = item.match(/set (.+)/);
-                        let isValue = item.match(/\s+?([+|\-|=])(\d+(?:\.\d+)?)/);
+                        let isValue = item.match(/\s+?([+|\-|=|*|\/])(\d+(?:\.\d+)?)/);
                         let isMin = item.match(/\s+?min:?\s+?([+|\-]?\d+(?:\.\d+)?)\s+?{(.+)}/);
                         let isMax = item.match(/\s+?max:?\s+?([+|\-]?\d+(?:\.\d+)?)\s+?{(.+)}/);
                         let isAt = item.match(/\s+?at:?\s+?([+|\-]?\d+(?:\.\d+)?)\s+?{(.+)}/);
@@ -680,6 +680,42 @@ function react(r, b = false) {
                                 }
 
                                 break;
+                            case '*':
+                                newValue = (getValue * +value).toFixed(length);
+                            
+                                if (!allCounters[name].max.value) allCounters[name].value = newValue;
+                            
+                                if (allCounters[name].at[newValue]) {
+                                    resultsTemp = resultsTemp.concat(allCounters[name].at[newValue].split(', '));
+                                }
+
+                                if (+newValue <= +allCounters[name].max.value) {
+                                    allCounters[name].value = newValue;
+                                } else {
+                                    if (allCounters[name].max.result) {
+                                        resultsTemp = resultsTemp.concat(max.result.split(', '));
+                                    }
+                                }
+                            
+                                break;
+                            case '/':
+                              newValue = (getValue / +value).toFixed(length);
+
+                              if (!allCounters[name].min.value) allCounters[name].value = newValue;
+                                
+                              if (allCounters[name].at[newValue]) {
+                                  resultsTemp = resultsTemp.concat(allCounters[name].at[newValue].split(', '));
+                              }
+                                
+                              if (+newValue >= +allCounters[name].min.value) {
+                                  allCounters[name].value = newValue;
+                              } else {
+                                  if (allCounters[name].min.result) {
+                                      resultsTemp = resultsTemp.concat(min.result.split(', '));
+                                  }
+                              }
+
+                              break;
                         }
 
                         if (elem[0]) pulsate(elem);
