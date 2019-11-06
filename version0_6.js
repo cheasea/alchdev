@@ -555,53 +555,76 @@ function react(r, b = false) {
                 let isCounter = resultsTemp[i].match('set (.+) (.+$)');
              
                 if (isCounter) {
-                    let counter = resultsTemp[i].split(';');
-                    let name, operation, value;
-                    let min = {}, max = {}, at = {};
+                    let isName, isMin, isMax, isAt;
 
-                    counter.forEach(item => {
-                        let isName = item.match(/set (.+)/);
-                        let isValue = item.match(/\s+?([+|\-|=|*|\/])(\d+(?:\.\d+)?)/);
-                        let isMin = item.match(/\s+?min:?\s+?([+|\-]?\d+(?:\.\d+)?)\s+?{(.+)}/);
-                        let isMax = item.match(/\s+?max:?\s+?([+|\-]?\d+(?:\.\d+)?)\s+?{(.+)}/);
-                        let isAt = item.match(/\s+?at:?\s+?([+|\-]?\d+(?:\.\d+)?)\s+?{(.+)}/);
+                    let counterName = [];
+                    let operation, value;
+                    let min = {result: []};
+                    let max = {result: []};
+                    let at = {result: []};
 
-                        if (isName) name = isName[1];
-
-                        if (isValue) {
-                            operation = isValue[1];
-                            value = isValue[2];
+                    name.forEach(item => {
+                        if (item === 'set') {
+                            isName = true;
+                            return;
                         }
 
-                        if (isMin) {
-                            min.value = isMin[1];
-                            min.result = isMin[2];
+                        let valueSettings = item.match(/([+|\-|=|*|/])(\d+(?:\.\d+)?)/);
 
-                            if (min.result) {
-                                min.result.split(', ').forEach(item => {
-                                    countElements(item);
-                                });
+                        if (valueSettings) {
+                            isName = false;
+                            operation = valueSettings[1];
+                            value = valueSettings[2];
+
+                            return;
+                        }
+
+                        if (item === 'min') {
+                            isName = false;
+                            isMin = true;
+
+                            return;
+                        }
+
+                        if (item === 'max') {
+                            isName = false;
+                            isMax = true;
+
+                            return;
+                        }
+
+                        if (item === 'at') {
+                            isName = false;
+                            isAt = true;
+
+                            return;
+                        }
+
+                        if (isName) {
+                            counterName.push(item);
+                        }
+
+                        if (isMin || isMax || isAt) {
+                            let obj;
+
+                            if (isMin) obj = min;
+                            else if (isMax) obj = max;
+                            else if (isAt) obj = at; 
+
+                            if (item.match(/\d+(\.\d+)?/)) {
+                                obj.value = item;
+                                return;
                             }
-                        }
 
-                        if (isMax) {
-                            max.value = isMax[1];
-                            max.result = isMax[2];
+                            let elem = item.replace(/{/, '').replace(/}/, '').replace(/,/, '').trim();
 
-                            if (max.result) {
-                                max.result.split(', ').forEach(item => {
-                                    countElements(item);
-                                });
-                            }
-                        }
-                                              
-                        if (isAt) {
-                            at[isAt[1]] = isAt[2];
+                            obj.result.push(elem);
 
-                            if (isAt[2]) {
-                                isAt[2].split(', ').forEach(item => {
-                                    countElements(item);
-                                });
+                            if (item.match(/}/)) {
+                                isMin = false;
+                                isMax = false;
+                                isAt = false;
+                                return;
                             }
                         }
                     });
