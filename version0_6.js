@@ -563,7 +563,9 @@ function react(r, b = false) {
                     let max = {result: []};
                     let at = {result: []};
 
-                    resultsTemp[i].forEach(item => {
+                    let counter = resultsTemp[i].split(' ');
+
+                    counter.forEach(item => {
                         if (item === 'set') {
                             isName = true;
                             return;
