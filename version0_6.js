@@ -702,7 +702,7 @@ function react(r, b = false) {
                                     allCounters[name].value = newValue;
                                 } else {
                                     if (allCounters[name].min.result) {
-                                        resultsTemp = resultsTemp.concat(min.result;
+                                        resultsTemp = resultsTemp.concat(min.result);
                                     }
                                 }
 
