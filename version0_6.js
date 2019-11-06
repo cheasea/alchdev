@@ -677,14 +677,14 @@ function react(r, b = false) {
                                 if (!allCounters[name].max.value) allCounters[name].value = newValue;
 
                                 if (allCounters[name].at[newValue]) {
-                                    resultsTemp = resultsTemp.concat(allCounters[name].at[newValue].split(', '));
+                                    resultsTemp = resultsTemp.concat(allCounters[name].at[newValue]);
                                 }
 
                                 if (+newValue <= +allCounters[name].max.value) {
                                     allCounters[name].value = newValue;
                                 } else {
                                     if (allCounters[name].max.result) {
-                                        resultsTemp = resultsTemp.concat(max.result.split(', '));
+                                        resultsTemp = resultsTemp.concat(max.result);
                                     }
                                 }
 
@@ -695,14 +695,14 @@ function react(r, b = false) {
                                 if (!allCounters[name].min.value) allCounters[name].value = newValue;
                                 
                                 if (allCounters[name].at[newValue]) {
-                                    resultsTemp = resultsTemp.concat(allCounters[name].at[newValue].split(', '));
+                                    resultsTemp = resultsTemp.concat(allCounters[name].at[newValue]);
                                 }
                                 
                                 if (+newValue >= +allCounters[name].min.value) {
                                     allCounters[name].value = newValue;
                                 } else {
                                     if (allCounters[name].min.result) {
-                                        resultsTemp = resultsTemp.concat(min.result.split(', '));
+                                        resultsTemp = resultsTemp.concat(min.result;
                                     }
                                 }
 
@@ -713,14 +713,14 @@ function react(r, b = false) {
                                 if (!allCounters[name].max.value) allCounters[name].value = newValue;
                             
                                 if (allCounters[name].at[newValue]) {
-                                    resultsTemp = resultsTemp.concat(allCounters[name].at[newValue].split(', '));
+                                    resultsTemp = resultsTemp.concat(allCounters[name].at[newValue]);
                                 }
 
                                 if (+newValue <= +allCounters[name].max.value) {
                                     allCounters[name].value = newValue;
                                 } else {
                                     if (allCounters[name].max.result) {
-                                        resultsTemp = resultsTemp.concat(max.result.split(', '));
+                                        resultsTemp = resultsTemp.concat(max.result);
                                     }
                                 }
                             
@@ -731,14 +731,14 @@ function react(r, b = false) {
                               if (!allCounters[name].min.value) allCounters[name].value = newValue;
                                 
                               if (allCounters[name].at[newValue]) {
-                                  resultsTemp = resultsTemp.concat(allCounters[name].at[newValue].split(', '));
+                                  resultsTemp = resultsTemp.concat(allCounters[name].at[newValue]);
                               }
                                 
                               if (+newValue >= +allCounters[name].min.value) {
                                   allCounters[name].value = newValue;
                               } else {
                                   if (allCounters[name].min.result) {
-                                      resultsTemp = resultsTemp.concat(min.result.split(', '));
+                                      resultsTemp = resultsTemp.concat(min.result);
                                   }
                               }
 
