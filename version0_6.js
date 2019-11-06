@@ -557,7 +557,7 @@ function react(r, b = false) {
                 if (isCounter) {
                     let isName, isMin, isMax, isAt;
 
-                    let counterName = [];
+                    let name = [];
                     let operation, value;
                     let min = {result: []};
                     let max = {result: []};
@@ -630,6 +630,8 @@ function react(r, b = false) {
                             }
                         }
                     });
+
+                    name = name.join(' ');
 
                     if (!allElements[name]) {
                         allElements[name] = {};
