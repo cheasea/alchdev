@@ -603,7 +603,7 @@ function react(r, b = false) {
                         }
 
                         if (isName) {
-                            counterName.push(item);
+                            name.push(item);
                         }
 
                         if (isMin || isMax || isAt) {
