@@ -14,10 +14,18 @@ let allCounters = {};
 let findCondition = /\(\-([+|\-|?|!])(.+)\)$/;
 let findCountCondition = /\((.+)\s+?(>|<|=|==|>=|<=|!=)\s+?(\d+(?:\.\d+)?)\)$/;
 
-var customOutputRegex = new RegExp(
-  "(?=.*)" + (settings.counterOutputChar || "@") + "(?=.*)",
-  "g"
-);
+if (settings.counterOutputChar)
+    settings.counterOutputChar = settings.counterOutputChar.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&"
+      )
+else settings.counterOutputChar = '@'
+
+if (!settings.counterOutputChar) {}
+  var customOutputRegex = new RegExp(
+    "(?=.*)" + (settings.counterOutputChar || "@") + "(?=.*)",
+    "g"
+  );
 
 if (!settings.output) settings.output = {};
 
