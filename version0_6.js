@@ -393,8 +393,8 @@ function onSelectStop() {
 
     let hasCounter;
 
-    if (reactions[reagents]) {
-      let counter = reactions[reagents].find(item => {
+    if (reactions[reagents.sort().join('+')]) {
+      let counter = reactions[reagents.sort().join('+')].find(item => {
         return item.match(/set .+ .+$/);
       });
 
@@ -873,7 +873,7 @@ function onDrop(event, ui) {
     let pos = $(this).offset();
     let result = react(reagents);
 
-    let counter = reactions[reagents].find(item => {
+    let counter = reactions[reagents.sort().join('+')].find(item => {
       return item.match(/set .+ .+$/);
     });
 
