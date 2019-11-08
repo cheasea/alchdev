@@ -872,9 +872,10 @@ function onDrop(event, ui) {
     let reagents = [ui.helper.data('elementName'), $(this).data('elementName')];
     let pos = $(this).offset();
     let result = react(reagents);
+    let counter;
 
     if (reactions[reagents.sort().join('+')]) {
-      let counter = reactions[reagents.sort().join('+')].find(item => {
+      counter = reactions[reagents.sort().join('+')].find(item => {
         return item.match(/set .+ .+$/);
       });
     }
