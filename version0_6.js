@@ -873,9 +873,11 @@ function onDrop(event, ui) {
     let pos = $(this).offset();
     let result = react(reagents);
 
-    let counter = reactions[reagents.sort().join('+')].find(item => {
-      return item.match(/set .+ .+$/);
-    });
+    if (reactions[reagents.sort().join('+')]) {
+      let counter = reactions[reagents.sort().join('+')].find(item => {
+        return item.match(/set .+ .+$/);
+      });
+    }
 
     if (result || counter) {
       destroyElement($(this));
