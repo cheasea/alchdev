@@ -391,12 +391,22 @@ function onSelectStop() {
 
     result = react(reagents);
 
+    let hasCounter;
+
+    if (reactions[reagents]) {
+      let counter = reactions[reagents].find(item => {
+        return item.match(/set .+ .+$/);
+      });
+
+      if (counter) hasCounter = true;
+    }
+
     if (!result) {
         selected.each(function () {
             $(this).data('isDead', 0);
         });
 
-        return;
+        if (!hasCounter) return;
     }
 
     selected.each(function () {
@@ -414,10 +424,12 @@ function onSelectStop() {
         destroyElement(elem);
     });
 
-    placeElements(result, {
-        'left': x,
-        'top': y
-    });
+    if (hasCounter) {
+      placeElements(result, {
+          'left': x,
+          'top': y
+      });
+    }
 
     refreshHint();
     updateCounters();
@@ -861,13 +873,20 @@ function onDrop(event, ui) {
     let pos = $(this).offset();
     let result = react(reagents);
 
+    let counter = reactions[reagents].find(item => {
+      return item.match(/set .+ .+$/);
+    });
+
+    if (result || counter) {
+      destroyElement($(this));
+      destroyElement(ui.helper);
+    }
+
     if (!result) {
         return;
     }
 
     /* Reaction */
-    destroyElement($(this));
-    destroyElement(ui.helper);
     placeElements(result, pos);
 
     refreshHint();
