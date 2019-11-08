@@ -424,7 +424,7 @@ function onSelectStop() {
         destroyElement(elem);
     });
 
-    if (hasCounter) {
+    if (result) {
       placeElements(result, {
           'left': x,
           'top': y
