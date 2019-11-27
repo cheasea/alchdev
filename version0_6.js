@@ -538,6 +538,40 @@ function updateCounters() {
 
         if (!elem) continue;
 
+        function updateCounters() {
+    for (let name in allCounters) {
+        let elem = $(`#board .element:data(elementName,"${name}")`);
+
+        if (!elem) continue;
+
+        if (labels[name] && elem[0]) {
+            elem[0].innerHTML = '';
+            elem[0].innerHTML += `<img class="element-icon" src="${MEDIA_URL + labels[name]}"></img>`; 
+            elem[0].innerHTML += `(${allCounters[name].value})`;
+            return;
+        }
+
+        let sameName = name.replace(/\[.+\]$/, "");
+
+        // кастомное имя счётчика
+        var counterOutputName = settings.output[name];
+
+        // если счётчик есть в кастомном выводе
+        if (counterOutputName)
+            // если есть символ вывода значения, то выводим кастомное название
+            if (counterOutputName.match(customOutputRegex)) {
+                counterOutputName = counterOutputName.replace(
+                    customOutputRegex,
+                    allCounters[name].value
+                );
+                elem.text(`${counterOutputName}`);
+            } else // иначе просто используем кастомное название
+                elem.text(`${counterOutputName}: ${allCounters[name].value}`);
+        else // если счётчика нет в кастомном выводе, то выводим чистое название
+            elem.text(`${sameName}: ${allCounters[name].value}`);
+    }
+}
+
         let sameName = name.replace(/\[.+\]$/, "");
 
         // кастомное имя счётчика
