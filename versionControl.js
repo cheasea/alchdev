@@ -1,23 +1,31 @@
 function versionCheck() {
-    if (!settings.version) return;
+  if (!settings.version) return;
 
-    if (settings.version === 'last') settings.version = '0.5.2';
+  if (settings.version === "last") settings.version = "0.5.2";
 
-    var updates = {
-        "0.5.2": "version0_5_2.js",
-        "a0.6": "version0_6.js"
-    }
+  let updates = {
+    "0.5.2": ["https://denys00.github.io/alchdev/version0_5_2.js"],
+    "a0.6": [
+      "https://cdnjs.cloudflare.com/ajax/libs/expr-eval/2.0.2/bundle.min.js",
+      "https://denys00.github.io/alchdev/version0_6.js"
+    ]
+  };
 
-    var scripts = updates[settings.version];
+  let scripts = updates[settings.version];
 
-    if (!scripts) return;
+  if (!scripts) return;
 
-    var script = document.createElement("script");
-    script.src = "https://denys00.github.io/alchdev/" + scripts;
+  for (let link in scripts) {
+    let script = document.createElement("script");
+    script.src = link;
     script.defer = true;
-
     document.head.appendChild(script);
+  }
 }
 
 versionCheck();
-$('title').text($('title').text().replace('Алхимия 0.5 beta', 'Алхимия 0.5.2 patched'));
+$("title").text(
+  $("title")
+    .text()
+    .replace("Алхимия 0.5 beta", "Алхимия 0.5.2 patched")
+);
