@@ -6,7 +6,7 @@ function versionCheck() {
   let updates = {
     "0.5.2": ["https://denys00.github.io/alchdev/version0_5_2.js"],
     "a0.6": [
-      "https://cdn.jsdelivr.net/npm/expr-eval@2.0.2/dist/bundle.min.js",
+      "https://cdn.jsdelivr.net/npm/expr-eval@2.0.2/dist/bundle.js",
       "https://denys00.github.io/alchdev/version0_6.js"
     ]
   };
