@@ -15,7 +15,7 @@ function versionCheck() {
 
   if (!scripts) return;
 
-  for (let link in scripts) {
+  for (let link of scripts) {
     let script = document.createElement("script");
     script.src = link;
     script.defer = true;
