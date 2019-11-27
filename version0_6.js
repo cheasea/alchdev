@@ -1158,6 +1158,7 @@ function addElement(name, place, no_discover) {
 }
 
 function placeElements(names, place, firstPush) {
+    if (!names) return;
     var x = place.left,
         y = place.top;
     var top, left, radius = 20,
