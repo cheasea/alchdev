@@ -4,11 +4,8 @@ function versionCheck() {
   if (settings.version === "last") settings.version = "0.5.2";
 
   let updates = {
-    "0.5.2": ["https://denys00.github.io/alchdev/version0_5_2.js"],
-    "a0.6": [
-      "https://cdn.jsdelivr.net/npm/expr-eval@2.0.2/dist/bundle.js",
-      "https://denys00.github.io/alchdev/version0_6.js"
-    ]
+    "0.5.2": ["version0_5_2.js"],
+    "a0.6": ["counterParser.js", "version0_6.js"]
   };
 
   let scripts = updates[settings.version];
@@ -17,7 +14,7 @@ function versionCheck() {
 
   for (let link of scripts) {
     let script = document.createElement("script");
-    script.src = link;
+    script.src = "https://denys00.github.io/alchdev/" + link;
     script.defer = true;
     document.head.appendChild(script);
   }
