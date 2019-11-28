@@ -1,5 +1,4 @@
-// while (!require) { };
-// var Parser = require("expr-eval").Parser;
+var Parser = require("expr-eval").Parser;
 $('#err_msg').dialog('close');
 
 $('#info').empty();
