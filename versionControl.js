@@ -27,14 +27,6 @@ function versionCheck() {
   if (!scripts) return;
 
   loadScripts(scripts);
-
-  for (let link of scripts) {
-    let script = document.createElement("script");
-    script.src = "https://denys00.github.io/alchdev/" + link;
-    script.defer = true;
-    document.head.appendChild(script);
-    script.onload;
-  }
 }
 
 versionCheck();
