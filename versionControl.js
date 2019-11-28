@@ -1,5 +1,5 @@
 function loadScripts(scripts) {
-  if (!scripts) return;
+  if (scripts.length === 0) return;
 
   let link = scripts.shift();
   let script = document.createElement("script");
@@ -23,8 +23,6 @@ function versionCheck() {
   };
 
   let scripts = updates[settings.version];
-
-  if (!scripts) return;
 
   loadScripts(scripts);
 }
