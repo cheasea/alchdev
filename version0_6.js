@@ -579,6 +579,10 @@ function react(r, b = false) {
 
                         if (valueSettings) {
                             isName = false;
+                            isMin = false;
+                            isMax = false;
+                            isAt = false;
+                            
                             operation = valueSettings[1];
                             value = valueSettings[2];
 
@@ -588,19 +592,25 @@ function react(r, b = false) {
                         if (item === 'min') {
                             isName = false;
                             isMin = true;
+                            isMax = false;
+                            isAt = false;
 
                             return;
                         }
 
                         if (item === 'max') {
                             isName = false;
+                            isMin = false;
                             isMax = true;
+                            isAt = false;
 
                             return;
                         }
 
                         if (item === 'at') {
                             isName = false;
+                            isMin = false;
+                            isMax = false;
                             isAt = true;
 
                             return;
@@ -617,7 +627,7 @@ function react(r, b = false) {
                             else if (isMax) obj = max;
                             else if (isAt) obj = at; 
 
-                            if (item.match(/\d+(\.\d+)?/)) {
+                            if (item.match(/\d+(\.\d+)?/) && !item.match(/{|}/)) {
                                 let value = item.match(/\d+(\.\d+)?/)[0];
                                 
                                 if (!isAt) obj.value = item;
