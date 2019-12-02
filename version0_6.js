@@ -114,41 +114,17 @@ function deleteElements(name) {
 }
 
 function countElements(name) {
-    let counter = name.match(matchCounter);
+    let counter = name.match(/set (.+) (.+$)/);
 
     if (name[0] === '-') return;
 
-    if (!counter) {
-        name = name.replace(findCondition, '').replace(findCountCondition, '');
-    }
+    if (counter || allElements[name]) {
+        return;
+    } 
+    
+    name = name.replace(findCondition, '').replace(findCountCondition, '');
 
-    if (counter) {
-        if (!allElements[counter[1]]) {
-            allElements[counter[1]] = {};
-        }
-
-        let [min, max] = [counter[5], counter[9]];
-
-        if (min) {
-            min.split(',').forEach(item => {
-                if (allElements[item]) return;
-
-                allElements[item] = {};
-            });
-        }
-
-        if (max) {
-            max.split(',').forEach(item => {
-                if (allElements[item]) return;
-
-                allElements[item] = {};
-            });
-        }
-    } else {
-        if (allElements[name]) return;
-
-        allElements[name] = {};
-    }
+    allElements[name] = {};
 }
 
 function textOrImage(a, name, checkingValue = true) {
@@ -657,6 +633,8 @@ function react(r, b = false) {
                             if (!isAt) obj.result.push(elem);
                             else obj[atValue].push(elem);
 
+                            countElements(elem);
+
                             if (item.match(/}/)) {
                                 isMin = false;
                                 isMax = false;
@@ -683,10 +661,6 @@ function react(r, b = false) {
 
                     for (let value in at) {
                         allCounters[name].at[value] = at[value];
-
-                        at[value].forEach(item => {
-                            countElements(item);
-                        });
                     }
                             
                     if (!allCounters[name].value) {
