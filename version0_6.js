@@ -583,7 +583,7 @@ function react(r, b = false) {
                 let isCounter = resultsTemp[i].match('set (.+) (.+$)');
              
                 if (isCounter) {
-                    let isName, isMin, isMax, isAt;
+                    let isName, isMin, isMax, isAt, atValue;
 
                     let name = [];
                     let operation, value;
@@ -642,13 +642,18 @@ function react(r, b = false) {
                             else if (isAt) obj = at; 
 
                             if (item.match(/\d+(\.\d+)?/)) {
-                                obj.value = item;
+                                if (!isAt) obj.value = item;
+                                else obj[value] = [];
+                                
+                                atValue = value;
+                                
                                 return;
                             }
 
                             let elem = item.replace(/{/, '').replace(/}/, '').replace(/,/, '').trim();
 
-                            obj.result.push(elem);
+                            if (!isAt) obj.result.push(elem);
+                            else obj[atValue].push(elem);
 
                             if (item.match(/}/)) {
                                 isMin = false;
