@@ -683,6 +683,10 @@ function react(r, b = false) {
 
                     for (let value in at) {
                         allCounters[name].at[value] = at[value];
+
+                        at[value].forEach(item => {
+                            countElements(item);
+                        });
                     }
                             
                     if (!allCounters[name].value) {
