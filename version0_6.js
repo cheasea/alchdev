@@ -644,7 +644,7 @@ function react(r, b = false) {
                             if (item.match(/\d+(\.\d+)?/)) {
                                 let value = item.match(/\d+(\.\d+)?/)[0];
                                 
-                                if (!isAt) obj[value] = item;
+                                if (!isAt) obj.value = item;
                                 else obj[value] = [];
                                 
                                 atValue = value;
