@@ -589,7 +589,7 @@ function react(r, b = false) {
                     let operation, value;
                     let min = {result: []};
                     let max = {result: []};
-                    let at = {result: []};
+                    let at = {};
 
                     let counter = resultsTemp[i].split(' ');
 
@@ -642,7 +642,9 @@ function react(r, b = false) {
                             else if (isAt) obj = at; 
 
                             if (item.match(/\d+(\.\d+)?/)) {
-                                if (!isAt) obj.value = item;
+                                let value = item.match(/\d+(\.\d+)?/);
+                                
+                                if (!isAt) obj[value] = item;
                                 else obj[value] = [];
                                 
                                 atValue = value;
