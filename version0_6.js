@@ -1,4 +1,17 @@
 var Parser = require("expr-eval").Parser;
+var parser = new Parser({
+  operators: {
+    logical: false,
+    comparison: false,
+    concatenate: false,
+    conditional: false,
+    'in': false,
+    assignment: false,
+    array: false,
+    fndef: false
+  }
+});
+parser.functions.random = function (n) { return 1; };
 $('#err_msg').dialog('close');
 
 $('#info').empty();
@@ -14,6 +27,9 @@ let allCounters = {};
 
 let findCondition = /\(\-([+|\-|?|!])(.+)\)$/;
 let findCountCondition = /\((.+)\s+?(>|<|=|==|>=|<=|!=)\s+?(\d+(?:\.\d+)?)\)$/;
+let findCounterArg = /(min|max|at|\+|-|=|\*|\/)\s*(.*)/;
+let findOperation = /(\+|-|=|\*|\/)\s*(?:([+-]?(?:\d*[.])?\d+)|{(.*?)})/;
+let findCounterSetting = /((min|max|at)\s*([+-]?(?:\d*[.])?\d+)\s*)({.*})?/;
 
 if (settings.counterOutputChar)
     settings.counterOutputChar = settings.counterOutputChar.replace(
@@ -43,6 +59,120 @@ for (let r in reactions) {
         countElements(elem);
         allElements[elem].hasReaction = true;
     });
+}
+
+// принимает значение вида {...} <остальные аргументы>
+// возвращает объект с массивом результатов и индексом, когда закрываются все пары {} или -1 в случае ошибки
+function processingBrackets(str) {
+    let bracketsCounter = 0, lastIndex = 1, res = {result: [], index: -1};
+    for (let i = 0; i < str.length; i++){
+        switch (str[i]) {
+
+          case "{":
+            bracketsCounter++;
+            break;
+            
+          case "}":
+            bracketsCounter--;
+            break;
+            
+          case ",":
+            if (bracketsCounter === 1) {
+                res.result.push(str.slice(lastIndex, i));
+                lastIndex = i + 2;
+            }
+            break;
+            
+        }
+        if (bracketsCounter <= 0) {
+            res.index = i;
+            let addLast = str.slice(lastIndex, i);
+            if (addLast) res.result.push(addLast);
+            break;
+        }
+    }
+    return res;
+}
+
+// посчитать значение выражения
+function computeExpression(str) {
+    try {
+        let parsed = Parser.parse(str);
+        let vars = parsed.variables();
+        let toEval = {}, res, cleanName;
+        for (let v of vars) {
+            cleanName = v.replace("_", " ");
+            if (!allCounters[cleanName]) {
+                errMsg(
+                `Возникла ошибка при вычислении выражения "${str}": неизвестно значение счётчика "${v}"`
+                );
+                return 0;
+            }
+            toEval[v] = +allCounters[cleanName].value;
+        }
+        res = Number(parsed.evaluate(toEval));
+        if (isNaN(res)) throw "значение не является числом";
+        return res;
+    } catch (e) {
+        errMsg(`Возникла ошибка при вычислении выражения "${str}": ${e}`);
+        return 0;
+    }
+}
+
+// str имеет вид set <название счётчика> <аргументы>
+// <аргументы> - это min, max, at и операции изменения значения
+function parseCounter(str) {
+    let orgStr = str;
+    str = str.substr(4); // убираем set, остаётся <название счётчика> <аргументы>
+    let counter = {}, nextArgInfo = findCounterArg.exec(str);
+
+    if (nextArgInfo && nextArgInfo.index > 0) { // если есть аргументы
+        counter.name = str.substr(0, nextArgInfo.index - 1); // ставим название до начала первого аргумента
+        str = str.substr(nextArgInfo.index); // остаются только <аргументы>
+        
+        while (nextArgInfo) { // пока есть аргументы
+            let counterSetting = findCounterSetting.exec(str), endPos;
+
+            // console.log(counterSetting)
+
+            if (counterSetting) { // если это min, max или at
+                let settingName = counterSetting[2],
+                    settingValue = counterSetting[3],
+                
+                endPos = counterSetting[1].length;
+                
+                counter[settingName] = counter[settingName] || {};
+                counter[settingName].value = settingValue;
+                if (counterSetting[4]) {
+                    let settingResult = processingBrackets(counterSetting[4]);
+                    counter[settingName].result = settingResult.result;
+                    endPos += settingResult.index === -1 ? settingResult.length : settingResult.index;
+                }
+
+                str = str.substr(endPos);
+            } else {
+                // иначе это операция изменения значения
+                let operationInfo = findOperation.exec(nextArgInfo);
+                if (!operationInfo) {
+                    errMsg(`Во время анализа "${orgStr}" произошла ошибка. Пожалуйста, проверьте код ещё раз.`)
+                    break;
+                }
+                counter.operation = operationInfo[1];
+                counter.value = computeExpression(
+                  operationInfo[2] || operationInfo[3]
+                );
+                endPos = operationInfo[0].length;
+
+                str = str.substr(endPos);
+            }
+
+            nextArgInfo = findCounterArg.exec(str);
+        }
+    } else {
+        counter.name = str;
+    }
+
+    return counter;
 }
 
 function parseConditions(elem){
