@@ -719,25 +719,27 @@ function react(r, b = false) {
                     if (min) {
                         if (min.value) allCounters[name].min.value = min.value;
                         if (min.result) allCounters[name].min.result = min.result;
+
+                        min.result.forEach(item => {
+                          countElements(item);
+                        });
                     }
 
                     if (max) {
                         if (max.value) allCounters[name].max.value = max.value;
                         if (max.result) allCounters[name].max.result = max.result;
+
+                        max.result.forEach(item => {
+                          countElements(item);
+                        });
                     }
 
-                    min.result.forEach(item => {
-                      countElements(item);
-                    });
-
-                    max.result.forEach(item => {
-                      countElements(item);
-                    });
-
-                    for (let atValue in at) {
-                      at[atValue].forEach(item => {
-                        countElements(item);
-                      });
+                    if (at) {
+                      for (let atValue in at) {
+                        at[atValue].forEach(item => {
+                          countElements(item);
+                        });
+                      }
                     }
 
                     for (let value in at) {
