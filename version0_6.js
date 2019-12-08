@@ -185,6 +185,46 @@ function parseCounter(str) {
     return counter;
 }
 
+// проверить значение на пересечение min, max, at
+// name - название счётчика, value - новое значение
+// возвращает массив результатов
+function checkCounterArgs(name, value) {
+    let min = allCounters[name].min,
+        max = allCounters[name].max,
+        at = allCounters[name].at,
+        result = [];
+
+    if (at[value]) {
+        result = result.concat(react(counter.at[value]));
+    }
+
+    if (min.value !== undefined) {
+        if (value < min.value) {
+            if (min.result === undefined)
+                logReaction(`Эта реакция невозможна, т.к. ${name} не может быть меньше ' + ${min.value}`);
+            else {
+                allCounters[name].value = min.value;
+                result = result.concat(react(min.result));
+            }
+            return result;
+        }
+    }
+
+    if (max.value !== undefined) {
+        if (value < max.value) {
+            if (max.result === undefined)
+                logReaction(`Эта реакция невозможна, т.к. ${name} не может быть больше ' + ${max.value}`);
+            else {
+                allCounters[name].value = max.value;
+                result = result.concat(react(max.result));
+            }
+            return result;
+        }
+    }
+
+    return result;
+}
+
 function parseConditions(elem){
     let condition = elem.match(findCondition);
     let isTest;
@@ -703,7 +743,7 @@ function react(r, b = false) {
 
                     let name = counterParsed.name;
                         operation = counterParsed.operation,
-                        value = counterParsed.value;
+                        value = +counterParsed.value;
                         min = counterParsed.min;
                         max = counterParsed.max;
                         at = counterParsed.at;
@@ -718,20 +758,22 @@ function react(r, b = false) {
 
                     if (min) {
                         if (min.value) allCounters[name].min.value = min.value;
-                        if (min.result) allCounters[name].min.result = min.result;
-
-                        min.result.forEach(item => {
-                          countElements(item);
-                        });
+                        if (min.result) {
+                            allCounters[name].min.result = min.result;
+                            min.result.forEach(item => {
+                                countElements(item);
+                            });
+                        }
                     }
 
                     if (max) {
                         if (max.value) allCounters[name].max.value = max.value;
-                        if (max.result) allCounters[name].max.result = max.result;
-
-                        max.result.forEach(item => {
-                          countElements(item);
-                        });
+                        if (max.result) {
+                            allCounters[name].max.result = max.result;
+                            max.result.forEach(item => {
+                                countElements(item);
+                            });
+                        }
                     }
 
                     if (at) {
@@ -754,87 +796,31 @@ function react(r, b = false) {
                     let elem = $(`#board .element:data(elementName,"${name}")`);
 
                     if (value) {
-                        let getValue = +allCounters[name].value;
+                        let getValue = +allCounters[name].value, newValue;
                         let length = value.length - 2;
                         if (length < 0) length = 0;
 
                         switch (operation) {
                             case '=': 
-                                allCounters[name].value = (+value).toFixed(length);
+                                newValue = (+value).toFixed(length);
                                 break;
                             case '+':
-                                newValue = (getValue + +value).toFixed(length);
-
-                                if (!allCounters[name].max.value) allCounters[name].value = newValue;
-
-                                if (allCounters[name].at[newValue]) {
-                                    resultsTemp = resultsTemp.concat(allCounters[name].at[newValue]);
-                                }
-
-                                if (+newValue <= +allCounters[name].max.value) {
-                                    allCounters[name].value = newValue;
-                                } else {
-                                    if (allCounters[name].max.result) {
-                                        resultsTemp = resultsTemp.concat(max.result);
-                                    }
-                                }
-
+                                newValue = (getValue + value).toFixed(length);
                                 break;
                             case '-':
-                                newValue = (getValue - +value).toFixed(length);
-
-                                if (!allCounters[name].min.value) allCounters[name].value = newValue;
-                                
-                                if (allCounters[name].at[newValue]) {
-                                    resultsTemp = resultsTemp.concat(allCounters[name].at[newValue]);
-                                }
-                                
-                                if (+newValue >= +allCounters[name].min.value) {
-                                    allCounters[name].value = newValue;
-                                } else {
-                                    if (allCounters[name].min.result) {
-                                        resultsTemp = resultsTemp.concat(min.result);
-                                    }
-                                }
-
+                                newValue = (getValue - value).toFixed(length);
                                 break;
                             case '*':
-                                newValue = (getValue * +value).toFixed(length);
-                            
-                                if (!allCounters[name].max.value) allCounters[name].value = newValue;
-                            
-                                if (allCounters[name].at[newValue]) {
-                                    resultsTemp = resultsTemp.concat(allCounters[name].at[newValue]);
-                                }
-
-                                if (+newValue <= +allCounters[name].max.value) {
-                                    allCounters[name].value = newValue;
-                                } else {
-                                    if (allCounters[name].max.result) {
-                                        resultsTemp = resultsTemp.concat(max.result);
-                                    }
-                                }
-                            
+                                newValue = (getValue * value).toFixed(length);
                                 break;
                             case '/':
-                              newValue = (getValue / +value).toFixed(length);
-
-                              if (!allCounters[name].min.value) allCounters[name].value = newValue;
-                                
-                              if (allCounters[name].at[newValue]) {
-                                  resultsTemp = resultsTemp.concat(allCounters[name].at[newValue]);
-                              }
-                                
-                              if (+newValue >= +allCounters[name].min.value) {
-                                  allCounters[name].value = newValue;
-                              } else {
-                                  if (allCounters[name].min.result) {
-                                      resultsTemp = resultsTemp.concat(min.result);
-                                  }
-                              }
-
-                              break;
+                                newValue = (getValue / value).toFixed(length);
+                                break;
                         }
+
+                        resultsTemp = resultsTemp.concat(
+                            checkCounterArgs(name, +newValue)
+                        );
 
                         if (elem[0]) pulsate(elem);
                     }
