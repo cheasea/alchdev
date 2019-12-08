@@ -280,7 +280,7 @@ function parseConditions(elem){
                 break;
         }
 
-        elem = elem.replace(condition, '');
+        elem = elem.replace(condition[0], '');
     } else {
         switch(condition[1]) {
             case '+':
@@ -297,7 +297,7 @@ function parseConditions(elem){
                 break;
         }
 
-        elem = elem.replace(condition, '');
+        elem = elem.replace(condition[0], '');
     }
 
     if (isTest) {
