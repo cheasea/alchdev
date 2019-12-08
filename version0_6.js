@@ -194,34 +194,41 @@ function checkCounterArgs(name, value) {
         at = allCounters[name].at,
         result = [];
 
+    if (min.value !== undefined && value < min.value) {
+        if (min.result === undefined) {
+            logReaction(`Эта реакция невозможна, т.к. ${name} не может быть меньше ' + ${min.value}`);
+            return [];
+        }
+        else {
+            allCounters[name].value = min.value;
+            result = result.concat(react(min.result)); // сначала добавляем результат из min
+            if (at[min.value]) { // потом из at, если есть
+                result = result.concat(react(counter.at[min.value]));
+            }
+            return result;
+        }
+    }
+
+    if (max.value !== undefined && value > max.value) {
+        if (max.result === undefined) {
+            logReaction(`Эта реакция невозможна, т.к. ${name} не может быть больше ' + ${max.value}`);
+            return [];
+        }
+        else {
+            allCounters[name].value = max.value;
+            result = result.concat(react(max.result)); // сначала добавляем результат из max
+            if (at[max.value]) { // потом из at, если есть
+                result = result.concat(react(counter.at[max.value]));
+            }
+            return result;
+        }
+    }
+
     if (at[value]) {
-        result = result.concat(react(counter.at[value]));
+      result = result.concat(react(counter.at[value]));
     }
 
-    if (min.value !== undefined) {
-        if (value < min.value) {
-            if (min.result === undefined)
-                logReaction(`Эта реакция невозможна, т.к. ${name} не может быть меньше ' + ${min.value}`);
-            else {
-                allCounters[name].value = min.value;
-                result = result.concat(react(min.result));
-            }
-            return result;
-        }
-    }
-
-    if (max.value !== undefined) {
-        if (value < max.value) {
-            if (max.result === undefined)
-                logReaction(`Эта реакция невозможна, т.к. ${name} не может быть больше ' + ${max.value}`);
-            else {
-                allCounters[name].value = max.value;
-                result = result.concat(react(max.result));
-            }
-            return result;
-        }
-    }
-
+    allCounters[name].value = value;
     return result;
 }
 
