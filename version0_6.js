@@ -809,7 +809,7 @@ function react(r, b = false) {
 
                         switch (operation) {
                             case '=': 
-                                newValue = value.toFixed(length);
+                                newValue = (+value).toFixed(length);
                                 break;
                             case '+':
                                 newValue = (getValue + +value).toFixed(length);
