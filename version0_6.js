@@ -168,10 +168,12 @@ function parseCounter(str) {
                 }
 
                 counter.operation = operationInfo[1];
+
                 if (operationInfo[2])
-                    counter.value = operationInfo[2];
+                    counter.value = String(operationInfo[2]);
                 else
-                    counter.value = computeExpression(perationInfo[3]);
+                    counter.value = String(computeExpression(operationInfo[3]));
+                
                 endPos = operationInfo[0].length;
 
                 str = str.substr(endPos);
