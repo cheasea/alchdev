@@ -134,8 +134,6 @@ function parseCounter(str) {
         while (nextArgInfo) { // пока есть аргументы
             let counterSetting = findCounterSetting.exec(str), endPos;
 
-            // console.log(counterSetting)
-
             if (counterSetting) { // если это min, max или at
                 endPos = counterSetting[1].length; 
                 let settingName = counterSetting[2],
@@ -148,15 +146,18 @@ function parseCounter(str) {
                     if (settingResult)
                         counter.at[settingValue] = settingResult.result;
                 }
+
                 else {
                     counter[settingName].value = settingValue;
                     if (settingResult)
                         counter[settingName].result = settingResult.result;
                 }
 
-                endPos += settingResult.index === -1
-                        ? settingResult.length
-                        : settingResult.index;
+                if (settingResult)
+                    endPos += settingResult.index === -1
+                            ? settingResult.length
+                            : settingResult.index;
+                
                 str = str.substr(endPos);
             } else {
                 // иначе это операция изменения значения
@@ -165,6 +166,7 @@ function parseCounter(str) {
                     errMsg(`Во время анализа "${origStr}" произошла ошибка. Пожалуйста, проверьте код ещё раз.`)
                     break;
                 }
+
                 counter.operation = operationInfo[1];
                 counter.value = computeExpression(
                   operationInfo[2] || operationInfo[3]
