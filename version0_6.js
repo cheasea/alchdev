@@ -204,7 +204,8 @@ function checkCounterArgs(name, value) {
         }
         else {
             allCounters[name].value = min.value;
-            result = result.concat(react(min.result)); // сначала добавляем результат из min
+            if (min.result.length > 0)
+                result = result.concat(react(min.result)); // сначала добавляем результат из min
             if (at[min.value]) { // потом из at, если есть
                 result = result.concat(react(counter.at[min.value]));
             }
@@ -219,7 +220,8 @@ function checkCounterArgs(name, value) {
         }
         else {
             allCounters[name].value = max.value;
-            result = result.concat(react(max.result)); // сначала добавляем результат из max
+            if (max.result.length > 0)
+                result = result.concat(react(max.result)); // сначала добавляем результат из max
             if (at[max.value]) { // потом из at, если есть
                 result = result.concat(react(counter.at[max.value]));
             }
