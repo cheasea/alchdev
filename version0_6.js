@@ -715,11 +715,16 @@ function react(r, b = false) {
                     if (!allCounters[name]) {
                         allCounters[name] = {min: {}, max: {}, at: {}};
                     }
-                    
-                    if (min.value) allCounters[name].min.value = min.value;
-                    if (min.result) allCounters[name].min.result = min.result;
-                    if (max.value) allCounters[name].max.value = max.value;
-                    if (max.result) allCounters[name].max.result = max.result;
+
+                    if (min) {
+                        if (min.value) allCounters[name].min.value = min.value;
+                        if (min.result) allCounters[name].min.result = min.result;
+                    }
+
+                    if (max) {
+                        if (max.value) allCounters[name].max.value = max.value;
+                        if (max.result) allCounters[name].max.result = max.result;
+                    }
 
                     for (let value in at) {
                         allCounters[name].at[value] = at[value];
@@ -731,11 +736,6 @@ function react(r, b = false) {
                     }
 
                     let elem = $(`#board .element:data(elementName,"${name}")`);
-
-                    if (min.value) allCounters[name].min.value = min.value;
-                    if (min.result) allCounters[name].min.result = min.result;
-                    if (max.value) allCounters[name].max.value = max.value;
-                    if (max.result) allCounters[name].max.result = max.result;
 
                     if (value) {
                         let getValue = +allCounters[name].value;
