@@ -726,6 +726,20 @@ function react(r, b = false) {
                         if (max.result) allCounters[name].max.result = max.result;
                     }
 
+                    min.result.forEach(item => {
+                      countElements(item);
+                    });
+
+                    max.result.forEach(item => {
+                      countElements(item);
+                    });
+
+                    for (let atValue in at) {
+                      at[atValue].forEach(item => {
+                        countElements(item);
+                      });
+                    }
+
                     for (let value in at) {
                         allCounters[name].at[value] = at[value];
                     }
