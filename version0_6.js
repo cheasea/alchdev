@@ -243,7 +243,9 @@ function parseConditions(elem){
     let brackets = elem.match(findBrackets);
     let isTest;
   
-    let condition = brackets.match(findCondition);
+    if (brackets) {
+      let condition = brackets.match(findCondition);
+    }
 
     if (!condition) {
         condition = brackets.match(findCountCondition);
