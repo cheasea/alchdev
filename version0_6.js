@@ -241,10 +241,10 @@ let findBrackets = /\(.+?\)/;
 
 function parseConditions(elem){
     let brackets = elem.match(findBrackets);
-    let isTest;
+    let isTest, condition;
   
     if (brackets) {
-      let condition = brackets.match(findCondition);
+      condition = brackets.match(findCondition);
     }
 
     if (!condition) {
