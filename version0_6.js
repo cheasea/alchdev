@@ -302,7 +302,7 @@ function parseConditions(elem){
 
     if (isTest) {
         if (elem.match(findBrackets)) {
-          parseConditions(elem);
+            return parseConditions(elem);
         } else {
             return elem;
         }
