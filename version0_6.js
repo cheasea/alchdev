@@ -301,8 +301,7 @@ function parseConditions(elem){
     }
 
     if (isTest) {
-        if (elem.match(findCondition)) parseConditions(elem);
-        if (elem.match(findCountCondition)) parseConditions(elem);
+        if (elem.match(findBrackets)) parseConditions(elem);
         else return elem;
     } else {
         return false;
