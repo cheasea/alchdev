@@ -284,10 +284,10 @@ function parseConditions(elem){
     } else {
         switch(condition[1]) {
             case '+':
-                isTest = $(`#board .element:data(elementName,"${condition[2]})")`).not(':data(isDead,1)')[0];
+                isTest = $(`#board .element:data(elementName,"${condition[2]}")`).not(':data(isDead,1)')[0];
                 break;
             case '-':
-                isTest = !$(`#board .element:data(elementName,"${condition[2]})")`).not(':data(isDead,1)')[0];
+                isTest = !$(`#board .element:data(elementName,"${condition[2]}")`).not(':data(isDead,1)')[0];
                 break;
             case '?':
                 isTest = allElements[condition[2]].opened;
