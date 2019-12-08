@@ -64,6 +64,7 @@ for (let r in reactions) {
 // принимает значение вида {...} <остальные аргументы>
 // возвращает объект с массивом результатов и индексом, когда закрываются все пары {} или -1 в случае ошибки
 function processingBrackets(str) {
+    if (!str) return null;
     let bracketsCounter = 0, lastIndex = 1, res = {result: [], index: -1};
     for (let i = 0; i < str.length; i++){
         switch (str[i]) {
@@ -122,7 +123,7 @@ function computeExpression(str) {
 // str имеет вид set <название счётчика> <аргументы>
 // <аргументы> - это min, max, at и операции изменения значения
 function parseCounter(str) {
-    let orgStr = str;
+    let origStr = str;
     str = str.substr(4); // убираем set, остаётся <название счётчика> <аргументы>
     let counter = {}, nextArgInfo = findCounterArg.exec(str);
 
@@ -136,25 +137,32 @@ function parseCounter(str) {
             // console.log(counterSetting)
 
             if (counterSetting) { // если это min, max или at
+                endPos = counterSetting[1].length; 
                 let settingName = counterSetting[2],
                     settingValue = counterSetting[3],
-                
-                endPos = counterSetting[1].length;
+                    settingResult = processingBrackets(counterSetting[4]);                
                 
                 counter[settingName] = counter[settingName] || {};
-                counter[settingName].value = settingValue;
-                if (counterSetting[4]) {
-                    let settingResult = processingBrackets(counterSetting[4]);
-                    counter[settingName].result = settingResult.result;
-                    endPos += settingResult.index === -1 ? settingResult.length : settingResult.index;
+
+                if (settingName === 'at') {
+                    if (settingResult)
+                        counter.at[settingValue] = settingResult.result;
+                }
+                else {
+                    counter[settingName].value = settingValue;
+                    if (settingResult)
+                        counter[settingName].result = settingResult.result;
                 }
 
+                endPos += settingResult.index === -1
+                        ? settingResult.length
+                        : settingResult.index;
                 str = str.substr(endPos);
             } else {
                 // иначе это операция изменения значения
                 let operationInfo = findOperation.exec(nextArgInfo);
                 if (!operationInfo) {
-                    errMsg(`Во время анализа "${orgStr}" произошла ошибка. Пожалуйста, проверьте код ещё раз.`)
+                    errMsg(`Во время анализа "${origStr}" произошла ошибка. Пожалуйста, проверьте код ещё раз.`)
                     break;
                 }
                 counter.operation = operationInfo[1];
