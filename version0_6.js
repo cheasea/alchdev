@@ -301,8 +301,11 @@ function parseConditions(elem){
     }
 
     if (isTest) {
-        if (elem.match(findBrackets)) parseConditions(elem);
-        else return elem;
+        if (elem.match(findBrackets)) {
+          parseConditions(elem);
+        } else {
+            return elem;
+        }
     } else {
         return false;
     }
