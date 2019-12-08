@@ -290,7 +290,10 @@ function parseConditions(elem){
 
     if (isTest) {
         elem = elem.replace(findCondition, '').replace(findCountCondition, '');
-        parseConditions(elem);
+
+        if (elem.match(findCondition)) parseConditions(elem);
+        if (elem.match(findCountCondition)) parseConditions(elem);
+        else return elem;
     } else {
         return false;
     }
