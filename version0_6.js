@@ -248,7 +248,9 @@ function parseConditions(elem){
     }
 
     if (!condition) {
-        condition = brackets.match(findCountCondition);
+        if (brackets) {
+          condition = brackets.match(findCountCondition);
+        }
 
         if (!condition) return elem;
 
