@@ -19,7 +19,7 @@ function versionCheck() {
 
   let updates = {
     "0.5.2": ["version0_5_2.js"],
-    "a0.6": ["counterParser.js", "version0_6.js"]
+    "b0.6": ["counterParser.js", "version0_6.js"]
   };
 
   let scripts = updates[settings.version];
