@@ -289,7 +289,8 @@ function parseConditions(elem){
     }
 
     if (isTest) {
-        return elem.replace(findCondition, '').replace(findCountCondition, '');
+        elem = elem.replace(findCondition, '').replace(findCountCondition, '');
+        parseConditions(elem);
     } else {
         return false;
     }
