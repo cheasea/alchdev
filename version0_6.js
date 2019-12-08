@@ -244,12 +244,12 @@ function parseConditions(elem){
     let isTest, condition;
   
     if (brackets) {
-      condition = brackets.match(findCondition);
+      condition = brackets[0].match(findCondition);
     }
 
     if (!condition) {
         if (brackets) {
-          condition = brackets.match(findCountCondition);
+          condition = brackets[0].match(findCountCondition);
         }
 
         if (!condition) return elem;
