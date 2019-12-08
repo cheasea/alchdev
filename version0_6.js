@@ -696,105 +696,17 @@ function react(r, b = false) {
         for (var i = 0; i < resultsTemp.length; i++) {
             if (name = parseConditions(resultsTemp[i])) {
                 // BEGIN processing counters
-                let isCounter = resultsTemp[i].match('set (.+) (.+$)');
+                let isCounter = /^set (.+$)/.test(resultsTemp[i]);
              
                 if (isCounter) {
-                    let isName, isMin, isMax, isAt, atValue;
+                    let counterParsed = parseCounter(resultsTemp[i]);
 
-                    let name = [];
-                    let operation, value;
-                    let min = {result: []};
-                    let max = {result: []};
-                    let at = {};
-
-                    let counter = resultsTemp[i].split(' ');
-
-                    counter.forEach(item => {
-                        if (item === 'set') {
-                            isName = true;
-                            return;
-                        }
-
-                        let valueSettings = item.match(/([+|\-|=|*|/])(\d+(?:\.\d+)?)/);
-
-                        if (valueSettings) {
-                            isName = false;
-                            isMin = false;
-                            isMax = false;
-                            isAt = false;
-                            
-                            operation = valueSettings[1];
-                            value = valueSettings[2];
-
-                            return;
-                        }
-
-                        if (item === 'min') {
-                            isName = false;
-                            isMin = true;
-                            isMax = false;
-                            isAt = false;
-
-                            return;
-                        }
-
-                        if (item === 'max') {
-                            isName = false;
-                            isMin = false;
-                            isMax = true;
-                            isAt = false;
-
-                            return;
-                        }
-
-                        if (item === 'at') {
-                            isName = false;
-                            isMin = false;
-                            isMax = false;
-                            isAt = true;
-
-                            return;
-                        }
-
-                        if (isName) {
-                            name.push(item);
-                        }
-
-                        if (isMin || isMax || isAt) {
-                            let obj;
-
-                            if (isMin) obj = min;
-                            else if (isMax) obj = max;
-                            else if (isAt) obj = at; 
-
-                            if (item.match(/\d+(\.\d+)?/) && !item.match(/{|}/)) {
-                                let value = item.match(/\d+(\.\d+)?/)[0];
-                                
-                                if (!isAt) obj.value = item;
-                                else obj[value] = [];
-                                
-                                atValue = value;
-                                
-                                return;
-                            }
-
-                            let elem = item.replace(/{/, '').replace(/}/, '').replace(/,/, '').trim();
-
-                            if (!isAt) obj.result.push(elem);
-                            else obj[atValue].push(elem);
-
-                            countElements(elem);
-
-                            if (item.match(/}/)) {
-                                isMin = false;
-                                isMax = false;
-                                isAt = false;
-                                return;
-                            }
-                        }
-                    });
-
-                    name = name.join(' ');
+                    let name = counterParsed.name;
+                        operation = counterParsed.operation,
+                        value = counterParsed.value;
+                        min = counterParsed.min;
+                        max = counterParsed.max;
+                        at = counterParsed.at;
 
                     if (!allElements[name]) {
                         allElements[name] = {};
