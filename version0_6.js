@@ -199,7 +199,7 @@ function checkCounterArgs(name, value) {
 
     if (min.value !== undefined && value < min.value) {
         if (min.result === undefined) {
-            logReaction(`Эта реакция невозможна, т.к. ${name} не может быть меньше ' + ${min.value}`);
+            logReaction(`Эта реакция невозможна, т.к. ${name} не может быть меньше ${min.value}`);
             return [];
         }
         else {
@@ -214,7 +214,7 @@ function checkCounterArgs(name, value) {
 
     if (max.value !== undefined && value > max.value) {
         if (max.result === undefined) {
-            logReaction(`Эта реакция невозможна, т.к. ${name} не может быть больше ' + ${max.value}`);
+            logReaction(`Эта реакция невозможна, т.к. ${name} не может быть больше ${max.value}`);
             return [];
         }
         else {
@@ -753,7 +753,7 @@ function react(r, b = false) {
 
                     let name = counterParsed.name;
                         operation = counterParsed.operation,
-                        value = +counterParsed.value;
+                        value = counterParsed.value;
                         min = counterParsed.min;
                         max = counterParsed.max;
                         at = counterParsed.at;
@@ -787,19 +787,16 @@ function react(r, b = false) {
                     }
 
                     if (at) {
-                      for (let atValue in at) {
-                        at[atValue].forEach(item => {
-                          countElements(item);
-                        });
-                      }
-                    }
-
-                    for (let value in at) {
+                        for (let atValue in at) {
+                            at[atValue].forEach(item => {
+                                countElements(item);
+                            });
+                        }
                         allCounters[name].at[value] = at[value];
                     }
                             
-                    if (!allCounters[name].value) {
-                        if (!value) value = 0;
+                    if (allCounters[name].value === undefined) {
+                        if (value === undefined) value = 0;
                         allCounters[name].value = value;
                     }
 
