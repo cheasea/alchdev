@@ -237,12 +237,16 @@ function checkCounterArgs(name, value) {
     return result;
 }
 
+let findBrackets = /\(.+?\)/;
+
 function parseConditions(elem){
-    let condition = elem.match(findCondition);
+    let brackets = elem.match(findBrackets);
     let isTest;
+  
+    let condition = brackets.match(findCondition);
 
     if (!condition) {
-        condition = elem.match(findCountCondition);
+        condition = brackets.match(findCountCondition);
 
         if (!condition) return elem;
 
