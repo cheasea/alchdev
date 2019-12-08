@@ -271,6 +271,8 @@ function parseConditions(elem){
                 if (value !== needValue) isTest = true;
                 break;
         }
+
+        elem = elem.replace(condition, '');
     } else {
         switch(condition[1]) {
             case '+':
@@ -286,11 +288,11 @@ function parseConditions(elem){
                 isTest = !allElements[condition[2]].opened;
                 break;
         }
+
+        elem = elem.replace(condition, '');
     }
 
     if (isTest) {
-        elem = elem.replace(findCondition, '').replace(findCountCondition, '');
-
         if (elem.match(findCondition)) parseConditions(elem);
         if (elem.match(findCountCondition)) parseConditions(elem);
         else return elem;
