@@ -831,22 +831,22 @@ function react(r, b = false) {
                                 newValue = (+value).toFixed(length);
                                 break;
                             case '+':
-                                newValue = (getValue + +value).toFixed(length);
+                                newValue = computeExpression(`${getValue} + ${+value}`);
                                 break;
                             case '-':
-                                newValue = (getValue - +value).toFixed(length);
+                                newValue = computeExpression(`${getValue} - ${+value}`);
                                 break;
                             case '*':
-                                newValue = (getValue * +value).toFixed(length);
+                                newValue = computeExpression(`${getValue} * ${+value}`);
                                 break;
                             case '/':
-                                newValue = (getValue / +value).toFixed(length);
+                                newValue = computeExpression(`${getValue} / ${+value}`);
                                 break;
                             case '%':
-                                newValue = (getValue % +value).toFixed(length);
+                                newValue = computeExpression(`${getValue} % ${+value}`);
                                 break;
                             case '^':
-                                newValue = (getValue ** +value).toFixed(length);
+                                newValue = computeExpression(`${getValue} ^ ${+value}`);
                                 break;
                         }
 
