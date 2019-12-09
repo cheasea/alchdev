@@ -809,8 +809,9 @@ function react(r, b = false) {
                             at[atValue].forEach(item => {
                                 countElements(item);
                             });
+
+                            allCounters[name].at[atValue] = at[atValue];
                         }
-                        allCounters[name].at[atValue] = at[atValue];
                     }
                             
                     if (allCounters[name].value === undefined) {
