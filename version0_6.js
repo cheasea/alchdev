@@ -27,8 +27,8 @@ let allCounters = {};
 
 let findCondition = /\(\-([+|\-|?|!])(.+)\)$/;
 let findCountCondition = /\((.+)\s+?(>|<|=|==|>=|<=|!=)\s+?(\d+(?:\.\d+)?)\)$/;
-let findCounterArg = /(min|max|at|\+|-|=|\*|\/)\s*(.*)/;
-let findOperation = /(\+|-|=|\*|\/)\s*(?:([+-]?(?:\d*[.])?\d+)|{(.*?)})/;
+let findCounterArg = /(min|max|at|\+|-|=|\*|\/|%|\^)\s*(.*)/;
+let findOperation = /(\+|-|=|\*|\/|%|\^)\s*(?:([+-]?(?:\d*[.])?\d+)|{(.*?)})/;
 let findCounterSetting = /((min|max|at)\s*([+-]?(?:\d*[.])?\d+)\s*)({.*})?/;
 
 if (settings.counterOutputChar)
