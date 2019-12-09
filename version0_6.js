@@ -223,14 +223,14 @@ function checkCounterArgs(name, value) {
             if (max.result.length > 0)
                 result = result.concat(react(max.result, b=true)); // сначала добавляем результат из max
             if (at[max.value]) { // потом из at, если есть
-                result = result.concat(react(counter.at[max.value], b=true));
+                result = result.concat(react(allCounters[name].at[max.value], b=true));
             }
             return result;
         }
     }
 
     if (at[value]) {
-      result = result.concat(react(counter.at[value], b=true));
+      result = result.concat(react(allCounters[name].at[value], b=true));
     }
 
     allCounters[name].value = value;
