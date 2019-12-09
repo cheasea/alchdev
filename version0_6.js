@@ -842,6 +842,12 @@ function react(r, b = false) {
                             case '/':
                                 newValue = (getValue / +value).toFixed(length);
                                 break;
+                            case '%':
+                                newValue = (getValue % +value).toFixed(length);
+                                break;
+                            case '^':
+                                newValue = (getValue ** +value).toFixed(length);
+                                break;
                         }
 
                         resultsTemp = resultsTemp.concat(
