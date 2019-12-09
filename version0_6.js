@@ -1097,12 +1097,6 @@ function gameInit() {
             $("#elementFilter").keyup(function (event) {
                 filterStack($("#elementFilter").val());
             });
-            $("#showHelp").click(function () {
-                if ($('#help').dialog('isOpen')) $('#help').dialog('close');
-                else $('#help').dialog('open');
-
-                reachGoal('SHOW_HINTS');
-            });
 
             applySettings(settings);
 
