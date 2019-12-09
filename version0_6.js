@@ -810,7 +810,7 @@ function react(r, b = false) {
                                 countElements(item);
                             });
                         }
-                        allCounters[name].at[value] = at[value];
+                        allCounters[name].at[atValue] = at[atValue];
                     }
                             
                     if (allCounters[name].value === undefined) {
