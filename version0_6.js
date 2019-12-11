@@ -57,10 +57,12 @@ for (let r in reactions) {
 
     r.split('+').forEach(elem => {
         countElements(elem);
-        console.log(r, elem)
         allElements[elem].hasReaction = true;
+        console.log(allElements)
     });
 }
+
+console.log(allElements)
 
 // принимает значение вида {...} <остальные аргументы>
 // возвращает объект с массивом результатов и индексом, когда закрываются все пары {} или -1 в случае ошибки
