@@ -27,8 +27,8 @@ let allCounters = {};
 
 let findCondition = /\(\-([+|\-|?|!])(.+)\)$/;
 let findCountCondition = /\((.+)\s+?(>|<|=|==|>=|<=|!=)\s+?(\d+(?:\.\d+)?)\)$/;
-let findCounterArg = /(min|max|at|\+|-|=|\*|\/)\s*(.*)/;
-let findOperation = /(\+|-|=|\*|\/)\s*(?:([+-]?(?:\d*[.])?\d+)|{(.*?)})/;
+let findCounterArg = /(min|max|at|\+|-|=|\*|\/|%|\^)\s*(.*)/;
+let findOperation = /(\+|-|=|\*|\/|%|\^)\s*(?:([+-]?(?:\d*[.])?\d+)|{(.*?)})/;
 let findCounterSetting = /((min|max|at)\s*([+-]?(?:\d*[.])?\d+)\s*)({.*})?/;
 
 if (settings.counterOutputChar)
@@ -223,14 +223,14 @@ function checkCounterArgs(name, value) {
             if (max.result.length > 0)
                 result = result.concat(react(max.result, b=true)); // сначала добавляем результат из max
             if (at[max.value]) { // потом из at, если есть
-                result = result.concat(react(counter.at[max.value], b=true));
+                result = result.concat(react(allCounters[name].at[max.value], b=true));
             }
             return result;
         }
     }
 
     if (at[value]) {
-      result = result.concat(react(counter.at[value], b=true));
+      result = result.concat(react(allCounters[name].at[value], b=true));
     }
 
     allCounters[name].value = value;
@@ -809,8 +809,9 @@ function react(r, b = false) {
                             at[atValue].forEach(item => {
                                 countElements(item);
                             });
+
+                            allCounters[name].at[atValue] = at[atValue];
                         }
-                        allCounters[name].at[value] = at[value];
                     }
                             
                     if (allCounters[name].value === undefined) {
@@ -830,16 +831,22 @@ function react(r, b = false) {
                                 newValue = (+value).toFixed(length);
                                 break;
                             case '+':
-                                newValue = (getValue + +value).toFixed(length);
+                                newValue = computeExpression(`${getValue} + ${+value}`);
                                 break;
                             case '-':
-                                newValue = (getValue - +value).toFixed(length);
+                                newValue = computeExpression(`${getValue} - ${+value}`);
                                 break;
                             case '*':
-                                newValue = (getValue * +value).toFixed(length);
+                                newValue = computeExpression(`${getValue} * ${+value}`);
                                 break;
                             case '/':
-                                newValue = (getValue / +value).toFixed(length);
+                                newValue = computeExpression(`${getValue} / ${+value}`);
+                                break;
+                            case '%':
+                                newValue = computeExpression(`${getValue} % ${+value}`);
+                                break;
+                            case '^':
+                                newValue = computeExpression(`${getValue} ^ ${+value}`);
                                 break;
                         }
 
@@ -1096,12 +1103,6 @@ function gameInit() {
             });
             $("#elementFilter").keyup(function (event) {
                 filterStack($("#elementFilter").val());
-            });
-            $("#showHelp").click(function () {
-                if ($('#help').dialog('isOpen')) $('#help').dialog('close');
-                else $('#help').dialog('open');
-
-                reachGoal('SHOW_HINTS');
             });
 
             applySettings(settings);
