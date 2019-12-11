@@ -1,4 +1,5 @@
 function loadScripts(scripts) {
+  if (!scripts) return;
   if (scripts.length === 0) return;
 
   let link = scripts.shift();
@@ -31,5 +32,5 @@ versionCheck();
 $("title").text(
   $("title")
     .text()
-    .replace("Алхимия 0.5 beta", "Алхимия 0.5.2 patched")
+    .replace("Алхимия 0.5 beta", "Алхимия 0.6 beta")
 );
