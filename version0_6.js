@@ -58,11 +58,9 @@ for (let r in reactions) {
     r.split('+').forEach(elem => {
         countElements(elem);
         allElements[elem].hasReaction = true;
-        console.log(allElements)
+        console.log(elem, allElements[elem].hasReaction);
     });
 }
-
-console.log(allElements)
 
 // принимает значение вида {...} <остальные аргументы>
 // возвращает объект с массивом результатов и индексом, когда закрываются все пары {} или -1 в случае ошибки
@@ -240,7 +238,7 @@ function checkCounterArgs(name, value) {
     return result;
 }
 
-let findBrackets = /\(.+?\)/;
+let findBrackets = /\(.+?$\)/;
 
 function parseConditions(elem){
     let brackets = elem.match(findBrackets);
