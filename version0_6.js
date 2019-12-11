@@ -57,6 +57,7 @@ for (let r in reactions) {
 
     r.split('+').forEach(elem => {
         countElements(elem);
+        console.log(r, elem)
         allElements[elem].hasReaction = true;
     });
 }
