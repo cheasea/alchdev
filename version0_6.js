@@ -25,12 +25,6 @@ var opened = [];
 let allElements = {};
 let allCounters = {};
 
-let findCondition = /\(\-([+|\-|?|!])(.+)\)$/;
-let findCountCondition = /\((.+)\s+?(>|<|=|==|>=|<=|!=)\s+?(\d+(?:\.\d+)?)\)$/;
-let findCounterArg = /(min|max|at|\+|-|=|\*|\/|%|\^)\s*(.*)/;
-let findOperation = /(\+|-|=|\*|\/|%|\^)\s*(?:([+-]?(?:\d*[.])?\d+)|{(.*?)})/;
-let findCounterSetting = /((min|max|at)\s*([+-]?(?:\d*[.])?\d+)\s*)({.*})?/;
-
 if (settings.counterOutputChar)
     settings.counterOutputChar = settings.counterOutputChar.replace(
         /[.*+?^${}()|[\]\\]/g,
@@ -38,11 +32,10 @@ if (settings.counterOutputChar)
       )
 else settings.counterOutputChar = '@'
 
-if (!settings.counterOutputChar) {}
-  var customOutputRegex = new RegExp(
+var customOutputRegex = new RegExp(
     "(?=.*)" + (settings.counterOutputChar || "@") + "(?=.*)",
     "g"
-  );
+);
 
 if (!settings.output) settings.output = {};
 
@@ -58,7 +51,6 @@ for (let r in reactions) {
     r.split('+').forEach(elem => {
         countElements(elem);
         allElements[elem].hasReaction = true;
-        console.log(elem, allElements[elem].hasReaction);
     });
 }
 
@@ -104,12 +96,16 @@ function computeExpression(str) {
         let toEval = {}, res, cleanName;
         for (let v of vars) {
             cleanName = v.replace("_", " ");
-            if (!allCounters[cleanName]) {
+            let counterValue = getCounterValue(cleanName);
+
+            if (counterValue === undefined) {
                 errMsg(
-                `Возникла ошибка при вычислении выражения "${str}": неизвестно значение счётчика "${v}"`
+                    `Возникла ошибка при вычислении выражения "${str}": неизвестно значение счётчика "${cleanName}".
+                    Помните, что в вычисляемом выражении в названии счётчиков пробелы заменяются на нижнее подчёркивание, то есть _`
                 );
                 return 0;
             }
+            
             toEval[v] = +allCounters[cleanName].value;
         }
         res = Number(parsed.evaluate(toEval));
@@ -120,6 +116,14 @@ function computeExpression(str) {
         return 0;
     }
 }
+
+// let findCounterOperation = /(\+|-|=|\*|\/|%|\^)\s*(?:([+-]?(?:\d*[.])?\d+)|{(.*?)})/;
+// let findCounterSetting = /((min|max|at)\s*([+-]?(?:\d*[.])?\d+)\s*)({.*})?/;
+// let findCounterArgument = new RegExp(`(?:(${findCounterSetting.source})|(${findCounterOperation.source}))`);
+
+let findCounterArg = /(min|max|at|\+|-|=|\*|\/|%|\^)\s*(.*)/;
+let findOperation = /(\+|-|=|\*|\/|%|\^)\s*(?:([+-]?(?:\d*[.])?\d+)|{(.*?)})/;
+let findCounterSetting = /((min|max|at)\s*([+-]?(?:\d*[.])?\d+)\s*)({.*})?/;
 
 // str имеет вид set <название счётчика> <аргументы>
 // <аргументы> - это min, max, at и операции изменения значения
@@ -192,7 +196,7 @@ function parseCounter(str) {
 // проверить значение на пересечение min, max, at
 // name - название счётчика, value - новое значение
 // возвращает массив результатов
-function checkCounterArgs(name, value) {
+function checkCounterValue(name, value) {
     let min = allCounters[name].min,
         max = allCounters[name].max,
         at = allCounters[name].at,
@@ -238,78 +242,126 @@ function checkCounterArgs(name, value) {
     return result;
 }
 
-let findBrackets = /\(.+?$\)/;
+function getElements(name) {
+    return $(`#board .element:data(elementName,"${name}")`).not(":data(isDead,1)");
+}
 
-function parseConditions(elem){
-    let brackets = elem.match(findBrackets);
-    let isTest, condition;
-  
-    if (brackets) {
-      condition = brackets[0].match(findCondition);
+// возвращает значение счётчика, если он существует (иначе undefined)
+function getCounterValue(name) {
+    let counter = allCounters[name];
+    if (counter === undefined)
+        return undefined;
+    else
+        return counter.value;
+}
+
+// возвращает число или значение счётчика
+function getNumber(str) {
+    let number = Number(str);
+
+    // если это не число
+    if (isNaN(number)) {
+        number = getCounterValue(str);
+        
+        if (number === undefined) {
+            errMsg(`Не удалось найти значение счётчика с названием "${str}"`);
+            return 0;
+        }
     }
 
-    if (!condition) {
-        if (brackets) {
-          condition = brackets[0].match(findCountCondition);
-        }
+    return +number;
+}
 
+function isElementOpened(name) {
+    let elem = allElements[name];
+    if (elem === undefined)
+        return false;
+    else
+        return elem.opened;
+}
+
+// проверяет, истинны ли условия для элемента (возвращает true/false)
+function checkElementCondition(condition) {
+    let operation = condition[1];
+    let name = condition[2];
+
+    switch (operation) {
+        case "+":
+            return getElements(name)[0] !== undefined;
+        
+        case "-":
+            return getElements(name)[0] === undefined;
+        
+        case "?":
+            return isElementOpened(name);
+        
+        case "!":
+            return !isElementOpened(name);
+    }
+}
+
+// проверяет, истинны ли условия для счётчика (возвращает true/false)
+function checkCounterCondition(condition) {
+    let firstValue = getNumber(condition[1]);
+    let operation = condition[2];
+    let secondValue = getNumber(condition[3]);
+
+    switch (operation) {
+        case ">":
+            return firstValue > secondValue;
+        
+        case "<":
+            return firstValue < secondValue;
+        
+        case "=":
+        case "==":
+            return firstValue == secondValue;
+        
+        case ">=":
+            return firstValue >= secondValue;
+        
+        case "<=":
+            return firstValue <= secondValue;
+        
+        case "!=":
+            return firstValue !== secondValue;
+    }
+}
+
+let findCondition = /.*(\(.+\))$/;
+let findElementCondition = /\(-([-+?!])(.+)\)$/;
+let findCounterCondition = /\((.+?)\s*(==|>=|<=|!=|>|<|=)\s*(.+?)\)$/;
+
+function parseConditions(elem) {
+    let isTest = true;
+
+    while (isTest) {
+        let condition = findCondition.exec(elem);
         if (!condition) return elem;
 
-        let value = +allCounters[condition[1]].value;
-        let needValue = +condition[3];
-        let operation = condition[2];
+        let elementCondition = findElementCondition.exec(condition[1]);
 
-        switch(operation) {
-            case '>':
-                if (value > needValue) isTest = true;
-                break;
-            case '<':
-                if (value < needValue) isTest = true;
-                break;
-            case '=':
-            case '==':
-                if (value == needValue) isTest = true;
-                break;
-            case '>=':
-                if (value >= needValue) isTest = true;
-                break;
-            case '<=':
-                if (value <= needValue) isTest = true;
-                break;
-            case '!=':
-                if (value !== needValue) isTest = true;
-                break;
+        if (elementCondition) {
+            isTest = checkElementCondition(elementCondition);
+            elem = elem.replace(elementCondition[0], ''); // FIXME: проверить, убирает ли условия внутри {} также (и исправить)
+            continue;
         }
 
-        elem = elem.replace(condition[0], '');
-    } else {
-        switch(condition[1]) {
-            case '+':
-                isTest = $(`#board .element:data(elementName,"${condition[2]}")`).not(':data(isDead,1)')[0];
-                break;
-            case '-':
-                isTest = !$(`#board .element:data(elementName,"${condition[2]}")`).not(':data(isDead,1)')[0];
-                break;
-            case '?':
-                isTest = allElements[condition[2]].opened;
-                break;
-            case '!':
-                isTest = !allElements[condition[2]].opened;
-                break;
+        let counterCondition = findCounterCondition.exec(condition[1]);
+        if (counterCondition) {
+            isTest = checkCounterCondition(counterCondition);
+            elem = elem.replace(counterCondition[0], ""); // FIXME: проверить, убирает ли условия внутри {} также (и исправить)
+            continue; 
         }
 
-        elem = elem.replace(condition[0], '');
+        // если нет условий, то прерываем цикл
+        break;
     }
 
-    if (isTest) {
-        if (elem.match(findBrackets)) {
-            return parseConditions(elem);
-        } else {
-            return elem;
-        }
-    } else {
+    if (isTest)
+        return elem;
+    else
         return false;
-    }
 }
 
 function deleteElements(name) {
@@ -752,6 +804,115 @@ function updateCounters() {
     }
 }
 
+let findElementPrefix = /^(-{0,3})(.*)/;
+
+function parsePrefix(str, reagents) {
+    let prefix = findElementPrefix.exec(str);
+    let operation = prefix[1];
+    let elem = prefix[2];
+    let e;
+
+    switch (operation) {
+        case "-":
+            e = getElements(elem).first();
+            e.data("toDelete", true);
+            return elem;
+        
+        case "--":
+            e = getElements(elem).not(".ui-selected").not(":data(toKill,1)").not(":data(maybeKill,1)").first();
+            if (e.length == 0)
+                e = getElements(elem).not(".ui-selected").not(":data(toKill,1)").first();
+            e.data("toKill", "1");
+            if (e.length == 0) {
+                logReaction("Для этой реакции необходимо, чтобы на поле присутствовал еще " + elem, reagents);
+                $("#board .element:data(toKill,1)").data("toKill", "0");
+                $("#board .element:data(maybeKill,1)").data("maybeKill", "0");
+                return 0;
+            }
+            return elem;
+        
+        case "---":
+            //удалить всё
+            if (elem.length == 0)
+                $("#board .element").data("maybeKill", "1");
+
+            else {
+              // удалить одинаковые элементы
+              let classExists = false;
+              let l;
+              for (l in classes_strings)
+                if (classes_strings[l] == elem) {
+                    classExists = true;
+                    break;
+                }
+
+              if (classExists)
+                $("#board .element." + l)
+                  .not(".ui-selected")
+                  .data("maybeKill", "1");
+              else
+                getElements(elem)
+                  .not(".ui-selected")
+                  .data("maybeKill", "1");
+            }
+            return elem;
+        
+        default:
+            return false;
+    }
+}
+
+function processReaction(toProcess) {
+    for (let str of toProcess) {
+        // ПЕРВЫЙ ЭТАП: анализ условий
+        let goodRes = parseConditions(str);
+        if (!goodRes) continue;
+
+        // ВТОРОЙ ЭТАП: анализ на наличие удаления элементов
+        let prefixFound = parsePrefix(goodRes);
+        if (prefixFound || prefixFound === "") continue;
+        // если обязательное удаление не выполнено, прерываем цикл
+        if (prefixFound === 0) break;
+
+        // ТРЕТИЙ ЭТАП: анализ на счётчик
+        let changedCounter = changeCounter(str);
+    }
+
+    let toDelete = $('#board :data(toDelete)');
+
+    if (toDelete[0]) {
+        deleteElements(toDelete);
+    }
+
+    destroyElement($('#board :data(toKill,1)'));
+    destroyElement($('#board :data(maybeKill,1)'));
+
+    updateCounters();
+}
+
+// reagents - массив с названиями реагентов
+function findReaction(reagents) {
+    // находим реакцию
+    let reactionKey = r.sort().join('+');
+    let toProcess = reactions[reactionKey];
+
+    if (toProcess) {
+        let results = processReaction(toProcess);
+
+        if (messages[reagents])
+            message(reagents, "highlight");
+        
+        if (results.length === 0)
+            return 0;
+        
+        return results;
+    }
+    else {
+        logReaction(false, reagents);
+        return 0;
+    }
+}
+
 function react(r, b = false) {
     var reagents = r.sort().join('+');
     var results = [];
@@ -852,7 +1013,7 @@ function react(r, b = false) {
                         }
 
                         resultsTemp = resultsTemp.concat(
-                            checkCounterArgs(name, +newValue)
+                            checkCounterValue(name, +newValue)
                         );
 
                         if (elem[0]) pulsate(elem);
