@@ -328,7 +328,7 @@ function checkCounterCondition(condition) {
     }
 }
 
-let findCondition = /.*(\(.+\))$/;
+findCondition = /.*(\(.+\))$/;
 let findElementCondition = /\(-([-+?!])(.+)\)$/;
 let findCounterCondition = /\((.+?)\s*(==|>=|<=|!=|>|<|=)\s*(.+?)\)$/;
 
