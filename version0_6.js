@@ -332,12 +332,37 @@ let findCondition = /.*(\(.+\))$/;
 let findElementCondition = /\(-([-+?!])(.+)\)$/;
 let findCounterCondition = /\((.+?)\s*(==|>=|<=|!=|>|<|=)\s*(.+?)\)$/;
 
+function removeConditions(elem) {
+    let condition = findCondition.exec(elem);
+
+    while (condition) {
+        let elementCondition = findElementCondition.exec(condition[1]);
+
+        if (elementCondition) {
+            elem = elem.replace(elementCondition[0], ""); // FIXME: проверить, убирает ли условия внутри {} также (и исправить)
+            condition = findCondition.exec(elem);
+            continue;
+        }
+
+        let counterCondition = findCounterCondition.exec(condition[1]);
+        if (counterCondition) {
+            elem = elem.replace(counterCondition[0], ""); // FIXME: проверить, убирает ли условия внутри {} также (и исправить)
+            condition = findCondition.exec(elem);
+            continue;
+        }
+
+        break;
+    }
+        
+    return elem;
+}
+
 function parseConditions(elem) {
     let isTest = true;
 
     while (isTest) {
         let condition = findCondition.exec(elem);
-        if (!condition) return elem;
+        if (!condition) break;
 
         let elementCondition = findElementCondition.exec(condition[1]);
 
@@ -383,7 +408,7 @@ function countElements(name) {
         return;
     } 
     
-    name = name.replace(findCondition, '').replace(findCountCondition, '');
+    name = removeConditions(name);
 
     allElements[name] = {};
 }
