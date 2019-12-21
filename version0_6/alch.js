@@ -212,7 +212,7 @@ function checkCounterValue(name, value) {
             if (min.result.length > 0)
                 result = result.concat(react(min.result, b=true)); // сначала добавляем результат из min
             if (at[min.value]) { // потом из at, если есть
-                result = result.concat(react(counter.at[min.value], b=true));
+                result = result.concat(react(allCounters[name].at[min.value], b=true));
             }
             return result;
         }
