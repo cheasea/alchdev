@@ -1072,8 +1072,6 @@ function onDrop(event, ui) {
     updateCounters();
 }
 
-let inited = false;
-
 var wrongs = [];
 var finals = [];
 
@@ -1135,120 +1133,6 @@ function test(type) {
 
     return result;
 }
-
-function gameInit() {
-    if (!inited) {
-        inited = true;
-        $('#board').children('.element').remove();
-        if (finals.length == 0) {
-            $("#vote_stats").hide();
-            $("#vote_result").hide();
-            $("#abyss").droppable({
-                drop: function (e, ui) {
-                    destroyElement(ui.helper);
-                    refreshHint();
-                }
-            });
-            $('#stack-btn').hide();
-            $("#help").dialog({
-                autoOpen: false,
-                position: 'right',
-                open: renderHint
-            });
-            $("#element_hint").dialog({
-                autoOpen: false,
-                width: 320
-            });
-            $("#payment_dialog").dialog({
-                autoOpen: false,
-                width: 'auto'
-            }).bind('dialogclose', function () {
-                getHintCount();
-            });
-            $("#recipe_list").dialog({
-                autoOpen: false,
-                position: 'left'
-            });
-            $("#err_msg").dialog({
-                autoOpen: false
-            });
-            $("#info_msg").dialog({
-                autoOpen: false,
-                width: 500
-            });
-            $("#welcome_dialog").dialog({
-                autoOpen: ($.cookie('welcomed') ? false : true),
-                width: 800
-            });
-            $("#elementFilter").keyup(function (event) {
-                filterStack($("#elementFilter").val());
-            });
-
-            applySettings(settings);
-
-            if (settings['add']) {
-                $(document).unbind('dblclick');
-                $(document).bind('dblclick', function (e) {
-                    let spawned = [];
-
-                    let filtered = inits.map(item => {
-                        let counter = item.match(matchCounter);
-
-                        if (counter || counters[item]) {
-                            let name;
-
-                            if (counter) {
-                                name = counter[1];
-                            } else {
-                                name = item;
-                            }
-
-                            if (spawned.indexOf(name) !== -1) return;
-
-                            spawned.push(name);
-                            return name;
-                        } else {
-                            return item;
-                        }
-                    });
-
-                    filtered = filtered.filter(item => {
-                        return (typeof item !== 'undefined')
-                    });
-
-                    placeElements(filtered, {
-                        top: e.pageY,
-                        left: e.pageX
-                    });
-
-                    refreshHint();
-                    e.stopPropagation();
-                });
-            }
-
-            toggleSort($('#order').val());
-
-            sortKeys(reactions);
-            var test1 = test();
-            var total = test1.total;
-            finals = test1.finals;
-            wrongs = test1.wrongs;
-
-            element_count = Object.keys(allElements).length;
-            refreshStat();
-        }
-
-        if (settings.debug == "true") console.log("Game Inited.");
-        //so.. we are ready, lets go
-        placeElements(react(inits, true), {
-            top: $('#stack').offset().top + $('#stack').height() + 200,
-            left: $('body').width() / 2 - 100
-        }, true);
-        updateCounters();
-    }
-}
-
-gameInit();
 
 function addElement(name, place, no_discover) {
     let cleanName = name;
@@ -1385,6 +1269,133 @@ function placeElements(names, place, firstPush) {
     }
 }
 
-if (wrongs.length > 0) {
-    errMsg('В этом моде не удастся открыть все элементы, потому что некоторые из них невозможно получить: ' + wrongs.join(","));
+function gameInit() {
+  if (!inited) {
+    inited = true;
+    $("#board")
+      .children(".element")
+      .remove();
+    if (finals.length == 0) {
+      $("#vote_stats").hide();
+      $("#vote_result").hide();
+      $("#abyss").droppable({
+        drop: function(e, ui) {
+          destroyElement(ui.helper);
+          refreshHint();
+        }
+      });
+      $("#stack-btn").hide();
+      $("#help").dialog({
+        autoOpen: false,
+        position: "right",
+        open: renderHint
+      });
+      $("#element_hint").dialog({
+        autoOpen: false,
+        width: 320
+      });
+      $("#payment_dialog")
+        .dialog({
+          autoOpen: false,
+          width: "auto"
+        })
+        .bind("dialogclose", function() {
+          getHintCount();
+        });
+      $("#recipe_list").dialog({
+        autoOpen: false,
+        position: "left"
+      });
+      $("#err_msg").dialog({
+        autoOpen: false
+      });
+      $("#info_msg").dialog({
+        autoOpen: false,
+        width: 500
+      });
+      $("#welcome_dialog").dialog({
+        autoOpen: $.cookie("welcomed") ? false : true,
+        width: 800
+      });
+      $("#elementFilter").keyup(function(event) {
+        filterStack($("#elementFilter").val());
+      });
+
+      applySettings(settings);
+
+      if (settings["add"]) {
+        $(document).unbind("dblclick");
+        $(document).bind("dblclick", function(e) {
+          let spawned = [];
+
+          let filtered = inits.map(item => {
+            let counter = item.match(matchCounter);
+
+            if (counter || counters[item]) {
+              let name;
+
+              if (counter) {
+                name = counter[1];
+              } else {
+                name = item;
+              }
+
+              if (spawned.indexOf(name) !== -1) return;
+
+              spawned.push(name);
+              return name;
+            } else {
+              return item;
+            }
+          });
+
+          filtered = filtered.filter(item => {
+            return typeof item !== "undefined";
+          });
+
+          placeElements(filtered, {
+            top: e.pageY,
+            left: e.pageX
+          });
+
+          refreshHint();
+          e.stopPropagation();
+        });
+      }
+
+      toggleSort($("#order").val());
+
+      sortKeys(reactions);
+      var test1 = test();
+      var total = test1.total;
+      finals = test1.finals;
+      wrongs = test1.wrongs;
+
+      if (wrongs.length > 0) {
+        errMsg(
+          "В этом моде не удастся открыть все элементы, потому что некоторые из них невозможно получить: " +
+            wrongs.join(",")
+        );
+      }
+
+      element_count = Object.keys(allElements).length;
+      refreshStat();
+    }
+
+    if (settings.debug == "true") console.log("Game Inited.");
+    //so.. we are ready, lets go
+    placeElements(
+      react(inits, true),
+      {
+        top: $("#stack").offset().top + $("#stack").height() + 200,
+        left: $("body").width() / 2 - 100
+      },
+      true
+    );
+    updateCounters();
+  }
 }
+
+let inited = false;
+
+gameInit();
