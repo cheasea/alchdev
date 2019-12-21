@@ -300,9 +300,9 @@ class Conditions {
     }
 }
 
-Condition.findBrackets = /.*(\(.+\))$/;
-Condition.findElementCondition = /\(-([-+?!])(.+)\)$/;
-Condition.findCounterCondition = /\((.+?)\s*(==|>=|<=|!=|>|<|=)\s*(.+?)\)$/;
+Conditions.findBrackets = /.*(\(.+\))$/;
+Conditions.findElementCondition = /\(-([-+?!])(.+)\)$/;
+Conditions.findCounterCondition = /\((.+?)\s*(==|>=|<=|!=|>|<|=)\s*(.+?)\)$/;
 
 // проверить значение на пересечение min, max, at
 // name - название счётчика, value - новое значение
