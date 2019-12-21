@@ -840,15 +840,16 @@ function react(r, b = false) {
                 resultsTemp.push(reactions[reagents][i])
             }
         for (var i = 0; i < resultsTemp.length; i++) {
-            if (name = Conditions.parse(resultsTemp[i])) {
+            let name = Conditions.parse(resultsTemp[i]);
+            if (name) {
                 // BEGIN processing counters
                 let isCounter = /^set (.+$)/.test(name);
              
                 if (isCounter) {
                     let counterParsed = parseCounter(name);
 
-                    let name = counterParsed.name;
-                        operation = counterParsed.operation,
+                    name = counterParsed.name;
+                    let operation = counterParsed.operation,
                         value = counterParsed.value;
                         min = counterParsed.min;
                         max = counterParsed.max;
