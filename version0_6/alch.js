@@ -842,10 +842,10 @@ function react(r, b = false) {
         for (var i = 0; i < resultsTemp.length; i++) {
             if (name = Conditions.parse(resultsTemp[i])) {
                 // BEGIN processing counters
-                let isCounter = /^set (.+$)/.test(resultsTemp[i]);
+                let isCounter = /^set (.+$)/.test(name);
              
                 if (isCounter) {
-                    let counterParsed = parseCounter(resultsTemp[i]);
+                    let counterParsed = parseCounter(name);
 
                     let name = counterParsed.name;
                         operation = counterParsed.operation,
