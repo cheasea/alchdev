@@ -193,6 +193,117 @@ function parseCounter(str) {
     return counter;
 }
 
+class Conditions {
+    // проверяет, истинны ли условия для элемента (возвращает true/false)
+    static checkElement(condition) {
+        let operation = condition[1];
+        let name = condition[2];
+
+        switch (operation) {
+            case "+":
+                return getElements(name)[0] !== undefined;
+            
+            case "-":
+                return getElements(name)[0] === undefined;
+            
+            case "?":
+                return isElementOpened(name);
+            
+            case "!":
+                return !isElementOpened(name);
+        }
+    }
+
+    // проверяет, истинны ли условия для счётчика (возвращает true/false)
+    static checkCounter(condition) {
+        let firstValue = getNumber(condition[1]);
+        let operation = condition[2];
+        let secondValue = getNumber(condition[3]);
+
+        switch (operation) {
+            case ">":
+                return firstValue > secondValue;
+            
+            case "<":
+                return firstValue < secondValue;
+            
+            case "=":
+            case "==":
+                return firstValue == secondValue;
+            
+            case ">=":
+                return firstValue >= secondValue;
+            
+            case "<=":
+                return firstValue <= secondValue;
+            
+            case "!=":
+                return firstValue !== secondValue;
+        }
+    }
+
+    static remove(elem) {
+        let condition = this.findBrackets.exec(elem);
+
+        while (condition) {
+            let elementCondition = this.findElementCondition.exec(condition[1]);
+
+            if (elementCondition) {
+                elem = elem.replace(elementCondition[0], ""); // FIXME: проверить, убирает ли условия внутри {} также (и исправить)
+                condition = this.findBrackets.exec(elem);
+                continue;
+            }
+
+            let counterCondition = this.findCounterCondition.exec(condition[1]);
+            if (counterCondition) {
+                elem = elem.replace(counterCondition[0], ""); // FIXME: проверить, убирает ли условия внутри {} также (и исправить)
+                condition = this.findBrackets.exec(elem);
+                continue;
+            }
+
+            break;
+        }
+            
+        return elem;
+    }
+
+    static parse(elem) {
+        let isTest = true;
+
+        while (isTest) {
+            let condition = this.findBrackets.exec(elem);
+            if (!condition) break;
+
+            let elementCondition = this.findElementCondition.exec(condition[1]);
+
+            if (elementCondition) {
+                isTest = this.checkElement(elementCondition);
+                elem = elem.replace(elementCondition[0], ''); // FIXME: проверить, убирает ли условия внутри {} также (и исправить) (возможно нужно убирть по findBrackets)
+                continue;
+            }
+
+            let counterCondition = this.findCounterCondition.exec(condition[1]);
+            if (counterCondition) {
+                isTest = this.checkCounter(counterCondition);
+                elem = elem.replace(counterCondition[0], ""); // FIXME: проверить, убирает ли условия внутри {} также (и исправить)
+                continue; 
+            }
+
+            // если нет условий, то прерываем цикл
+            break;
+        }
+
+        if (isTest)
+            return elem;
+        else
+            return false;
+    }
+}
+
+Condition.findBrackets = /.*(\(.+\))$/;
+Condition.findElementCondition = /\(-([-+?!])(.+)\)$/;
+Condition.findCounterCondition = /\((.+?)\s*(==|>=|<=|!=|>|<|=)\s*(.+?)\)$/;
+
 // проверить значение на пересечение min, max, at
 // name - название счётчика, value - новое значение
 // возвращает массив результатов
@@ -280,115 +391,6 @@ function isElementOpened(name) {
         return elem.opened;
 }
 
-// проверяет, истинны ли условия для элемента (возвращает true/false)
-function checkElementCondition(condition) {
-    let operation = condition[1];
-    let name = condition[2];
-
-    switch (operation) {
-        case "+":
-            return getElements(name)[0] !== undefined;
-        
-        case "-":
-            return getElements(name)[0] === undefined;
-        
-        case "?":
-            return isElementOpened(name);
-        
-        case "!":
-            return !isElementOpened(name);
-    }
-}
-
-// проверяет, истинны ли условия для счётчика (возвращает true/false)
-function checkCounterCondition(condition) {
-    let firstValue = getNumber(condition[1]);
-    let operation = condition[2];
-    let secondValue = getNumber(condition[3]);
-
-    switch (operation) {
-        case ">":
-            return firstValue > secondValue;
-        
-        case "<":
-            return firstValue < secondValue;
-        
-        case "=":
-        case "==":
-            return firstValue == secondValue;
-        
-        case ">=":
-            return firstValue >= secondValue;
-        
-        case "<=":
-            return firstValue <= secondValue;
-        
-        case "!=":
-            return firstValue !== secondValue;
-    }
-}
-
-var findCondition = /.*(\(.+\))$/;
-let findElementCondition = /\(-([-+?!])(.+)\)$/;
-let findCounterCondition = /\((.+?)\s*(==|>=|<=|!=|>|<|=)\s*(.+?)\)$/;
-
-function removeConditions(elem) {
-    let condition = findCondition.exec(elem);
-
-    while (condition) {
-        let elementCondition = findElementCondition.exec(condition[1]);
-
-        if (elementCondition) {
-            elem = elem.replace(elementCondition[0], ""); // FIXME: проверить, убирает ли условия внутри {} также (и исправить)
-            condition = findCondition.exec(elem);
-            continue;
-        }
-
-        let counterCondition = findCounterCondition.exec(condition[1]);
-        if (counterCondition) {
-            elem = elem.replace(counterCondition[0], ""); // FIXME: проверить, убирает ли условия внутри {} также (и исправить)
-            condition = findCondition.exec(elem);
-            continue;
-        }
-
-        break;
-    }
-        
-    return elem;
-}
-
-function parseConditions(elem) {
-    let isTest = true;
-
-    while (isTest) {
-        let condition = findCondition.exec(elem);
-        if (!condition) break;
-
-        let elementCondition = findElementCondition.exec(condition[1]);
-
-        if (elementCondition) {
-            isTest = checkElementCondition(elementCondition);
-            elem = elem.replace(elementCondition[0], ''); // FIXME: проверить, убирает ли условия внутри {} также (и исправить)
-            continue;
-        }
-
-        let counterCondition = findCounterCondition.exec(condition[1]);
-        if (counterCondition) {
-            isTest = checkCounterCondition(counterCondition);
-            elem = elem.replace(counterCondition[0], ""); // FIXME: проверить, убирает ли условия внутри {} также (и исправить)
-            continue; 
-        }
-
-        // если нет условий, то прерываем цикл
-        break;
-    }
-
-    if (isTest)
-        return elem;
-    else
-        return false;
-}
-
 function deleteElements(name) {
     name.each(function() {
         $(this).data('isDead', 1);
@@ -408,7 +410,7 @@ function countElements(name) {
         return;
     } 
     
-    name = removeConditions(name);
+    name = Conditions.remove(name);
 
     allElements[name] = {};
 }
@@ -890,7 +892,7 @@ function parsePrefix(str, reagents) {
 function processReaction(toProcess) {
     for (let str of toProcess) {
         // ПЕРВЫЙ ЭТАП: анализ условий
-        let goodRes = parseConditions(str);
+        let goodRes = Conditions.parse(str);
         if (!goodRes) continue;
 
         // ВТОРОЙ ЭТАП: анализ на наличие удаления элементов
@@ -949,7 +951,7 @@ function react(r, b = false) {
                 resultsTemp.push(reactions[reagents][i])
             }
         for (var i = 0; i < resultsTemp.length; i++) {
-            if (name = parseConditions(resultsTemp[i])) {
+            if (name = Conditions.parse(resultsTemp[i])) {
                 // BEGIN processing counters
                 let isCounter = /^set (.+$)/.test(resultsTemp[i]);
              
