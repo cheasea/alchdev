@@ -686,146 +686,52 @@ $('body').selectable({
     }
 })
 
+function updateCounter(name) {
+    let elem = $(`#board .element:data(elementName,"${name}")`);
+
+    if (!elem) continue;
+
+    let sameName = name.replace(/\[.+\]$/, "");
+
+    // кастомное имя счётчика
+    var counterOutputName = settings.output[name],
+        counterOutput = sameName
+        value = allCounters[name].value,
+        customChar = false;
+
+    // если счётчик есть в кастомном выводе
+    if (counterOutputName)
+      if (counterOutputName.match(customOutputRegex)) {
+        // если есть символ вывода значения, то выводим кастомное название
+        counterOutput = counterOutputName.replace(
+          customOutputRegex,
+          allCounters[name].value
+          );
+          customChar = true;
+      } // иначе просто используем кастомное название
+      else counterOutput = counterOutputName;
+    // если счётчика нет в кастомном выводе, то выводим чистое название
+    else counterOutput = sameName;
+
+    if (labels[name] && elem[0]) {
+        elem[0].innerHTML = "";
+        elem[0].innerHTML += `<img class="element-icon" src="${MEDIA_URL + labels[name]}"></img>`;
+        if (customChar)
+            elem[0].innerHTML += `<div>${counterOutput}</div>`;    
+        else
+            elem[0].innerHTML += `<div>(${value})</div>`;
+        return;
+    }
+
+    if (customChar)
+        elem.text(`${counterOutput}`);
+    else
+        elem.text(`${counterOutput}: ${value}`);
+}
+
 function updateCounters() {
     for (let name in allCounters) {
-        let elem = $(`#board .element:data(elementName,"${name}")`);
-
-        if (!elem) continue;
-
-        if (labels[name] && elem[0]) {
-            elem[0].innerHTML = '';
-            elem[0].innerHTML += `<img class="element-icon" src="${MEDIA_URL + labels[name]}"></img>`; 
-            elem[0].innerHTML += `<div>(${allCounters[name].value})</div>`;
-            return;
-        }
-
-        let sameName = name.replace(/\[.+\]$/, "");
-
-        // кастомное имя счётчика
-        var counterOutputName = settings.output[name];
-
-        // если счётчик есть в кастомном выводе
-        if (counterOutputName)
-            // если есть символ вывода значения, то выводим кастомное название
-            if (counterOutputName.match(customOutputRegex)) {
-                counterOutputName = counterOutputName.replace(
-                    customOutputRegex,
-                    allCounters[name].value
-                );
-                elem.text(`${counterOutputName}`);
-            } else // иначе просто используем кастомное название
-                elem.text(`${counterOutputName}: ${allCounters[name].value}`);
-        else // если счётчика нет в кастомном выводе, то выводим чистое название
-            elem.text(`${sameName}: ${allCounters[name].value}`);
-    }
-}
-
-let findElementPrefix = /^(-{0,3})(.*)/;
-
-function parsePrefix(str, reagents) {
-    let prefix = findElementPrefix.exec(str);
-    let operation = prefix[1];
-    let elem = prefix[2];
-    let e;
-
-    switch (operation) {
-        case "-":
-            e = getElements(elem).first();
-            e.data("toDelete", true);
-            return elem;
-        
-        case "--":
-            e = getElements(elem).not(".ui-selected").not(":data(toKill,1)").not(":data(maybeKill,1)").first();
-            if (e.length == 0)
-                e = getElements(elem).not(".ui-selected").not(":data(toKill,1)").first();
-            e.data("toKill", "1");
-            if (e.length == 0) {
-                logReaction("Для этой реакции необходимо, чтобы на поле присутствовал еще " + elem, reagents);
-                $("#board .element:data(toKill,1)").data("toKill", "0");
-                $("#board .element:data(maybeKill,1)").data("maybeKill", "0");
-                return 0;
-            }
-            return elem;
-        
-        case "---":
-            //удалить всё
-            if (elem.length == 0)
-                $("#board .element").data("maybeKill", "1");
-
-            else {
-              // удалить одинаковые элементы
-              let classExists = false;
-              let l;
-              for (l in classes_strings)
-                if (classes_strings[l] == elem) {
-                    classExists = true;
-                    break;
-                }
-
-              if (classExists)
-                $("#board .element." + l)
-                  .not(".ui-selected")
-                  .data("maybeKill", "1");
-              else
-                getElements(elem)
-                  .not(".ui-selected")
-                  .data("maybeKill", "1");
-            }
-            return elem;
-        
-        default:
-            return false;
-    }
-}
-
-function processReaction(toProcess) {
-    for (let str of toProcess) {
-        // ПЕРВЫЙ ЭТАП: анализ условий
-        let goodRes = Conditions.parse(str);
-        if (!goodRes) continue;
-
-        // ВТОРОЙ ЭТАП: анализ на наличие удаления элементов
-        let prefixFound = parsePrefix(goodRes);
-        if (prefixFound || prefixFound === "") continue;
-        // если обязательное удаление не выполнено, прерываем цикл
-        if (prefixFound === 0) break;
-
-        // ТРЕТИЙ ЭТАП: анализ на счётчик
-        let changedCounter = changeCounter(str);
-    }
-
-    let toDelete = $('#board :data(toDelete)');
-
-    if (toDelete[0]) {
-        deleteElements(toDelete);
-    }
-
-    destroyElement($('#board :data(toKill,1)'));
-    destroyElement($('#board :data(maybeKill,1)'));
-
-    updateCounters();
-}
-
-// reagents - массив с названиями реагентов
-function findReaction(reagents) {
-    // находим реакцию
-    let reactionKey = r.sort().join('+');
-    let toProcess = reactions[reactionKey];
-
-    if (toProcess) {
-        let results = processReaction(toProcess);
-
-        if (messages[reagents])
-            message(reagents, "highlight");
-        
-        if (results.length === 0)
-            return 0;
-        
-        return results;
-    }
-    else {
-        logReaction(false, reagents);
-        return 0;
+        updateCounter(name);
     }
 }
 
