@@ -689,7 +689,7 @@ $('body').selectable({
 function updateCounter(name) {
     let elem = $(`#board .element:data(elementName,"${name}")`);
 
-    if (!elem) continue;
+    if (!elem) return;
 
     let sameName = name.replace(/\[.+\]$/, "");
 
