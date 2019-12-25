@@ -46,7 +46,9 @@ for (let elem of inits) {
 for (let r in reactions) {
     reactions[r].forEach(elem => {
         countElements(elem);
-        allElements[elem].canCollected = true;
+        if (allElements[elem]) {
+          allElements[elem].canCollected = true;
+        }
     });
 
     r.split('+').forEach(elem => {
