@@ -46,6 +46,7 @@ for (let elem of inits) {
 for (let r in reactions) {
     reactions[r].forEach(elem => {
         countElements(elem);
+        allElements[elem].canCollected = true;
     });
 
     r.split('+').forEach(elem => {
@@ -777,6 +778,7 @@ function react(r, b = false) {
                             allCounters[name].min.result = min.result;
                             min.result.forEach(item => {
                                 countElements(item);
+                                allElements[item].canCollected = true;
                             });
                         }
                     }
@@ -787,6 +789,7 @@ function react(r, b = false) {
                             allCounters[name].max.result = max.result;
                             max.result.forEach(item => {
                                 countElements(item);
+                                allElements[item].canCollected = true;
                             });
                         }
                     }
@@ -795,6 +798,7 @@ function react(r, b = false) {
                         for (let atValue in at) {
                             at[atValue].forEach(item => {
                                 countElements(item);
+                                allElements[item].canCollected = true;
                             });
 
                             allCounters[name].at[atValue] = at[atValue];
@@ -1277,12 +1281,19 @@ function gameInit() {
       var test1 = test();
       var total = test1.total;
       finals = test1.finals;
-      wrongs = test1.wrongs;
 
-      if (wrongs.length > 0) {
+      let errors = [];
+
+      for (let elem in allElements) {
+        if (allElements[elem].canCollected) continue;
+
+        errors.push(elem);
+      }
+
+      if (errors.length > 0) {
         errMsg(
           "В этом моде не удастся открыть все элементы, потому что некоторые из них невозможно получить: " +
-            wrongs.join(",")
+            errors.join(",")
         );
       }
 
