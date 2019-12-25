@@ -295,11 +295,13 @@ function countElements(name) {
 
     if (name[0] === '-') return;
 
-    if (counter || allElements[name]) {
+    if (counter) return;
+
+    name = Conditions.remove(name);
+
+    if (allElements[name]) {
         return;
     } 
-    
-    name = Conditions.remove(name);
 
     allElements[name] = {};
 }
