@@ -753,8 +753,12 @@ function updateCounters() {
 }
 
 function react(r, b = false) {
-    var reagents = r.sort().join('+');
-    var results = [];
+    let reagents;
+    let results = [];
+
+    if (!b) reagents = r.sort().join('+');
+    else reagents = r.join('+');
+
     if (b || reactions[reagents]) {
         var resultsTemp = []
         if (b) resultsTemp = r;
