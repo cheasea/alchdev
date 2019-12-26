@@ -40,8 +40,10 @@ var customOutputRegex = new RegExp(
 if (!settings.output) settings.output = {};
 
 for (let elem of inits) {
-    countElements(elem);
-    allElements[getCleanName(elem)].canCollected = true;
+    let cleanName = getCleanName(elem)
+
+    countElements(cleanName);
+    allElements[cleanName].canCollected = true;
 }
 
 for (let r in reactions) {
