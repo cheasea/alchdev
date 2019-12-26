@@ -57,6 +57,8 @@ for (let r in reactions) {
     });
 
     r.split('+').forEach(elem => {
+        let cleanName = getCleanName(elem);
+
         countElements(cleanName);
         allElements[cleanName].hasReaction = true;
     });
