@@ -41,6 +41,7 @@ if (!settings.output) settings.output = {};
 
 for (let elem of inits) {
     countElements(elem);
+    allElements[elem].canCollected = true;
 }
 
 for (let r in reactions) {
