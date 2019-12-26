@@ -65,25 +65,27 @@ function getCleanName(elem) {
 
     if (elem.match(/set (.+) (.+$)/)) {
         let counter = elem.split(' ');
-        let isName, name = [];
-        
+        let isName = 0, name = [];
+   
         counter.forEach(item => {
+            if (isName === 2) return;
+
             if (item === 'set') {
-                isName = true;
+                isName = 1;
                 return;
             }
 
             if (item === 'min' || item === 'max' || item === 'at') {
-                isName = false;
+                isName = 2;
                 return;
             }
 
             if (item.match(/\+|\-|\=|\*|\/|\^|\%/)) {
-                isName = false;
+                isName = 2;
                 return;
             }
 
-            if (isName) {
+            if (isName === 1) {
                 name.push(item);
             }
         });
