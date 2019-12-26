@@ -48,15 +48,17 @@ for (let elem of inits) {
 
 for (let r in reactions) {
     reactions[r].forEach(elem => {
-        countElements(elem);
-        if (allElements[elem]) {
-          allElements[elem].canCollected = true;
+        let cleanName = getCleanName(elem);
+
+        countElements(cleanName);
+        if (allElements[cleanName]) {
+          allElements[cleanName].canCollected = true;
         }
     });
 
     r.split('+').forEach(elem => {
-        countElements(elem);
-        allElements[elem].hasReaction = true;
+        countElements(cleanName);
+        allElements[cleanName].hasReaction = true;
     });
 }
 
