@@ -57,6 +57,44 @@ for (let r in reactions) {
     });
 }
 
+function getCleanName(elem) {
+    while (elem.charAt(0) === '-') {
+       elem = elem.slice(1); 
+    }
+
+    if (elem.match(/set (.+) (.+$)/)) {
+        let counter = elem.split(' ');
+        let isName, name = [];
+        
+        counter.forEach(item => {
+            if (item === 'set') {
+                isName = true;
+                return;
+            }
+
+            if (item === 'min' || item === 'max' || item === 'at') {
+                isName = false;
+                return;
+            }
+
+            if (item.match(/\+|\-|\=|\*|\/|\^|\%/)) {
+                isName = false;
+                return;
+            }
+
+            if (isName) {
+                name.push(item);
+            }
+        });
+
+        elem = name.join('');
+    }
+
+    elem = Conditions.remove(elem);
+
+    return elem;
+}
+
 // принимает значение вида {...} <остальные аргументы>
 // возвращает объект с массивом результатов и индексом, когда закрываются все пары {} или -1 в случае ошибки
 function processingBrackets(str) {
@@ -795,8 +833,10 @@ function react(r, b = false) {
                         if (min.result) {
                             allCounters[name].min.result = min.result;
                             min.result.forEach(item => {
-                                countElements(item);
-                                if (allElements[item]) allElements[item].canCollected = true;
+                                let cleanName = getCleanName(item);
+
+                                countElements(cleanName);
+                                if (allElements[cleanName]) allElements[cleanName].canCollected = true;
                             });
                         }
                     }
@@ -806,8 +846,10 @@ function react(r, b = false) {
                         if (max.result) {
                             allCounters[name].max.result = max.result;
                             max.result.forEach(item => {
-                                countElements(item);
-                                if (allElements[item]) allElements[item].canCollected = true;
+                                let cleanName = getCleanName(item);
+
+                                countElements(cleanName);
+                                if (allElements[cleanName]) allElements[cleanName].canCollected = true;
                             });
                         }
                     }
@@ -815,8 +857,10 @@ function react(r, b = false) {
                     if (at) {
                         for (let atValue in at) {
                             at[atValue].forEach(item => {
-                                countElements(item);
-                                if (allElements[item]) allElements[item].canCollected = true;
+                                let cleanName = getCleanName(item);
+
+                                countElements(cleanName);
+                                if (allElements[cleanName]) allElements[cleanName].canCollected = true;
                             });
 
                             allCounters[name].at[atValue] = at[atValue];
