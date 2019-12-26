@@ -285,6 +285,12 @@ function isElementOpened(name) {
 
 function deleteElements(name) {
     name.each(function() {
+        let name = $(this).data('elementName');
+
+        if (allCounters[name]) {
+          allCounters[name].onBoard = false;
+        }
+
         $(this).data('isDead', 1);
         $(this).draggable('disable');
         $(this).fadeOut(1000, function() {
@@ -603,10 +609,16 @@ function onSelectStop() {
 }
 
 function destroyElement(element, anim = true) {
-    element = element.filter('.element').not('.static').not(':data(isDeleting, 1)'); 
+    element = element.filter('.element').not('.static').not(':data(isDeleting, 1)');
 
     if (!element[0]) return;
     
+    let name = $(element).data('elementName');
+
+    if (allCounters[name]) {
+        allCounters[name].onBoard = false;
+    }
+
     element.data('isDeleting', 1)
     element.data('isDead', 1);
     element.draggable('disable');
@@ -850,8 +862,9 @@ function react(r, b = false) {
                         if (elem[0]) pulsate(elem);
                     }
 
-                    if (!elem[0]) {
+                    if (!allCounters[name].onBoard) {
                         resultsTemp.push(name);
+                        allCounters[name].onBoard = true;
                     }
                 } else if (name.charAt(0) == '-') { //name starts with at least one minus
                     name = name.substr(1);
