@@ -878,7 +878,7 @@ function react(r, b = false) {
                             
                     if (allCounters[name].value === undefined) {
                         if (value === undefined) value = 0;
-                        allCounters[name].value = value;
+                        allCounters[name].value = 0;
                     }
 
                     let elem = $(`#board .element:data(elementName,"${name}")`);
