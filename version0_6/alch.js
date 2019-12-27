@@ -40,18 +40,68 @@ var customOutputRegex = new RegExp(
 if (!settings.output) settings.output = {};
 
 for (let elem of inits) {
-    countElements(elem);
+    let cleanName = getCleanName(elem)
+
+    countElements(cleanName);
+    allElements[cleanName].canCollected = true;
 }
 
 for (let r in reactions) {
     reactions[r].forEach(elem => {
-        countElements(elem);
+        let cleanName = getCleanName(elem);
+
+        countElements(cleanName);
+        if (allElements[cleanName]) {
+          allElements[cleanName].canCollected = true;
+        }
     });
 
     r.split('+').forEach(elem => {
-        countElements(elem);
-        allElements[elem].hasReaction = true;
+        let cleanName = getCleanName(elem);
+
+        countElements(cleanName);
+        allElements[cleanName].hasReaction = true;
     });
+}
+
+function getCleanName(elem) {
+    while (elem.charAt(0) === '-') {
+       elem = elem.slice(1); 
+    }
+
+    if (elem.match(/set (.+) (.+$)/)) {
+        let counter = elem.split(' ');
+        let isName = 0, name = [];
+   
+        counter.forEach(item => {
+            if (isName === 2) return;
+
+            if (item === 'set') {
+                isName = 1;
+                return;
+            }
+
+            if (item === 'min' || item === 'max' || item === 'at') {
+                isName = 2;
+                return;
+            }
+
+            if (item.match(/\+|\-|\=|\*|\/|\^|\%/)) {
+                isName = 2;
+                return;
+            }
+
+            if (isName === 1) {
+                name.push(item);
+            }
+        });
+
+        elem = name.join('');
+    }
+
+    elem = Conditions.remove(elem);
+
+    return elem;
 }
 
 // принимает значение вида {...} <остальные аргументы>
@@ -282,6 +332,12 @@ function isElementOpened(name) {
 
 function deleteElements(name) {
     name.each(function() {
+        let name = $(this).data('elementName');
+
+        if (allCounters[name]) {
+          allCounters[name].onBoard = false;
+        }
+
         $(this).data('isDead', 1);
         $(this).draggable('disable');
         $(this).fadeOut(1000, function() {
@@ -295,11 +351,13 @@ function countElements(name) {
 
     if (name[0] === '-') return;
 
-    if (counter || allElements[name]) {
+    if (counter) return;
+
+    name = Conditions.remove(name);
+
+    if (allElements[name]) {
         return;
     } 
-    
-    name = Conditions.remove(name);
 
     allElements[name] = {};
 }
@@ -598,10 +656,16 @@ function onSelectStop() {
 }
 
 function destroyElement(element, anim = true) {
-    element = element.filter('.element').not('.static').not(':data(isDeleting, 1)'); 
+    element = element.filter('.element').not('.static').not(':data(isDeleting, 1)');
 
     if (!element[0]) return;
     
+    let name = $(element).data('elementName');
+
+    if (allCounters[name]) {
+        allCounters[name].onBoard = false;
+    }
+
     element.data('isDeleting', 1)
     element.data('isDead', 1);
     element.draggable('disable');
@@ -736,8 +800,12 @@ function updateCounters() {
 }
 
 function react(r, b = false) {
-    var reagents = r.sort().join('+');
-    var results = [];
+    let reagents;
+    let results = [];
+
+    if (!b) reagents = r.sort().join('+');
+    else reagents = r.join('+');
+
     if (b || reactions[reagents]) {
         var resultsTemp = []
         if (b) resultsTemp = r;
@@ -774,7 +842,10 @@ function react(r, b = false) {
                         if (min.result) {
                             allCounters[name].min.result = min.result;
                             min.result.forEach(item => {
-                                countElements(item);
+                                let cleanName = getCleanName(item);
+
+                                countElements(cleanName);
+                                if (allElements[cleanName]) allElements[cleanName].canCollected = true;
                             });
                         }
                     }
@@ -784,7 +855,10 @@ function react(r, b = false) {
                         if (max.result) {
                             allCounters[name].max.result = max.result;
                             max.result.forEach(item => {
-                                countElements(item);
+                                let cleanName = getCleanName(item);
+
+                                countElements(cleanName);
+                                if (allElements[cleanName]) allElements[cleanName].canCollected = true;
                             });
                         }
                     }
@@ -792,7 +866,10 @@ function react(r, b = false) {
                     if (at) {
                         for (let atValue in at) {
                             at[atValue].forEach(item => {
-                                countElements(item);
+                                let cleanName = getCleanName(item);
+
+                                countElements(cleanName);
+                                if (allElements[cleanName]) allElements[cleanName].canCollected = true;
                             });
 
                             allCounters[name].at[atValue] = at[atValue];
@@ -801,7 +878,7 @@ function react(r, b = false) {
                             
                     if (allCounters[name].value === undefined) {
                         if (value === undefined) value = 0;
-                        allCounters[name].value = value;
+                        allCounters[name].value = 0;
                     }
 
                     let elem = $(`#board .element:data(elementName,"${name}")`);
@@ -842,8 +919,9 @@ function react(r, b = false) {
                         if (elem[0]) pulsate(elem);
                     }
 
-                    if (!elem[0]) {
+                    if (!allCounters[name].onBoard) {
                         resultsTemp.push(name);
+                        allCounters[name].onBoard = true;
                     }
                 } else if (name.charAt(0) == '-') { //name starts with at least one minus
                     name = name.substr(1);
@@ -1275,12 +1353,19 @@ function gameInit() {
       var test1 = test();
       var total = test1.total;
       finals = test1.finals;
-      wrongs = test1.wrongs;
 
-      if (wrongs.length > 0) {
+      let errors = [];
+
+      for (let elem in allElements) {
+        if (allElements[elem].canCollected) continue;
+
+        errors.push(elem);
+      }
+
+      if (errors.length > 0) {
         errMsg(
           "В этом моде не удастся открыть все элементы, потому что некоторые из них невозможно получить: " +
-            wrongs.join(",")
+            errors.join(",")
         );
       }
 
