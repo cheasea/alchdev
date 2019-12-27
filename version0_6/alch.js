@@ -183,7 +183,7 @@ function parseCounter(str) {
     let counter = {}, nextArgInfo = findCounterArg.exec(str);
 
     if (nextArgInfo && nextArgInfo.index > 0) { // если есть аргументы
-        counter.name = str.substr(0, nextArgInfo.index - 1); // ставим название до начала первого аргумента
+        counter.name = str.substr(0, nextArgInfo.index); // ставим название до начала первого аргумента
         str = str.substr(nextArgInfo.index); // остаются только <аргументы>
         
         while (nextArgInfo) { // пока есть аргументы
