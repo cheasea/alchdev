@@ -121,7 +121,7 @@ function computeExpression(str) {
 // let findCounterSetting = /((min|max|at)\s*([+-]?(?:\d*[.])?\d+)\s*)({.*})?/;
 // let findCounterArgument = new RegExp(`(?:(${findCounterSetting.source})|(${findCounterOperation.source}))`);
 
-let findCounterArg = /(min|max|at|\+|-|=|\*|\/|%|\^)\s*(.*)/;
+let findCounterArg = /\s+(min|max|at|\+|-|=|\*|\/|%|\^)\s*(.*)/;
 let findOperation = /(\+|-|=|\*|\/|%|\^)\s*(?:([+-]?(?:\d*[.])?\d+)|{(.*?)})/;
 let findCounterSetting = /((min|max|at)\s*([+-]?(?:\d*[.])?\d+)\s*)({.*})?/;
 
