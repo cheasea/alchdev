@@ -25,6 +25,8 @@ class Conditions {
     let operation = condition[2];
     let secondValue = getNumber(condition[3]);
 
+    if (firstValue === undefined || secondValue === undefined) return false;
+
     switch (operation) {
       case ">":
         return firstValue > secondValue;

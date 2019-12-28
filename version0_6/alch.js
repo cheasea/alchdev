@@ -314,8 +314,8 @@ function getNumber(str) {
         number = getCounterValue(str);
         
         if (number === undefined) {
-            errMsg(`Не удалось найти значение счётчика с названием "${str}"`);
-            return 0;
+            // errMsg(`Не удалось найти значение счётчика с названием "${str}"`);
+            return undefined;
         }
     }
 
