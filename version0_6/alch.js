@@ -255,7 +255,7 @@ function checkCounterValue(name, value) {
     if (min.value !== undefined && value < min.value) {
         if (min.result === undefined) {
             logReaction(`Эта реакция невозможна, т.к. ${name} не может быть меньше ${min.value}`);
-            return [];
+            return 0;
         }
         else {
             allCounters[name].value = min.value;
@@ -271,7 +271,7 @@ function checkCounterValue(name, value) {
     if (max.value !== undefined && value > max.value) {
         if (max.result === undefined) {
             logReaction(`Эта реакция невозможна, т.к. ${name} не может быть больше ${max.value}`);
-            return [];
+            return 0;
         }
         else {
             allCounters[name].value = max.value;
@@ -912,9 +912,10 @@ function react(r, b = false) {
                                 break;
                         }
 
-                        resultsTemp = resultsTemp.concat(
-                            checkCounterValue(name, +newValue)
-                        );
+                        let counterChecked = checkCounterValue(name, +newValue);
+                        if (counterChecked === 0) return 0;
+
+                        resultsTemp = resultsTemp.concat(counterChecked);
 
                         if (elem[0]) pulsate(elem);
                     }
