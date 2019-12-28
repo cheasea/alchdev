@@ -660,11 +660,13 @@ function destroyElement(element, anim = true) {
 
     if (!element[0]) return;
     
-    let name = $(element).data('elementName');
+    $(element).each(function() {
+      let name = $(this).data('elementName');
 
-    if (allCounters[name]) {
-        allCounters[name].onBoard = false;
-    }
+      if (allCounters[name]) {
+          allCounters[name].onBoard = false;
+      }
+    });
 
     element.data('isDeleting', 1)
     element.data('isDead', 1);
