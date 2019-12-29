@@ -707,7 +707,7 @@ $('#save a')[0].onclick = () => {
 
         if (!animation[0]) {
             save(`/versions/${getModId()}/save/`);
-            // $('#save_msg').remove();
+            $('#save_msg').remove();
 
             clearInterval(checkingAnimation);
             runGame();
