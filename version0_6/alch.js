@@ -626,7 +626,8 @@ function onSelectStop() {
             $(this).data('isDead', 0);
         });
 
-        if (!hasCounter) return;
+        return;
+        // if (!hasCounter) return;
     }
 
     selected.each(function () {
