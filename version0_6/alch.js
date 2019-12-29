@@ -11,7 +11,7 @@ var parser = new Parser({
     fndef: false
   }
 });
-parser.functions.random = function (n) { return 1; };
+parser.functions.random = function (n) { return 42; };
 $('#err_msg').dialog('close');
 
 $('#info').empty();
@@ -707,7 +707,7 @@ $('#save a')[0].onclick = () => {
 
         if (!animation[0]) {
             save(`/versions/${getModId()}/save/`);
-            $('#save_msg').remove();
+            // $('#save_msg').remove();
 
             clearInterval(checkingAnimation);
             runGame();
