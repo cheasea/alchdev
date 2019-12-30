@@ -44,6 +44,6 @@ let winterLogo = true;
 if (winterLogo) {
   $("#ingamelogo").css(
     "background",
-    "url('https://denys00.github.io/alchdev/winterlogo.png') fixed left top no-repeat;"
+    "url('https://denys00.github.io/alchdev/winterlogo.png') fixed left top no-repeat"
   );
 }
