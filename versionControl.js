@@ -39,9 +39,9 @@ $("title").text(
     .replace("Алхимия 0.5 beta", "Алхимия 0.6 beta")
 );
 
-let newWinterLogo = true;
+let winterLogo = true;
 
-if (newWinterLogo) {
+if (winterLogo) {
   $("#ingamelogo").css(
     "background",
     "url('https://denys00.github.io/alchdev/winterlogo.png') fixed left top no-repeat;"
