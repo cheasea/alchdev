@@ -173,7 +173,7 @@ function computeExpression(str) {
 
 let findCounterArg = /\s+(min|max|at|\+|-|=|\*|\/|%|\^)\s*(.*)/;
 let findOperation = /(\+|-|=|\*|\/|%|\^)\s*(?:([+-]?(?:\d*[.])?\d+)|{(.*?)})/;
-let findCounterSetting = /((min|max|at)\s*([+-]?(?:\d*[.])?\d+)\s*)({.*})?/;
+let findCounterSetting = /((min|max|at)\s*(?:([+-]?(?:\d*[.])?\d+)|{(.*?)})\s*)({.*})?/;
 
 // str имеет вид set <название счётчика> <аргументы>
 // <аргументы> - это min, max, at и операции изменения значения
@@ -192,8 +192,8 @@ function parseCounter(str) {
             if (counterSetting) { // если это min, max или at
                 endPos = counterSetting[1].length; 
                 let settingName = counterSetting[2],
-                    settingValue = counterSetting[3],
-                    settingResult = processingBrackets(counterSetting[4]);                
+                    settingValue = counterSetting[3] || computeExpression(counterSetting[4]),
+                    settingResult = processingBrackets(counterSetting[5]);                
                 
                 counter[settingName] = counter[settingName] || {};
 
@@ -224,10 +224,9 @@ function parseCounter(str) {
 
                 counter.operation = operationInfo[1];
 
-                if (operationInfo[2])
-                    counter.value = String(operationInfo[2]);
-                else
-                    counter.value = String(computeExpression(operationInfo[3]));
+                counter.value = String(
+                    operationInfo[2] || computeExpression(operationInfo[3])
+                );
                 
                 endPos = operationInfo[0].length;
 
