@@ -1,10 +1,12 @@
+let githubRepLink = "https://cheasea.github.io/alchdev/";
+
 function loadScripts(scripts) {
   if (!scripts) return;
   if (scripts.length === 0) return;
 
   let link = scripts.shift();
   let script = document.createElement("script");
-  script.src = "https://denys00.github.io/alchdev/" + link;
+  script.src = githubRepLink + link;
   script.defer = true;
   document.head.appendChild(script);
 
@@ -39,11 +41,11 @@ $("title").text(
     .replace("Алхимия 0.5 beta", "Алхимия 0.6 beta")
 );
 
-let winterLogo = true;
+let winterLogo = false;
 
 if (winterLogo) {
   $("#ingamelogo").css(
     "background",
-    "url('https://denys00.github.io/alchdev/winterlogo.png') fixed left top no-repeat"
+    `url('${githubRepLink}winterlogo.png') fixed left top no-repeat`
   );
 }
