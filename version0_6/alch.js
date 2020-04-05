@@ -296,7 +296,7 @@ function getElements(name) {
 
     if (element[0]) {
         return element;
-    } else if (allElements[name].onBoard) {
+    } else if (allElements[name] && allElements[name].onBoard) {
         return [true];
     } else {
         return [];
