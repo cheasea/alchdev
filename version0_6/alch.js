@@ -298,6 +298,8 @@ function getElements(name) {
         return element;
     } else if (allElements[name].onBoard) {
         return [true];
+    } else {
+        return [];
     }
 }
 
@@ -339,6 +341,10 @@ function deleteElements(name) {
     name.each(function() {
         let name = $(this).data('elementName');
 
+        if (allElements[name]) {
+            allElements[name].onBoard = false;
+        }
+        
         if (allCounters[name]) {
           allCounters[name].onBoard = false;
         }
@@ -943,8 +949,15 @@ function react(r, b = false) {
                     if (name.charAt(0) == '-') { //second minus found - necessary element
                         name = name.substr(1);
                         if (name.charAt(0) == '-') { //third minus found - clear
-                            if (name.length == 1) //clear all
+                            if (name.length == 1) {//clear all
                                 $('#board .element').data('maybeKill', '1');
+                                for (let name in allElements) {
+                                    allElements[name].onBoard = false;
+                                    if (allCounters[name]) {
+                                        allCounters[name].onBoard = false
+                                    }
+                                }
+                            }
                             else { //clear identical elements
                                 name = name.substr(1);
                                 var classExists = false
@@ -955,10 +968,16 @@ function react(r, b = false) {
                                         break
                                     }
 
-                                if (classExists)
+                                if (classExists) {
                                     $('#board .element.' + l).not('.ui-selected').data('maybeKill', '1');
-                                else
+                                    if (allElements[l]) allElements[l].onBoard = false;
+                                    if (allCounters[l]) allCounters[l].onBoard = false;
+                                }
+                                else {
                                     $('#board .element:data(elementName,"' + name + '")').not('.ui-selected').data('maybeKill', '1');
+                                    if (allElements[name]) allElements[name].onBoard = false;
+                                    if (allCounters[name]) allCounters[name].onBoard = false;
+                                }
                             }
                         } else { //double minus - required element
                             var e = $('#board .element:data(elementName,"' + name + '")').not('.ui-selected').not(':data(toKill,1)').not(':data(maybeKill,1)').first();
@@ -970,6 +989,9 @@ function react(r, b = false) {
                                 $('#board .element:data(toKill,1)').data('toKill', '0');
                                 $('#board .element:data(maybeKill,1)').data('maybeKill', '0');
                                 return 0;
+                            } else {
+                                if (allElements[name]) allElements[name].onBoard = false;
+                                if (allCounters[name]) allCounters[name].onBoard = false;
                             }
                         }
                     } else if (name.charAt(0) == '?') {
@@ -981,6 +1003,8 @@ function react(r, b = false) {
                     } else { //only one minus - unnecessary element
                         var e = $('#board .element:data(elementName,"' + name + '")');
                         e.data('toDelete', true);
+                        if (allElements[name]) allElements[name].onBoard = false;
+                        if (allCounters[name]) allCounters[name].onBoard = false;
                     }
                 } else {
                     results.push(name);
