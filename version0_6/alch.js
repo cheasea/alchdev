@@ -292,7 +292,13 @@ function checkCounterValue(name, value) {
 }
 
 function getElements(name) {
-    return $(`#board .element:data(elementName,"${name}")`).not(":data(isDead,1)");
+    let element = $(`#board .element:data(elementName,"${name}")`).not(":data(isDead,1)")
+
+    if (element[0]) {
+        return element;
+    } else if (allElements[name].onBoard) {
+        return [true];
+    }
 }
 
 // возвращает значение счётчика, если он существует (иначе undefined)
@@ -663,9 +669,15 @@ function destroyElement(element, anim = true) {
     $(element).each(function() {
       let name = $(this).data('elementName');
 
+      if (allElements[name]) {
+        allElements[name].onBoard = false;
+      }
+
       if (allCounters[name]) {
           allCounters[name].onBoard = false;
       }
+
+      if (typeof classes[name] === 'string' && classes[name].match(/group_block/)) return;
     });
 
     element.data('isDeleting', 1)
@@ -1203,17 +1215,13 @@ function placeElements(names, place, firstPush) {
         }
 
         if (counter && classes[counter[1]] === 'group_block') {
-            addElement(counter[1], {
-                'top': 0,
-                'left': 0
-            });
+            allElements[counter[1]].onBoard = true;
+            allElements[counter[1]].opened = true;
 
             return false;
         } else if (classes[item] === 'group_block') {
-            addElement(item, {
-                'top': 0,
-                'left': 0
-            });
+            allElements[item].onBoard = true;
+            allElements[item].opened = true;
 
             return false;
         }
