@@ -1059,20 +1059,12 @@ function onDrop(event, ui) {
     let result = react(reagents);
     let counter;
 
-    if (reactions[reagents.sort().join('+')]) {
-      counter = reactions[reagents.sort().join('+')].find(item => {
-        return item.match(/set .+ .+$/);
-      });
-    }
-
-    if (result || counter) {
-      destroyElement($(this));
-      destroyElement(ui.helper);
-    }
-
     if (!result) {
         return;
     }
+
+    destroyElement($(this));
+    destroyElement(ui.helper);
 
     /* Reaction */
     placeElements(result, pos);
