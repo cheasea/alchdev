@@ -5,166 +5,174 @@ var parser = new Parser({
     comparison: false,
     concatenate: false,
     conditional: false,
-    'in': false,
+    "in": false,
     assignment: false,
     array: false,
-    fndef: false
-  }
+    fndef: false,
+  },
 });
-parser.functions.random = function (n) { return 42; };
-$('#err_msg').dialog('close');
+parser.functions.random = function (n) {
+  return 42;
+};
+$("#err_msg").dialog("close");
 
-$('#info').empty();
-$('#board').empty();
+$("#info").empty();
+$("#board").empty();
 
-$('#order_group').empty();
-$('#order_123').empty();
-$('#order_abc').empty();
+$("#order_group").empty();
+$("#order_123").empty();
+$("#order_abc").empty();
 var opened = [];
 
 let allElements = {};
 let allCounters = {};
 
 if (settings.counterOutputChar)
-    settings.counterOutputChar = settings.counterOutputChar.replace(
-        /[.*+?^${}()|[\]\\]/g,
-        "\\$&"
-      )
-else settings.counterOutputChar = '@'
+  settings.counterOutputChar = settings.counterOutputChar.replace(
+    /[.*+?^${}()|[\]\\]/g,
+    "\\$&"
+  );
+else settings.counterOutputChar = "@";
 
 var customOutputRegex = new RegExp(
-    "(?=.*)" + (settings.counterOutputChar || "@") + "(?=.*)",
-    "g"
+  "(?=.*)" + (settings.counterOutputChar || "@") + "(?=.*)",
+  "g"
 );
 
 if (!settings.output) settings.output = {};
 
 for (let elem of inits) {
-    let cleanName = getCleanName(elem)
+  let cleanName = getCleanName(elem);
 
-    countElements(cleanName);
-    allElements[cleanName].canCollected = true;
+  countElement(cleanName);
+  allElements[cleanName].canCollected = true;
 }
 
 for (let r in reactions) {
-    reactions[r].forEach(elem => {
-        let cleanName = getCleanName(elem);
+  reactions[r].forEach((elem) => {
+    let cleanName = getCleanName(elem);
 
-        countElements(cleanName);
-        if (allElements[cleanName]) {
-          allElements[cleanName].canCollected = true;
-        }
-    });
+    countElement(cleanName);
+    if (allElements[cleanName]) {
+      allElements[cleanName].canCollected = true;
+    }
+  });
 
-    r.split('+').forEach(elem => {
-        let cleanName = getCleanName(elem);
+  r.split("+").forEach((elem) => {
+    let cleanName = getCleanName(elem);
 
-        countElements(cleanName);
-        allElements[cleanName].hasReaction = true;
-    });
+    countElement(cleanName);
+    allElements[cleanName].hasReaction = true;
+  });
 }
 
 function getCleanName(elem) {
-    while (elem.charAt(0) === '-') {
-       elem = elem.slice(1); 
-    }
+  while (elem.charAt(0) === "-") {
+    elem = elem.slice(1);
+  }
 
-    if (elem.match(/set (.+) (.+$)/)) {
-        let counter = elem.split(' ');
-        let isName = 0, name = [];
-   
-        counter.forEach(item => {
-            if (isName === 2) return;
+  if (elem.match(/set (.+) (.+$)/)) {
+    let counter = elem.split(" ");
+    let isName = 0,
+      name = [];
 
-            if (item === 'set') {
-                isName = 1;
-                return;
-            }
+    counter.forEach((item) => {
+      if (isName === 2) return;
 
-            if (item === 'min' || item === 'max' || item === 'at') {
-                isName = 2;
-                return;
-            }
+      if (item === "set") {
+        isName = 1;
+        return;
+      }
 
-            if (item.match(/\+|\-|\=|\*|\/|\^|\%/)) {
-                isName = 2;
-                return;
-            }
+      if (item === "min" || item === "max" || item === "at") {
+        isName = 2;
+        return;
+      }
 
-            if (isName === 1) {
-                name.push(item);
-            }
-        });
+      if (item.match(/\+|\-|\=|\*|\/|\^|\%/)) {
+        isName = 2;
+        return;
+      }
 
-        elem = name.join('');
-    }
+      if (isName === 1) {
+        name.push(item);
+      }
+    });
 
-    elem = Conditions.remove(elem);
+    elem = name.join("");
+  }
 
-    return elem;
+  elem = Conditions.remove(elem);
+
+  return elem;
 }
 
 // принимает значение вида {...} <остальные аргументы>
 // возвращает объект с массивом результатов и индексом, когда закрываются все пары {} или -1 в случае ошибки
 function processingBrackets(str) {
-    if (!str) return null;
-    let bracketsCounter = 0, lastIndex = 1, res = {result: [], index: -1};
-    for (let i = 0; i < str.length; i++){
-        switch (str[i]) {
+  if (!str) return null;
+  let bracketsCounter = 0,
+    lastIndex = 1,
+    res = {
+      result: [],
+      index: -1,
+    };
+  for (let i = 0; i < str.length; i++) {
+    switch (str[i]) {
+      case "{":
+        bracketsCounter++;
+        break;
 
-          case "{":
-            bracketsCounter++;
-            break;
-            
-          case "}":
-            bracketsCounter--;
-            break;
-            
-          case ",":
-            if (bracketsCounter === 1) {
-                res.result.push(str.slice(lastIndex, i));
-                lastIndex = i + 2;
-            }
-            break;
-            
+      case "}":
+        bracketsCounter--;
+        break;
+
+      case ",":
+        if (bracketsCounter === 1) {
+          res.result.push(str.slice(lastIndex, i));
+          lastIndex = i + 2;
         }
-        if (bracketsCounter <= 0) {
-            res.index = i;
-            let addLast = str.slice(lastIndex, i);
-            if (addLast) res.result.push(addLast);
-            break;
-        }
+        break;
     }
-    return res;
+    if (bracketsCounter <= 0) {
+      res.index = i;
+      let addLast = str.slice(lastIndex, i);
+      if (addLast) res.result.push(addLast);
+      break;
+    }
+  }
+  return res;
 }
 
 // посчитать значение выражения
 function computeExpression(str) {
-    try {
-        let parsed = Parser.parse(str);
-        let vars = parsed.variables();
-        let toEval = {}, res, cleanName;
-        for (let v of vars) {
-            cleanName = v.replace("_", " ");
-            let counterValue = getCounterValue(cleanName);
+  try {
+    let parsed = Parser.parse(str);
+    let vars = parsed.variables();
+    let toEval = {},
+      res,
+      cleanName;
+    for (let v of vars) {
+      cleanName = v.replace("_", " ");
+      let counterValue = getCounterValue(cleanName);
 
-            if (counterValue === undefined) {
-                errMsg(
-                    `Возникла ошибка при вычислении выражения "${str}": неизвестно значение счётчика "${cleanName}".
+      if (counterValue === undefined) {
+        errMsg(
+          `Возникла ошибка при вычислении выражения "${str}": неизвестно значение счётчика "${cleanName}".
                     Помните, что в вычисляемом выражении в названии счётчиков пробелы заменяются на нижнее подчёркивание, то есть _`
-                );
-                return 0;
-            }
-            
-            toEval[v] = +allCounters[cleanName].value;
-        }
-        res = Number(parsed.evaluate(toEval));
-        if (isNaN(res)) throw "значение не является числом";
-        return res;
-    } catch (e) {
-        errMsg(`Возникла ошибка при вычислении выражения "${str}": ${e}`);
+        );
         return 0;
+      }
+
+      toEval[v] = +allCounters[cleanName].value;
     }
+    res = Number(parsed.evaluate(toEval));
+    if (isNaN(res)) throw "значение не является числом";
+    return res;
+  } catch (e) {
+    errMsg(`Возникла ошибка при вычислении выражения "${str}": ${e}`);
+    return 0;
+  }
 }
 
 // let findCounterOperation = /(\+|-|=|\*|\/|%|\^)\s*(?:([+-]?(?:\d*[.])?\d+)|{(.*?)})/;
@@ -178,1145 +186,1227 @@ let findCounterSetting = /((min|max|at)\s*(?:([+-]?(?:\d*[.])?\d+)|{(.*?)})\s*)(
 // str имеет вид set <название счётчика> <аргументы>
 // <аргументы> - это min, max, at и операции изменения значения
 function parseCounter(str) {
-    let origStr = str;
-    str = str.substr(4); // убираем set, остаётся <название счётчика> <аргументы>
-    let counter = {}, nextArgInfo = findCounterArg.exec(str);
+  let origStr = str;
+  str = str.substr(4); // убираем set, остаётся <название счётчика> <аргументы>
+  let counter = {},
+    nextArgInfo = findCounterArg.exec(str);
 
-    if (nextArgInfo && nextArgInfo.index > 0) { // если есть аргументы
-        counter.name = str.substr(0, nextArgInfo.index); // ставим название до начала первого аргумента
-        str = str.substr(nextArgInfo.index); // остаются только <аргументы>
-        
-        while (nextArgInfo) { // пока есть аргументы
-            let counterSetting = findCounterSetting.exec(str), endPos;
+  if (nextArgInfo && nextArgInfo.index > 0) {
+    // если есть аргументы
+    counter.name = str.substr(0, nextArgInfo.index); // ставим название до начала первого аргумента
+    str = str.substr(nextArgInfo.index); // остаются только <аргументы>
 
-            if (counterSetting) { // если это min, max или at
-                endPos = counterSetting[1].length; 
-                let settingName = counterSetting[2],
-                    settingValue = counterSetting[3] || computeExpression(counterSetting[4]),
-                    settingResult = processingBrackets(counterSetting[5]);                
-                
-                counter[settingName] = counter[settingName] || {};
+    while (nextArgInfo) {
+      // пока есть аргументы
+      let counterSetting = findCounterSetting.exec(str),
+        endPos;
 
-                if (settingName === 'at') {
-                    if (settingResult)
-                        counter.at[settingValue] = settingResult.result;
-                }
+      if (counterSetting) {
+        // если это min, max или at
+        endPos = counterSetting[1].length;
+        let settingName = counterSetting[2],
+          settingValue =
+            counterSetting[3] || computeExpression(counterSetting[4]),
+          settingResult = processingBrackets(counterSetting[5]);
 
-                else {
-                    counter[settingName].value = settingValue;
-                    if (settingResult)
-                        counter[settingName].result = settingResult.result;
-                }
+        counter[settingName] = counter[settingName] || {};
 
-                if (settingResult)
-                    endPos += settingResult.index === -1
-                            ? settingResult.length
-                            : settingResult.index;
-                
-                str = str.substr(endPos);
-            } else {
-                // иначе это операция изменения значения
-                let operationInfo = findOperation.exec(nextArgInfo);
-                if (!operationInfo) {
-                    errMsg(`Во время анализа "${origStr}" произошла ошибка. Пожалуйста, проверьте код ещё раз.`)
-                    break;
-                }
-
-                counter.operation = operationInfo[1];
-
-                counter.value = String(
-                    operationInfo[2] || computeExpression(operationInfo[3])
-                );
-                
-                endPos = operationInfo[0].length;
-
-                str = str.substr(endPos);
-            }
-
-            nextArgInfo = findCounterArg.exec(str);
+        if (settingName === "at") {
+          if (settingResult) counter.at[settingValue] = settingResult.result;
+        } else {
+          counter[settingName].value = settingValue;
+          if (settingResult) counter[settingName].result = settingResult.result;
         }
-    } else {
-        counter.name = str;
-    }
 
-    return counter;
+        if (settingResult) {
+          countElements(settingResult.result);
+          endPos +=
+            settingResult.index === -1
+              ? settingResult.length
+              : settingResult.index;
+        }
+
+        str = str.substr(endPos);
+      } else {
+        // иначе это операция изменения значения
+        let operationInfo = findOperation.exec(nextArgInfo);
+        if (!operationInfo) {
+          errMsg(
+            `Во время анализа "${origStr}" произошла ошибка. Пожалуйста, проверьте код ещё раз.`
+          );
+          break;
+        }
+
+        counter.operation = operationInfo[1];
+
+        counter.value = String(
+          operationInfo[2] || computeExpression(operationInfo[3])
+        );
+
+        endPos = operationInfo[0].length;
+
+        str = str.substr(endPos);
+      }
+
+      nextArgInfo = findCounterArg.exec(str);
+    }
+  } else {
+    counter.name = str;
+  }
+
+  return counter;
 }
 
 // проверить значение на пересечение min, max, at
 // name - название счётчика, value - новое значение
 // возвращает массив результатов
 function checkCounterValue(name, value) {
-    let min = allCounters[name].min,
-        max = allCounters[name].max,
-        at = allCounters[name].at,
-        result = [];
+  let min = allCounters[name].min,
+    max = allCounters[name].max,
+    at = allCounters[name].at,
+    result = [];
 
-    if (min.value !== undefined && value < min.value) {
-        if (min.result === undefined) {
-            logReaction(`Эта реакция невозможна, т.к. ${name} не может быть меньше ${min.value}`);
-            return 0;
-        }
-        else {
-            allCounters[name].value = min.value;
-            if (min.result.length > 0)
-                result = result.concat(react(min.result, b=true)); // сначала добавляем результат из min
-            if (at[min.value]) { // потом из at, если есть
-                result = result.concat(react(allCounters[name].at[min.value], b=true));
-            }
-            return result;
-        }
+  if (min.value !== undefined && value < min.value) {
+    if (min.result === undefined) {
+      logReaction(
+        `Эта реакция невозможна, т.к. ${name} не может быть меньше ${min.value}`
+      );
+      return 0;
+    } else {
+      allCounters[name].value = min.value;
+      if (min.result.length > 0)
+        result = result.concat(react(min.result, (b = true))); // сначала добавляем результат из min
+      if (at[min.value]) {
+        // потом из at, если есть
+        result = result.concat(
+          react(allCounters[name].at[min.value], (b = true))
+        );
+      }
+      return result;
     }
+  }
 
-    if (max.value !== undefined && value > max.value) {
-        if (max.result === undefined) {
-            logReaction(`Эта реакция невозможна, т.к. ${name} не может быть больше ${max.value}`);
-            return 0;
-        }
-        else {
-            allCounters[name].value = max.value;
-            if (max.result.length > 0)
-                result = result.concat(react(max.result, b=true)); // сначала добавляем результат из max
-            if (at[max.value]) { // потом из at, если есть
-                result = result.concat(react(allCounters[name].at[max.value], b=true));
-            }
-            return result;
-        }
+  if (max.value !== undefined && value > max.value) {
+    if (max.result === undefined) {
+      logReaction(
+        `Эта реакция невозможна, т.к. ${name} не может быть больше ${max.value}`
+      );
+      return 0;
+    } else {
+      allCounters[name].value = max.value;
+      if (max.result.length > 0)
+        result = result.concat(react(max.result, (b = true))); // сначала добавляем результат из max
+      if (at[max.value]) {
+        // потом из at, если есть
+        result = result.concat(
+          react(allCounters[name].at[max.value], (b = true))
+        );
+      }
+      return result;
     }
+  }
 
-    if (at[value]) {
-      result = result.concat(react(allCounters[name].at[value], b=true));
-    }
+  if (at[value]) {
+    result = result.concat(react(allCounters[name].at[value], (b = true)));
+  }
 
-    allCounters[name].value = value;
-    return result;
+  allCounters[name].value = value;
+  return result;
 }
 
 function getElements(name) {
-    let element = $(`#board .element:data(elementName,"${name}")`).not(":data(isDead,1)")
+  let element = $(`#board .element:data(elementName,"${name}")`).not(
+    ":data(isDead,1)"
+  );
 
-    if (element[0]) {
-        return element;
-    } else if (allElements[name] && allElements[name].onBoard) {
-        return [true];
-    } else {
-        return [];
-    }
+  if (element[0]) {
+    return element;
+  } else if (allElements[name] && allElements[name].onBoard) {
+    return [true];
+  } else {
+    return [];
+  }
 }
 
 // возвращает значение счётчика, если он существует (иначе undefined)
 function getCounterValue(name) {
-    let counter = allCounters[name];
-    if (counter === undefined)
-        return undefined;
-    else
-        return counter.value;
+  let counter = allCounters[name];
+  if (counter === undefined) return undefined;
+  else return counter.value;
 }
 
 // возвращает число или значение счётчика
 function getNumber(str) {
-    let number = Number(str);
+  let number = Number(str);
 
-    // если это не число
-    if (isNaN(number)) {
-        number = getCounterValue(str);
-        
-        if (number === undefined) {
-            // errMsg(`Не удалось найти значение счётчика с названием "${str}"`);
-            return undefined;
-        }
+  // если это не число
+  if (isNaN(number)) {
+    number = getCounterValue(str);
+
+    if (number === undefined) {
+      // errMsg(`Не удалось найти значение счётчика с названием "${str}"`);
+      return undefined;
     }
+  }
 
-    return +number;
+  return +number;
 }
 
 function isElementOpened(name) {
-    let elem = allElements[name];
-    if (elem === undefined)
-        return false;
-    else
-        return elem.opened;
+  let elem = allElements[name];
+  if (elem === undefined) return false;
+  else return elem.opened;
 }
 
 function deleteElements(name) {
-    name.each(function() {
-        let name = $(this).data('elementName');
-
-        if (allElements[name]) {
-            allElements[name].onBoard = false;
-        }
-
-        $(this).data('isDead', 1);
-        $(this).draggable('disable');
-        $(this).fadeOut(1000, function() {
-            $(this).remove();
-        });
-    });
-}
-
-function countElements(name) {
-    let counter = name.match(/set (.+) (.+$)/);
-
-    if (name[0] === '-') return;
-
-    if (counter) return;
-
-    name = Conditions.remove(name);
+  name.each(function () {
+    let name = $(this).data("elementName");
 
     if (allElements[name]) {
-        return;
-    } 
+      allElements[name].onBoard = false;
+    }
 
-    allElements[name] = {};
+    $(this).data("isDead", 1);
+    $(this).draggable("disable");
+    $(this).fadeOut(1000, function () {
+      $(this).remove();
+    });
+  });
+}
+
+function countElements(elements) {
+  elements.forEach((element) => {
+    countElement(element);
+  });
+}
+
+function countElement(name) {
+  let counter = name.match(/set (.+) (.+$)/);
+
+  if (name[0] === "-") return;
+
+  if (counter) return;
+
+  name = Conditions.remove(name);
+
+  if (allElements[name]) {
+    return;
+  }
+
+  allElements[name] = {};
 }
 
 function textOrImage(a, name, checkingValue = true) {
-    let cleanName = name;
+  let cleanName = name;
 
-    // кастомный вывод
-    if (settings.output[name])
-        cleanName = settings.output[name];
-    // иначе чистое название
-    else if (name.match(/.+\[.+\]/))
-        cleanName = name.replace(/\[.+\]$/, "");
+  // кастомный вывод
+  if (settings.output[name]) cleanName = settings.output[name];
+  // иначе чистое название
+  else if (name.match(/.+\[.+\]/)) cleanName = name.replace(/\[.+\]$/, "");
 
-    let filename;
-    let counterText;
+  let filename;
+  let counterText;
 
-    if (labels[name]) {
-        filename = MEDIA_URL + labels[name];
-    }
+  if (labels[name]) {
+    filename = MEDIA_URL + labels[name];
+  }
 
-    if (counters[name] && checkingValue) {
-        counterText = `${name} (${counters[name].value})`;
-    }
+  if (counters[name] && checkingValue) {
+    counterText = `${name} (${counters[name].value})`;
+  }
 
-    if (filename && settings.images) {
-        let img = $('<img/>', {
-            src: filename,
-            'class': 'element-icon'
-        });
-        img.mousedown(function (e) {
-            e.preventDefault();
-        });
+  if (filename && settings.images) {
+    let img = $("<img/>", {
+      src: filename,
+      "class": "element-icon",
+    });
+    img.mousedown(function (e) {
+      e.preventDefault();
+    });
 
-        a.append(img);
-        a.addClass('img-element');
-        a.data('image', filename);
+    a.append(img);
+    a.addClass("img-element");
+    a.data("image", filename);
 
-        img.error(function () {
-            if (counterText) a.text(counterText)
-            else a.text(cleanName);
+    img.error(function () {
+      if (counterText) a.text(counterText);
+      else a.text(cleanName);
 
-            a.removeClass('img-element');
-            a.removeClass('img-stack-element');
-            a.data('image', false);
-        });
-    } else {
-        if (counterText) a.text(counterText)
-        else a.text(cleanName);
-    }
+      a.removeClass("img-element");
+      a.removeClass("img-stack-element");
+      a.data("image", false);
+    });
+  } else {
+    if (counterText) a.text(counterText);
+    else a.text(cleanName);
+  }
 }
 
 function createShortcut(name, checkingValue) {
-    var o = $("<span/>", {
-        'class': 'element ' + classes[name]
-    });
-    if (inArray(name, finals))
-        o.addClass('final');
-    textOrImage(o, name, checkingValue);
-    if (o.data('image')) {
-        o.attr('title', name)
-        o.addClass('img-stack-element');
-        o.removeClass('img-element');
-    } else
-        o.attr('title', ((recipes[name] === undefined) ? '' : recipes[name].join('; ')));
-    o.draggable({
-        distance: 5,
-        helper: function () {
-            return addElement(name, {
-                top: 0,
-                left: 0
-            });
-        },
-        stop: function (event, ui) {
-            if (!ui.helper.data("isDead")) {
-                addElement(name, ui.helper.offset()).appendTo('#board');
-                refreshHint();
-            }
-        }
-    });
-    o.data("elementName", name);
-    return o;
+  var o = $("<span/>", {
+    "class": "element " + classes[name],
+  });
+  if (inArray(name, finals)) o.addClass("final");
+  textOrImage(o, name, checkingValue);
+  if (o.data("image")) {
+    o.attr("title", name);
+    o.addClass("img-stack-element");
+    o.removeClass("img-element");
+  } else
+    o.attr(
+      "title",
+      recipes[name] === undefined ? "" : recipes[name].join("; ")
+    );
+  o.draggable({
+    distance: 5,
+    helper: function () {
+      return addElement(name, {
+        top: 0,
+        left: 0,
+      });
+    },
+    stop: function (event, ui) {
+      if (!ui.helper.data("isDead")) {
+        addElement(name, ui.helper.offset()).appendTo("#board");
+        refreshHint();
+      }
+    },
+  });
+  o.data("elementName", name);
+  return o;
 }
 
 function addToStack(name) {
-    var preHeight = $('#order_123').height();
-    // discover order
-    var o = createShortcut(name, false);
-    o.appendTo($('#order_123'));
+  var preHeight = $("#order_123").height();
+  // discover order
+  var o = createShortcut(name, false);
+  o.appendTo($("#order_123"));
 
-    // alphabetical order
-    var o = createShortcut(name, false);
-    var i = 0;
-    var sorted = opened.slice(0).sort();
-    if (sorted.length > 1) {
-        while (name > sorted[i]) i++;
-        if (i < 1)
-            o.prependTo($('#order_abc'));
-        else
-            o.insertAfter($('#order_abc').children('.element:eq(' + (i - 1) + ')'));
-    } else
-        o.appendTo($('#order_abc'));
-
-    // groups order
-
-    var o = createShortcut(name, false);
-
-    if (classes[name]) {
-        if ($.isArray(classes[name]))
-            var cur_class = classes[name][0].split(' ')[0];
-        else
-            var cur_class = classes[name].split(' ')[0];
-    } else
-        var cur_class = 'abstract';
-
-    if (classes[name])
-        var group = '_' + cur_class;
+  // alphabetical order
+  var o = createShortcut(name, false);
+  var i = 0;
+  var sorted = opened.slice(0).sort();
+  if (sorted.length > 1) {
+    while (name > sorted[i]) i++;
+    if (i < 1) o.prependTo($("#order_abc"));
     else
-        var group = '_no_group';
-    if ($('#order_group').children('.' + group).size() === 0) {
-        var groupBox = $('<span/>', {
-            'class': group + ' element ' + classes[name],
-            text: '[' + classes_strings[cur_class] + ']',
-            style: 'display:inline-block;'
-        }).appendTo($('#order_group'));
-        var ul = $('<div/>', {
-            'class': classes[name] + ' group_block'
-        }).appendTo(groupBox);
+      o.insertAfter($("#order_abc").children(".element:eq(" + (i - 1) + ")"));
+  } else o.appendTo($("#order_abc"));
 
-        groupBox.mouseenter(function () {
-            ul.show(200);
-            ul.topZIndex();
+  // groups order
+
+  var o = createShortcut(name, false);
+
+  if (classes[name]) {
+    if ($.isArray(classes[name]))
+      var cur_class = classes[name][0].split(" ")[0];
+    else var cur_class = classes[name].split(" ")[0];
+  } else var cur_class = "abstract";
+
+  if (classes[name]) var group = "_" + cur_class;
+  else var group = "_no_group";
+  if (
+    $("#order_group")
+      .children("." + group)
+      .size() === 0
+  ) {
+    var groupBox = $("<span/>", {
+      "class": group + " element " + classes[name],
+      text: "[" + classes_strings[cur_class] + "]",
+      style: "display:inline-block;",
+    }).appendTo($("#order_group"));
+    var ul = $("<div/>", {
+      "class": classes[name] + " group_block",
+    }).appendTo(groupBox);
+
+    groupBox.mouseenter(function () {
+      ul.show(200);
+      ul.topZIndex();
+    });
+    groupBox.mouseleave(function () {
+      ul.hide(200);
+    });
+    groupBox.click(function () {
+      // show group-dialog - box with elements
+
+      if (!$("#gd" + group).length) {
+        $("<div/>", {
+          id: "gd" + group,
+          "class": "gd",
+        }).dialog({
+          zIndex: 0,
+          stack: false,
         });
-        groupBox.mouseleave(function () {
-            ul.hide(200);
+        $("#gd" + group)
+          .dialog("widget")
+          .topZIndex()
+          .addClass("no-select");
+        $("#gd" + group)
+          .dialog("widget")
+          .click(function () {
+            $(this).topZIndex();
+          });
+        $("#order_group")
+          .children("." + group)
+          .children(".group_block")
+          .children(".element")
+          .each(function (index) {
+            createShortcut($(this).data("elementName")).appendTo(
+              $("#gd" + group)
+            );
+          });
+      } else {
+        $("#gd" + group).dialog("open");
+      }
+    });
+  }
+  if (!groupBox) var groupBox = $("#order_group").children("." + group);
+  if (!ul) var ul = groupBox.children(".group_block");
+  var li = ul.append(o);
+  if ($("#gd" + group).length) {
+    createShortcut(name).appendTo($("#gd" + group));
+  }
 
-        });
-        groupBox.click(function () { // show group-dialog - box with elements
-
-            if (!$('#gd' + group).length) {
-                $('<div/>', {
-                    id: 'gd' + group,
-                    'class': 'gd'
-                }).dialog({
-                    zIndex: 0,
-                    stack: false
-                });
-                $('#gd' + group).dialog('widget').topZIndex().addClass('no-select');
-                $('#gd' + group).dialog('widget').click(function () {
-                    $(this).topZIndex();
-                });
-                $('#order_group').children('.' + group).children('.group_block').children('.element').each(
-                    function (index) {
-                        createShortcut($(this).data('elementName')).appendTo($('#gd' + group));
-                    });
-            } else {
-                $('#gd' + group).dialog('open');
-            }
-
-        });
-
-    }
-    if (!groupBox) var groupBox = $('#order_group').children('.' + group);
-    if (!ul) var ul = groupBox.children('.group_block');
-    var li = ul.append(o);
-    if ($('#gd' + group).length) {
-        createShortcut(name).appendTo($('#gd' + group));
-    }
-
-    //and resize window after all
-    var postHeight = $('#order_123').height();
-    if (typeof (VK) != 'undefined' && VK.callMethod) {
-        var deltaHeight = postHeight - preHeight;
-        var newHeight = $(window).height() + deltaHeight;
-        VK.callMethod('resizeWindow', $(window).width(), newHeight);
-    }
+  //and resize window after all
+  var postHeight = $("#order_123").height();
+  if (typeof VK != "undefined" && VK.callMethod) {
+    var deltaHeight = postHeight - preHeight;
+    var newHeight = $(window).height() + deltaHeight;
+    VK.callMethod("resizeWindow", $(window).width(), newHeight);
+  }
 }
 
 function discoverElement(elem, verbose) {
-    let counter = elem.match(matchCounter);
-    let name;
+  let counter = elem.match(matchCounter);
+  let name;
 
-    if (counter) {
-        name = counter[1];
-    } else {
-        name = elem;
+  if (counter) {
+    name = counter[1];
+  } else {
+    name = elem;
+  }
+
+  if (inArray(name, opened)) return;
+
+  opened.push(name);
+
+  if (verbose === undefined || verbose === true) {
+    message(name, "highlight");
+  }
+
+  if (settings["stack"]) {
+    if (!inArray(name, statics)) addToStack(name);
+
+    if (opened.length === 50) {
+      infoMsg(
+        'Вы открыли довольно много элементов и, возможно, они уже не помещаются у вас на экране или создают неудобства. Попробуйте включить сортировку по группам нажав <a href="#" onclick="toggleSort(\'group\')">здесь</a> или как показано на рисунке: <br><img src="/img/help/groups.PNG"/>'
+      );
     }
+  }
 
-    if (inArray(name, opened)) return;
-
-    opened.push(name);
-
-    if (verbose === undefined || verbose === true) {
-        message(name, 'highlight');
-    }
-
-    if (settings['stack']) {
-        if (!inArray(name, statics)) addToStack(name);
-
-        if (opened.length === 50) {
-            infoMsg('Вы открыли довольно много элементов и, возможно, они уже не помещаются у вас на экране или создают неудобства. Попробуйте включить сортировку по группам нажав <a href="#" onclick="toggleSort(\'group\')">здесь</a> или как показано на рисунке: <br><img src="/img/help/groups.PNG"/>');
-        }
-    }
-
-    $('#save').show();
-    refreshStat();
+  $("#save").show();
+  refreshStat();
 }
 
 function pulsate(el) {
-    if (el.data('pulsating')) return;
-    el.data('pulsating', true)
-    el.effect('pulsate', {
-        "times": 4
-    }, 250, function () {
-        $(this).data('pulsating', false);
-    });
+  if (el.data("pulsating")) return;
+  el.data("pulsating", true);
+  el.effect(
+    "pulsate",
+    {
+      "times": 4,
+    },
+    250,
+    function () {
+      $(this).data("pulsating", false);
+    }
+  );
 }
 
 function cloneElement(elem) {
-    if (!settings.clone) return;
+  if (!settings.clone) return;
 
-    let name = elem.data('elementName');
-    let pos = elem.offset();
+  let name = elem.data("elementName");
+  let pos = elem.offset();
 
-    if (counters[name]) return;
+  if (counters[name]) return;
 
-    placeElements([name, name], pos);
-    destroyElement(elem);
+  placeElements([name, name], pos);
+  destroyElement(elem);
 }
 
 function onSelectStop() {
-    let reagents = [];
-    let x = 0,
-        y = 0;
+  let reagents = [];
+  let x = 0,
+    y = 0;
 
-    let selected = $('.ui-selected').not(':data("isDead", 1)');
+  let selected = $(".ui-selected").not(':data("isDead", 1)');
 
+  selected.each(function () {
+    $(this).not(".static").data("isDead", 1);
+
+    let name = $(this).data("elementName");
+    let pos = {
+      x: $(this).offset().left,
+      y: $(this).offset().top,
+    };
+
+    x += pos.x;
+    y += pos.y;
+    reagents.push(name);
+  });
+
+  result = react(reagents);
+
+  let hasCounter;
+
+  if (reactions[reagents.sort().join("+")]) {
+    let counter = reactions[reagents.sort().join("+")].find((item) => {
+      return item.match(/set .+ .+$/);
+    });
+
+    if (counter) hasCounter = true;
+  }
+
+  if (!result) {
     selected.each(function () {
-        $(this).not('.static').data('isDead', 1);
-
-        let name = $(this).data('elementName');
-        let pos = {
-            x: $(this).offset().left,
-            y: $(this).offset().top
-        };
-
-        x += pos.x;
-        y += pos.y;
-        reagents.push(name);
+      $(this).data("isDead", 0);
     });
 
-    result = react(reagents);
+    return;
+    // if (!hasCounter) return;
+  }
 
-    let hasCounter;
+  selected.each(function () {
+    $(this).not(".static").selectable("destroy");
+  });
 
-    if (reactions[reagents.sort().join('+')]) {
-      let counter = reactions[reagents.sort().join('+')].find(item => {
-        return item.match(/set .+ .+$/);
-      });
+  x = Math.floor(x / selected.length);
+  y = Math.floor(y / selected.length);
 
-      if (counter) hasCounter = true;
+  selected.animate(
+    {
+      "left": x,
+      "top": y,
+    },
+    500,
+    function () {
+      let elem = $(this);
+      destroyElement(elem);
     }
+  );
 
-    if (!result) {
-        selected.each(function () {
-            $(this).data('isDead', 0);
-        });
-
-        return;
-        // if (!hasCounter) return;
-    }
-
-    selected.each(function () {
-        $(this).not('.static').selectable('destroy');
+  if (result) {
+    placeElements(result, {
+      "left": x,
+      "top": y,
     });
+  }
 
-    x = Math.floor(x / selected.length);
-    y = Math.floor(y / selected.length);
-
-    selected.animate({
-        'left': x,
-        'top': y
-    }, 500, function () {
-        let elem = $(this);
-        destroyElement(elem);
-    });
-
-    if (result) {
-      placeElements(result, {
-          'left': x,
-          'top': y
-      });
-    }
-
-    refreshHint();
-    updateCounters();
+  refreshHint();
+  updateCounters();
 }
 
 function destroyElement(element, anim = true) {
-    element = element.filter('.element').not('.static').not(':data(isDeleting, 1)');
+  element = element
+    .filter(".element")
+    .not(".static")
+    .not(":data(isDeleting, 1)");
 
-    if (!element[0]) return;
-    
-    $(element).each(function() {
-      let name = $(this).data('elementName');
+  if (!element[0]) return;
 
-      if (allElements[name]) {
-        allElements[name].onBoard = false;
-      }
+  $(element).each(function () {
+    let name = $(this).data("elementName");
 
-
-      if (typeof classes[name] === 'string' && classes[name].match(/group_block/)) return;
-    });
-
-    element.data('isDeleting', 1)
-    element.data('isDead', 1);
-    element.draggable('disable');
-    element.droppable('disable');
-
-    if (anim) {
-        element.fadeIn(0);
-        element.fadeOut(1000, function() {
-            element.remove();
-        });
-    } else {
-        element.fadeIn(0);
-        element.remove();
+    if (allElements[name]) {
+      allElements[name].onBoard = false;
     }
+
+    if (typeof classes[name] === "string" && classes[name].match(/group_block/))
+      return;
+  });
+
+  element.data("isDeleting", 1);
+  element.data("isDead", 1);
+  element.draggable("disable");
+  element.droppable("disable");
+
+  if (anim) {
+    element.fadeIn(0);
+    element.fadeOut(1000, function () {
+      element.remove();
+    });
+  } else {
+    element.fadeIn(0);
+    element.remove();
+  }
 }
 
 function getModId() {
-    var regex = /[^\d]*(\d+)[^\d]*/gm;
-    var res = regex.exec($('#load')[0].onclick.toString());
-    return res[1];
+  var regex = /[^\d]*(\d+)[^\d]*/gm;
+  var res = regex.exec($("#load")[0].onclick.toString());
+  return res[1];
 }
 
 let isSaving = false;
 
-$('#save a')[0].onclick = () => {
-    if (isSaving) return;
+$("#save a")[0].onclick = () => {
+  if (isSaving) return;
 
-    isSaving = true;
-    stopGame();
+  isSaving = true;
+  stopGame();
 
-    $('#save').append('<span id="save_msg">(игра сохраняется<span id="loader"></span>)</span>');
+  $("#save").append(
+    '<span id="save_msg">(игра сохраняется<span id="loader"></span>)</span>'
+  );
 
-    let checkingAnimation = setInterval(() => {
-        let count = 0;
-        let animation = $('.element:animated');
+  let checkingAnimation = setInterval(() => {
+    let count = 0;
+    let animation = $(".element:animated");
 
-        if (!animation[0]) {
-            save(`/versions/${getModId()}/save/`);
-            $('#save_msg').remove();
+    if (!animation[0]) {
+      save(`/versions/${getModId()}/save/`);
+      $("#save_msg").remove();
 
-            clearInterval(checkingAnimation);
-            runGame();
-            isSaving = false;
-        } else {
-            if (count <= 3) $('#loader').append('.');
-            count++;
-        }
-    }, 500);
-}
+      clearInterval(checkingAnimation);
+      runGame();
+      isSaving = false;
+    } else {
+      if (count <= 3) $("#loader").append(".");
+      count++;
+    }
+  }, 500);
+};
 
 function stopGame() {
-    $('.element').draggable('disable');
-    $('.element').droppable('disable');
-    $('body').selectable('disable');
+  $(".element").draggable("disable");
+  $(".element").droppable("disable");
+  $("body").selectable("disable");
 }
 
 function runGame() {
-    $('.element').draggable('enable');
-    $('.element').droppable('enable');
-    $('body').selectable('enable');
+  $(".element").draggable("enable");
+  $(".element").droppable("enable");
+  $("body").selectable("enable");
 }
 
-$('body').selectable({
-    cancel: '.element:not(:data(isDead,1)), .ui-dialog, #abyss, #info, #stack',
-    distance: 2,
-    filter: '.element:not(.group_block):not(#stack .element):not(:data(isDead,1))',
-    stop: onSelectStop,
-    selecting: function (e, ui) {
-        var el = $(ui.selecting);
-        el.css('margin-top', "-" + el.css('border-top-width'));
-        el.css('margin-left', "-" + el.css('border-top-width'));
-    },
-    unselecting: function (e, ui) {
-        var el = $(ui.unselecting);
-        el.css('margin-top', "0px");
-        el.css('margin-left', "0px");
-    },
-    selected: function (e, ui) {
-        var el = $(ui.selected);
-        el.css('margin-top', "0px");
-        el.css('margin-left', "0px");
-    }
-})
+$("body").selectable({
+  cancel: ".element:not(:data(isDead,1)), .ui-dialog, #abyss, #info, #stack",
+  distance: 2,
+  filter:
+    ".element:not(.group_block):not(#stack .element):not(:data(isDead,1))",
+  stop: onSelectStop,
+  selecting: function (e, ui) {
+    var el = $(ui.selecting);
+    el.css("margin-top", "-" + el.css("border-top-width"));
+    el.css("margin-left", "-" + el.css("border-top-width"));
+  },
+  unselecting: function (e, ui) {
+    var el = $(ui.unselecting);
+    el.css("margin-top", "0px");
+    el.css("margin-left", "0px");
+  },
+  selected: function (e, ui) {
+    var el = $(ui.selected);
+    el.css("margin-top", "0px");
+    el.css("margin-left", "0px");
+  },
+});
 
 function updateCounter(name) {
-    let elem = $(`#board .element:data(elementName,"${name}")`);
+  let elem = $(`#board .element:data(elementName,"${name}")`);
 
-    if (!elem) return;
+  if (!elem) return;
 
-    let sameName = name.replace(/\[.+\]$/, "");
+  let sameName = name.replace(/\[.+\]$/, "");
 
-    // кастомное имя счётчика
-    var counterOutputName = settings.output[name],
-        counterOutput = sameName
-        value = allCounters[name].value,
-        customChar = false;
+  // кастомное имя счётчика
+  var counterOutputName = settings.output[name],
+    counterOutput = sameName;
+  (value = allCounters[name].value), (customChar = false);
 
-    // если счётчик есть в кастомном выводе
-    if (counterOutputName)
-      if (counterOutputName.match(customOutputRegex)) {
-        // если есть символ вывода значения, то выводим кастомное название
-        counterOutput = counterOutputName.replace(
-          customOutputRegex,
-          allCounters[name].value
-          );
-          customChar = true;
-      } // иначе просто используем кастомное название
-      else counterOutput = counterOutputName;
-    // если счётчика нет в кастомном выводе, то выводим чистое название
-    else counterOutput = sameName;
+  // если счётчик есть в кастомном выводе
+  if (counterOutputName)
+    if (counterOutputName.match(customOutputRegex)) {
+      // если есть символ вывода значения, то выводим кастомное название
+      counterOutput = counterOutputName.replace(
+        customOutputRegex,
+        allCounters[name].value
+      );
+      customChar = true;
+    } // иначе просто используем кастомное название
+    else counterOutput = counterOutputName;
+  // если счётчика нет в кастомном выводе, то выводим чистое название
+  else counterOutput = sameName;
 
-    if (labels[name] && elem[0]) {
-        elem[0].innerHTML = "";
-        elem[0].innerHTML += `<img class="element-icon" src="${MEDIA_URL + labels[name]}"></img>`;
-        if (customChar)
-            elem[0].innerHTML += `<div>${counterOutput}</div>`;    
-        else
-            elem[0].innerHTML += `<div>(${value})</div>`;
-        return;
-    }
+  if (labels[name] && elem[0]) {
+    elem[0].innerHTML = "";
+    elem[0].innerHTML += `<img class="element-icon" src="${
+      MEDIA_URL + labels[name]
+    }"></img>`;
+    if (customChar) elem[0].innerHTML += `<div>${counterOutput}</div>`;
+    else elem[0].innerHTML += `<div>(${value})</div>`;
+    return;
+  }
 
-    if (customChar)
-        elem.text(`${counterOutput}`);
-    else
-        elem.text(`${counterOutput}: ${value}`);
+  if (customChar) elem.text(`${counterOutput}`);
+  else elem.text(`${counterOutput}: ${value}`);
 }
 
 function updateCounters() {
-    for (let name in allCounters) {
-        updateCounter(name);
-    }
+  for (let name in allCounters) {
+    updateCounter(name);
+  }
 }
 
 function react(r, b = false) {
-    let reagents;
-    let results = [];
-    let counterChanged;
+  let reagents;
+  let results = [];
+  let counterChanged;
 
-    if (!b) reagents = r.sort().join('+');
-    else reagents = r.join('+');
+  if (!b) reagents = r.sort().join("+");
+  else reagents = r.join("+");
 
-    if (b || reactions[reagents]) {
-        var resultsTemp = []
-        if (b) resultsTemp = r;
-        else
-            for (var i in reactions[reagents]) {
-                resultsTemp.push(reactions[reagents][i])
+  if (b || reactions[reagents]) {
+    var resultsTemp = [];
+    if (b) resultsTemp = r;
+    else
+      for (var i in reactions[reagents]) {
+        resultsTemp.push(reactions[reagents][i]);
+      }
+    for (var i = 0; i < resultsTemp.length; i++) {
+      let name = Conditions.parse(resultsTemp[i]);
+      if (name) {
+        // BEGIN processing counters
+        let isCounter = /^set (.+$)/.test(name);
+
+        if (isCounter) {
+          let counterParsed = parseCounter(name);
+
+          name = counterParsed.name;
+          let operation = counterParsed.operation,
+            value = counterParsed.value;
+          min = counterParsed.min;
+          max = counterParsed.max;
+          at = counterParsed.at;
+
+          if (!allElements[name]) {
+            allElements[name] = {};
+          }
+
+          if (!allCounters[name]) {
+            allCounters[name] = {
+              min: {},
+              max: {},
+              at: {},
+            };
+          }
+
+          if (min) {
+            if (min.value) allCounters[name].min.value = min.value;
+            if (min.result) {
+              allCounters[name].min.result = min.result;
+              min.result.forEach((item) => {
+                let cleanName = getCleanName(item);
+
+                countElement(cleanName);
+                if (allElements[cleanName])
+                  allElements[cleanName].canCollected = true;
+              });
             }
-        for (var i = 0; i < resultsTemp.length; i++) {
-            let name = Conditions.parse(resultsTemp[i]);
-            if (name) {
-                // BEGIN processing counters
-                let isCounter = /^set (.+$)/.test(name);
-             
-                if (isCounter) {
-                    let counterParsed = parseCounter(name);
+          }
 
-                    name = counterParsed.name;
-                    let operation = counterParsed.operation,
-                        value = counterParsed.value;
-                        min = counterParsed.min;
-                        max = counterParsed.max;
-                        at = counterParsed.at;
+          if (max) {
+            if (max.value) allCounters[name].max.value = max.value;
+            if (max.result) {
+              allCounters[name].max.result = max.result;
+              max.result.forEach((item) => {
+                let cleanName = getCleanName(item);
 
-                    if (!allElements[name]) {
-                        allElements[name] = {};
-                    }
-                    
-                    if (!allCounters[name]) {
-                        allCounters[name] = {min: {}, max: {}, at: {}};
-                    }
+                countElement(cleanName);
+                if (allElements[cleanName])
+                  allElements[cleanName].canCollected = true;
+              });
+            }
+          }
 
-                    if (min) {
-                        if (min.value) allCounters[name].min.value = min.value;
-                        if (min.result) {
-                            allCounters[name].min.result = min.result;
-                            min.result.forEach(item => {
-                                let cleanName = getCleanName(item);
+          if (at) {
+            for (let atValue in at) {
+              at[atValue].forEach((item) => {
+                let cleanName = getCleanName(item);
 
-                                countElements(cleanName);
-                                if (allElements[cleanName]) allElements[cleanName].canCollected = true;
-                            });
-                        }
-                    }
+                countElement(cleanName);
+                if (allElements[cleanName])
+                  allElements[cleanName].canCollected = true;
+              });
 
-                    if (max) {
-                        if (max.value) allCounters[name].max.value = max.value;
-                        if (max.result) {
-                            allCounters[name].max.result = max.result;
-                            max.result.forEach(item => {
-                                let cleanName = getCleanName(item);
+              allCounters[name].at[atValue] = at[atValue];
+            }
+          }
 
-                                countElements(cleanName);
-                                if (allElements[cleanName]) allElements[cleanName].canCollected = true;
-                            });
-                        }
-                    }
+          if (allCounters[name].value === undefined) {
+            if (value === undefined) value = 0;
+            allCounters[name].value = 0;
+          }
 
-                    if (at) {
-                        for (let atValue in at) {
-                            at[atValue].forEach(item => {
-                                let cleanName = getCleanName(item);
+          let elem = $(`#board .element:data(elementName,"${name}")`);
 
-                                countElements(cleanName);
-                                if (allElements[cleanName]) allElements[cleanName].canCollected = true;
-                            });
+          if (value) {
+            let getValue = +allCounters[name].value,
+              newValue;
+            let length = String(value).length - 2;
+            if (length < 0) length = 0;
 
-                            allCounters[name].at[atValue] = at[atValue];
-                        }
-                    }
-                            
-                    if (allCounters[name].value === undefined) {
-                        if (value === undefined) value = 0;
-                        allCounters[name].value = 0;
-                    }
+            switch (operation) {
+              case "=":
+                newValue = (+value).toFixed(length);
+                break;
+              case "+":
+                newValue = computeExpression(`${getValue} + ${+value}`);
+                break;
+              case "-":
+                newValue = computeExpression(`${getValue} - ${+value}`);
+                break;
+              case "*":
+                newValue = computeExpression(`${getValue} * ${+value}`);
+                break;
+              case "/":
+                newValue = computeExpression(`${getValue} / ${+value}`);
+                break;
+              case "%":
+                newValue = computeExpression(`${getValue} % ${+value}`);
+                break;
+              case "^":
+                newValue = computeExpression(`${getValue} ^ ${+value}`);
+                break;
+            }
 
-                    let elem = $(`#board .element:data(elementName,"${name}")`);
+            let counterChecked = checkCounterValue(name, +newValue);
+            if (counterChecked === 0) return 0;
+            else counterChanged = true;
 
-                    if (value) {
-                        let getValue = +allCounters[name].value, newValue;
-                        let length = String(value).length - 2;
-                        if (length < 0) length = 0;
+            resultsTemp = resultsTemp.concat(counterChecked);
 
-                        switch (operation) {
-                            case '=': 
-                                newValue = (+value).toFixed(length);
-                                break;
-                            case '+':
-                                newValue = computeExpression(`${getValue} + ${+value}`);
-                                break;
-                            case '-':
-                                newValue = computeExpression(`${getValue} - ${+value}`);
-                                break;
-                            case '*':
-                                newValue = computeExpression(`${getValue} * ${+value}`);
-                                break;
-                            case '/':
-                                newValue = computeExpression(`${getValue} / ${+value}`);
-                                break;
-                            case '%':
-                                newValue = computeExpression(`${getValue} % ${+value}`);
-                                break;
-                            case '^':
-                                newValue = computeExpression(`${getValue} ^ ${+value}`);
-                                break;
-                        }
+            if (elem[0]) pulsate(elem);
+          }
 
-                        let counterChecked = checkCounterValue(name, +newValue);
-                        if (counterChecked === 0) return 0;
-                        else counterChanged = true;
-
-                        resultsTemp = resultsTemp.concat(counterChecked);
-
-                        if (elem[0]) pulsate(elem);
-                    }
-
-                    if (!allElements[name].onBoard) {
-                        resultsTemp.push(name);
-                        allElements[name].onBoard = true;
-                    }
-                } else if (name.charAt(0) == '-') { //name starts with at least one minus
-                    name = name.substr(1);
-                    if (name.charAt(0) == '-') { //second minus found - necessary element
-                        name = name.substr(1);
-                        if (name.charAt(0) == '-') { //third minus found - clear
-                            if (name.length == 1) {//clear all
-                                $('#board .element').data('maybeKill', '1');
-                                for (let name in allElements) {
-                                    allElements[name].onBoard = false;
-                                }
-                            }
-                            else { //clear identical elements
-                                name = name.substr(1);
-                                var classExists = false
-                                var l;
-                                for (l in classes_strings)
-                                    if (classes_strings[l] == name) {
-                                        classExists = true
-                                        break
-                                    }
-
-                                if (classExists) {
-                                    $('#board .element.' + l).not('.ui-selected').data('maybeKill', '1');
-                                    if (allElements[l]) allElements[l].onBoard = false;
-                                }
-                                else {
-                                    $('#board .element:data(elementName,"' + name + '")').not('.ui-selected').data('maybeKill', '1');
-                                    if (allElements[name]) allElements[name].onBoard = false;
-                                }
-                            }
-                        } else { //double minus - required element
-                            var e = $('#board .element:data(elementName,"' + name + '")').not('.ui-selected').not(':data(toKill,1)').not(':data(maybeKill,1)').first();
-                            if (e.length == 0)
-                                e = $('#board .element:data(elementName,"' + name + '")').not('.ui-selected').not(':data(toKill,1)').first();
-                            e.data('toKill', '1');
-                            if (e.length == 0) { //fail reaction
-                                logReaction('Для этой реакции необходимо, чтобы на поле присутствовал еще ' + name, reagents);
-                                $('#board .element:data(toKill,1)').data('toKill', '0');
-                                $('#board .element:data(maybeKill,1)').data('maybeKill', '0');
-                                return 0;
-                            } else {
-                                if (allElements[name]) allElements[name].onBoard = false;
-                            }
-                        }
-                    } else if (name.charAt(0) == '?') {
-                        name = name.substr(1);
-                        if (!inArray(name, opened)) {
-                            logReaction('Эта реакция будет работать если открыть ' + name, reagents);
-                            return 0;
-                        }
-                    } else { //only one minus - unnecessary element
-                        var e = $('#board .element:data(elementName,"' + name + '")');
-                        e.data('toDelete', true);
-                        if (allElements[name]) allElements[name].onBoard = false;
-                    }
-                } else {
-                    results.push(name);
-
-                    if (!inArray(name, r)) {
-                        var reaction = reagents; //+' = '+reactions[reagents].join(', ');
-                        update_recipes(name, reaction);
-                    }
+          if (!allElements[name].onBoard) {
+            resultsTemp.push(name);
+            allElements[name].onBoard = true;
+          }
+        } else if (name.charAt(0) == "-") {
+          //name starts with at least one minus
+          name = name.substr(1);
+          if (name.charAt(0) == "-") {
+            //second minus found - necessary element
+            name = name.substr(1);
+            if (name.charAt(0) == "-") {
+              //third minus found - clear
+              if (name.length == 1) {
+                //clear all
+                $("#board .element").data("maybeKill", "1");
+                for (let name in allElements) {
+                  allElements[name].onBoard = false;
                 }
+              } else {
+                //clear identical elements
+                name = name.substr(1);
+                var classExists = false;
+                var l;
+                for (l in classes_strings)
+                  if (classes_strings[l] == name) {
+                    classExists = true;
+                    break;
+                  }
+
+                if (classExists) {
+                  $("#board .element." + l)
+                    .not(".ui-selected")
+                    .data("maybeKill", "1");
+                  if (allElements[l]) allElements[l].onBoard = false;
+                } else {
+                  $('#board .element:data(elementName,"' + name + '")')
+                    .not(".ui-selected")
+                    .data("maybeKill", "1");
+                  if (allElements[name]) allElements[name].onBoard = false;
+                }
+              }
+            } else {
+              //double minus - required element
+              var e = $('#board .element:data(elementName,"' + name + '")')
+                .not(".ui-selected")
+                .not(":data(toKill,1)")
+                .not(":data(maybeKill,1)")
+                .first();
+              if (e.length == 0)
+                e = $('#board .element:data(elementName,"' + name + '")')
+                  .not(".ui-selected")
+                  .not(":data(toKill,1)")
+                  .first();
+              e.data("toKill", "1");
+              if (e.length == 0) {
+                //fail reaction
+                logReaction(
+                  "Для этой реакции необходимо, чтобы на поле присутствовал еще " +
+                    name,
+                  reagents
+                );
+                $("#board .element:data(toKill,1)").data("toKill", "0");
+                $("#board .element:data(maybeKill,1)").data("maybeKill", "0");
+                return 0;
+              } else {
+                if (allElements[name]) allElements[name].onBoard = false;
+              }
             }
+          } else if (name.charAt(0) == "?") {
+            name = name.substr(1);
+            if (!inArray(name, opened)) {
+              logReaction(
+                "Эта реакция будет работать если открыть " + name,
+                reagents
+              );
+              return 0;
+            }
+          } else {
+            //only one minus - unnecessary element
+            var e = $('#board .element:data(elementName,"' + name + '")');
+            e.data("toDelete", true);
+            if (allElements[name]) allElements[name].onBoard = false;
+          }
+        } else {
+          results.push(name);
+
+          if (!inArray(name, r)) {
+            var reaction = reagents; //+' = '+reactions[reagents].join(', ');
+            update_recipes(name, reaction);
+          }
         }
-        //start reaction
-
-        let toDelete = $('#board :data(toDelete)');
-
-        if (toDelete[0]) {
-            deleteElements(toDelete);
-        }
-
-        destroyElement($('#board :data(toKill,1)'));
-        destroyElement($('#board :data(maybeKill,1)'));
-
-        if (!reactions[reagents] && messages[reagents]) {
-            message(reagents, 'highlight');
-        }
-
-        updateCounters();
-
-        if (!counterChanged && results.length === 0) return 0;
-
-        if (!b) logReaction(results.join(', '), reagents);
-        if (messages[reagents]) message(reagents, 'highlight');
-        
-        return results;
-    } else {
-        logReaction(false, reagents);
-        return 0;
+      }
     }
+    //start reaction
+
+    let toDelete = $("#board :data(toDelete)");
+
+    if (toDelete[0]) {
+      deleteElements(toDelete);
+    }
+
+    destroyElement($("#board :data(toKill,1)"));
+    destroyElement($("#board :data(maybeKill,1)"));
+
+    if (!reactions[reagents] && messages[reagents]) {
+      message(reagents, "highlight");
+    }
+
+    updateCounters();
+
+    if (!counterChanged && results.length === 0) return 0;
+
+    if (!b) logReaction(results.join(", "), reagents);
+    if (messages[reagents]) message(reagents, "highlight");
+
+    return results;
+  } else {
+    logReaction(false, reagents);
+    return 0;
+  }
 }
 
 function applySettings(settings) {
-    $(document).unbind("dblclick");
-    if (settings['add']) {
-        $(document).bind("dblclick", function (e) {
-            placeElements(react(inits, true), {
-                top: e.pageY,
-                left: e.pageX
-            });
-            refreshHint();
-            e.stopPropagation();
-        });
-    } else {
-        $(document).bind("dblclick", function (e) {});
-    }
+  $(document).unbind("dblclick");
+  if (settings["add"]) {
+    $(document).bind("dblclick", function (e) {
+      placeElements(react(inits, true), {
+        top: e.pageY,
+        left: e.pageX,
+      });
+      refreshHint();
+      e.stopPropagation();
+    });
+  } else {
+    $(document).bind("dblclick", function (e) {});
+  }
 }
 
 function onDrop(event, ui) {
-    let isReady = ui.helper.data('isDead') !== 1 && $(this).data('isDead') !== 1;
+  let isReady = ui.helper.data("isDead") !== 1 && $(this).data("isDead") !== 1;
 
-    if (!isReady) {
-        return;
-    }
+  if (!isReady) {
+    return;
+  }
 
-    let reagents = [ui.helper.data('elementName'), $(this).data('elementName')];
-    let pos = $(this).offset();
-    let result = react(reagents);
-    let counter;
+  let reagents = [ui.helper.data("elementName"), $(this).data("elementName")];
+  let pos = $(this).offset();
+  let result = react(reagents);
+  let counter;
 
-    if (!result) {
-        return;
-    }
+  if (!result) {
+    return;
+  }
 
-    destroyElement($(this));
-    destroyElement(ui.helper);
+  destroyElement($(this));
+  destroyElement(ui.helper);
 
-    /* Reaction */
-    placeElements(result, pos);
+  /* Reaction */
+  placeElements(result, pos);
 
-    refreshHint();
-    updateCounters();
+  refreshHint();
+  updateCounters();
 }
 
 var wrongs = [];
 var finals = [];
 
 function test(type) {
-    let elements = [];
-    let cleanName;
+  let elements = [];
+  let cleanName;
 
-    for (let i in inits) {
-        if (!inArray(inits[i], elements)) {
-            elements.push(inits[i]);
-        }
+  for (let i in inits) {
+    if (!inArray(inits[i], elements)) {
+      elements.push(inits[i]);
     }
+  }
 
-    for (var i in reactions) {
-        for (var j in reactions[i]) {
-            var counterParsed = reactions[i][j].match(matchCounter);
-            if (counterParsed && counterParsed[1] != undefined) {
-                if (counterParsed[5]) elements = elements.concat(counterParsed[5].split(","));
-                if (counterParsed[9]) elements = elements.concat(counterParsed[9].split(","));
-            }
-            cleanName = clearName(reactions[i][j]);
-            if (cleanName.charAt(0) != '-' && !inArray(cleanName, elements)) {
-                elements.push(cleanName);
-            }
-        }
+  for (var i in reactions) {
+    for (var j in reactions[i]) {
+      var counterParsed = reactions[i][j].match(matchCounter);
+      if (counterParsed && counterParsed[1] != undefined) {
+        if (counterParsed[5])
+          elements = elements.concat(counterParsed[5].split(","));
+        if (counterParsed[9])
+          elements = elements.concat(counterParsed[9].split(","));
+      }
+      cleanName = clearName(reactions[i][j]);
+      if (cleanName.charAt(0) != "-" && !inArray(cleanName, elements)) {
+        elements.push(cleanName);
+      }
     }
-    if (type == 'total') return elements;
-    if (type === undefined || type == 'unstyled') {
-        update_dictionary(elements, finals);
+  }
+  if (type == "total") return elements;
+  if (type === undefined || type == "unstyled") {
+    update_dictionary(elements, finals);
+  }
+  for (var i in reactions) {
+    var leftsiders = i.split("+");
+    for (var j in leftsiders) {
+      if (leftsiders[j].charAt(0) != "-")
+        removeFromArray(leftsiders[j], finals, false);
+      if (type == "finals") return finals;
+
+      if (
+        leftsiders[j].charAt(0) != "-" &&
+        leftsiders[j] != "" &&
+        !inArray(leftsiders[j], elements) &&
+        !inArray(leftsiders[j], wrongs)
+      ) {
+        wrongs.push(leftsiders[j]);
+      }
     }
-    for (var i in reactions) {
-        var leftsiders = i.split('+');
-        for (var j in leftsiders) {
-            if (leftsiders[j].charAt(0) != '-')
-                removeFromArray(leftsiders[j], finals, false);
-            if (type == 'finals') return finals;
+  }
+  if (type == "wrongs") return wrongs;
 
-            if (leftsiders[j].charAt(0) != '-' && leftsiders[j] != "" && !inArray(leftsiders[j], elements) && !inArray(leftsiders[j], wrongs)) {
-                wrongs.push(leftsiders[j]);
-            }
-        }
+  var unstyled = [];
+  if (type === undefined || type == "unstyled") {
+    for (var i in elements) {
+      if (elements[i].charAt(0) != "-" && classes[elements[i]] === undefined)
+        unstyled.push(elements[i]);
     }
-    if (type == 'wrongs') return wrongs;
+  }
+  if (type == "unstyled") return unstyled;
+  var result = [];
+  result.total = elements;
+  result.unstyled = unstyled;
+  result.wrongs = wrongs;
+  result.finals = finals;
 
-
-    var unstyled = [];
-    if (type === undefined || type == 'unstyled') {
-        for (var i in elements) {
-            if (elements[i].charAt(0) != '-' && classes[elements[i]] === undefined)
-                unstyled.push(elements[i]);
-        }
-    }
-    if (type == 'unstyled') return unstyled;
-    var result = [];
-    result.total = elements;
-    result.unstyled = unstyled;
-    result.wrongs = wrongs;
-    result.finals = finals;
-
-    return result;
+  return result;
 }
 
 function addElement(name, place, no_discover) {
-    let cleanName = name;
+  let cleanName = name;
 
-    // кастомный вывод
-    if (settings.output[name])
-        cleanName = settings.output[name];
-    // иначе чистое название
-    else if (name.match(/.+\[.+\]/))
-        cleanName = name.replace(/\[.+\]$/, "");
+  // кастомный вывод
+  if (settings.output[name]) cleanName = settings.output[name];
+  // иначе чистое название
+  else if (name.match(/.+\[.+\]/)) cleanName = name.replace(/\[.+\]$/, "");
 
-    var a = $('<div/>', {
-        'class': 'element ' + classes[name],
-        'title': cleanName
-    }).appendTo('#board');
-    if (allElements[name].hasReaction !== true) 
-        a.addClass('final');
-    allElements[name].opened = true;
-    a.data('image', '');
-    a.data("elementName", name);
-    if (inArray(name, statics)) a.addClass('static');
-    if (!no_discover) discoverElement(name);
+  var a = $("<div/>", {
+    "class": "element " + classes[name],
+    "title": cleanName,
+  }).appendTo("#board");
+  if (allElements[name].hasReaction !== true) a.addClass("final");
+  allElements[name].opened = true;
+  a.data("image", "");
+  a.data("elementName", name);
+  if (inArray(name, statics)) a.addClass("static");
+  if (!no_discover) discoverElement(name);
 
-    // a.html(parseBBCode($('<div/>').text(name).html()));
-    textOrImage(a, name);
+  // a.html(parseBBCode($('<div/>').text(name).html()));
+  textOrImage(a, name);
 
-    if (place !== undefined) {
-
-        //a.offset({top: place.top+$(window).scrollTop(), left: place.left+$(window).scrollLeft()});
-        a.animate({
-            "top": place.top,
-            "left": place.left + $(window).scrollLeft()
-        }, 0);
-    }
-    a.draggable({
-        scroll: false,
-        start: function () {
-            if ($(this).data('isDead')) return;
-            $(this).stop();
-            $(this).css('opacity', 1)
-        }
-    });
-    a.droppable({
-        accept: '.element:not(:data(isDead,1))',
-        drop: onDrop
-    });
-    a.click(function () {});
-    a.bind("dblclick", function (e) {
-        cloneElement(a);
-        e.stopPropagation();
-    });
-    a.bind("mousedown", function (e) {
-        a.topZIndex();
-        $('#info').html('');
-        message(name, 'highlight');
-        e.preventDefault();
-    });
-
-    if (!$.browser.msie) a.corner();
+  if (place !== undefined) {
+    //a.offset({top: place.top+$(window).scrollTop(), left: place.left+$(window).scrollLeft()});
+    a.animate(
+      {
+        "top": place.top,
+        "left": place.left + $(window).scrollLeft(),
+      },
+      0
+    );
+  }
+  a.draggable({
+    scroll: false,
+    start: function () {
+      if ($(this).data("isDead")) return;
+      $(this).stop();
+      $(this).css("opacity", 1);
+    },
+  });
+  a.droppable({
+    accept: ".element:not(:data(isDead,1))",
+    drop: onDrop,
+  });
+  a.click(function () {});
+  a.bind("dblclick", function (e) {
+    cloneElement(a);
+    e.stopPropagation();
+  });
+  a.bind("mousedown", function (e) {
     a.topZIndex();
-    return a;
+    $("#info").html("");
+    message(name, "highlight");
+    e.preventDefault();
+  });
+
+  if (!$.browser.msie) a.corner();
+  a.topZIndex();
+  return a;
 }
 
 function placeElements(names, place, firstPush) {
-    if (!names) return;
-    var x = place.left,
-        y = place.top;
-    var top, left, radius = 20,
-        start_angle = Math.random() * 2 * Math.PI;
-    var e;
+  if (!names) return;
+  var x = place.left,
+    y = place.top;
+  var top,
+    left,
+    radius = 20,
+    start_angle = Math.random() * 2 * Math.PI;
+  var e;
 
-    let filtered = names.filter(item => {
-        if (counters[item] && $(`#board .element:data(elementName,"${item}"):data(no-counter,0)`)[0]) {
-            return false;
-        }
-
-        let counter = item.match(matchCounter);
-
-        if (counter && $(`#board .element:data(elementName,"${counter[1]}")`)[0]) {
-            return false;
-        }
-
-        if (counter && classes[counter[1]] === 'group_block') {
-            allElements[counter[1]].onBoard = true;
-            allElements[counter[1]].opened = true;
-
-            return false;
-        } else if (classes[item] === 'group_block') {
-            allElements[item].onBoard = true;
-            allElements[item].opened = true;
-
-            return false;
-        }
-
-        return true;
-    });
-
-    let c = filtered.length;
-    let a = 2 * Math.PI / c;
-
-    for (var i in filtered) {
-        var staticElement = inArray(filtered[i], statics);
-
-        if (!staticElement || (staticElement && !inArray(filtered[i], opened))) {
-            top = Math.floor((c - 1) * radius * Math.sin(start_angle + i * a));
-            left = Math.floor((c - 1) * radius * Math.cos(start_angle + i * a));
-            // do not put elements behind screen edges
-            if (place.left + left < 0)
-                left = left - (place.left + left);
-            if (place.left + left > $(window).width() - 30)
-                left = $(window).width() - place.left - 30;
-            if (place.top + top < $('#tools').position().top + $('#tools').height())
-                top = top - (place.top + top) + $('#tools').position().top + $('#tools').height();
-            top < 0 ? top = "-=" + (-top) + "px" : top = "+=" + top + "px";
-            left < 0 ? left = "-=" + (-left) + "px" : left = "+=" + left + "px";
-            e = addElement(filtered[i], {
-                "top": y,
-                "left": x
-            });
-            var anim = {
-                top: top,
-                left: left
-            };
-            if (!$.browser.msie) {
-                e.css('opacity', '0');
-                anim.opacity = 1;
-            }
-            e.animate(anim, 600);
-        }
+  let filtered = names.filter((item) => {
+    if (
+      counters[item] &&
+      $(`#board .element:data(elementName,"${item}"):data(no-counter,0)`)[0]
+    ) {
+      return false;
     }
+
+    let counter = item.match(matchCounter);
+
+    if (counter && $(`#board .element:data(elementName,"${counter[1]}")`)[0]) {
+      return false;
+    }
+
+    if (counter && classes[counter[1]] === "group_block") {
+      allElements[counter[1]].onBoard = true;
+      allElements[counter[1]].opened = true;
+
+      return false;
+    } else if (classes[item] === "group_block") {
+      allElements[item].onBoard = true;
+      allElements[item].opened = true;
+
+      return false;
+    }
+
+    return true;
+  });
+
+  let c = filtered.length;
+  let a = (2 * Math.PI) / c;
+
+  for (var i in filtered) {
+    var staticElement = inArray(filtered[i], statics);
+
+    if (!staticElement || (staticElement && !inArray(filtered[i], opened))) {
+      top = Math.floor((c - 1) * radius * Math.sin(start_angle + i * a));
+      left = Math.floor((c - 1) * radius * Math.cos(start_angle + i * a));
+      // do not put elements behind screen edges
+      if (place.left + left < 0) left = left - (place.left + left);
+      if (place.left + left > $(window).width() - 30)
+        left = $(window).width() - place.left - 30;
+      if (place.top + top < $("#tools").position().top + $("#tools").height())
+        top =
+          top -
+          (place.top + top) +
+          $("#tools").position().top +
+          $("#tools").height();
+      top < 0 ? (top = "-=" + -top + "px") : (top = "+=" + top + "px");
+      left < 0 ? (left = "-=" + -left + "px") : (left = "+=" + left + "px");
+      e = addElement(filtered[i], {
+        "top": y,
+        "left": x,
+      });
+      var anim = {
+        top: top,
+        left: left,
+      };
+      if (!$.browser.msie) {
+        e.css("opacity", "0");
+        anim.opacity = 1;
+      }
+      e.animate(anim, 600);
+    }
+  }
 }
 
 function gameInit() {
   if (!inited) {
     inited = true;
-    $("#board")
-      .children(".element")
-      .remove();
+    $("#board").children(".element").remove();
     if (finals.length == 0) {
       $("#vote_stats").hide();
       $("#vote_result").hide();
       $("#abyss").droppable({
-        drop: function(e, ui) {
+        drop: function (e, ui) {
           destroyElement(ui.helper);
           refreshHint();
-        }
+        },
       });
       $("#stack-btn").hide();
       $("#help").dialog({
         autoOpen: false,
         position: "right",
-        open: renderHint
+        open: renderHint,
       });
       $("#element_hint").dialog({
         autoOpen: false,
-        width: 320
+        width: 320,
       });
       $("#payment_dialog")
         .dialog({
           autoOpen: false,
-          width: "auto"
+          width: "auto",
         })
-        .bind("dialogclose", function() {
+        .bind("dialogclose", function () {
           getHintCount();
         });
       $("#recipe_list").dialog({
         autoOpen: false,
-        position: "left"
+        position: "left",
       });
       $("#err_msg").dialog({
-        autoOpen: false
+        autoOpen: false,
       });
       $("#info_msg").dialog({
         autoOpen: false,
-        width: 500
+        width: 500,
       });
       $("#welcome_dialog").dialog({
         autoOpen: $.cookie("welcomed") ? false : true,
-        width: 800
+        width: 800,
       });
-      $("#elementFilter").keyup(function(event) {
+      $("#elementFilter").keyup(function (event) {
         filterStack($("#elementFilter").val());
       });
 
@@ -1324,10 +1414,10 @@ function gameInit() {
 
       if (settings["add"]) {
         $(document).unbind("dblclick");
-        $(document).bind("dblclick", function(e) {
+        $(document).bind("dblclick", function (e) {
           let spawned = [];
 
-          let filtered = inits.map(item => {
+          let filtered = inits.map((item) => {
             let counter = item.match(matchCounter);
 
             if (counter || counters[item]) {
@@ -1348,13 +1438,13 @@ function gameInit() {
             }
           });
 
-          filtered = filtered.filter(item => {
+          filtered = filtered.filter((item) => {
             return typeof item !== "undefined";
           });
 
           placeElements(filtered, {
             top: e.pageY,
-            left: e.pageX
+            left: e.pageX,
           });
 
           refreshHint();
@@ -1394,7 +1484,7 @@ function gameInit() {
       react(inits, true),
       {
         top: $("#stack").offset().top + $("#stack").height() + 200,
-        left: $("body").width() / 2 - 100
+        left: $("body").width() / 2 - 100,
       },
       true
     );
