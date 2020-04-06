@@ -1246,7 +1246,7 @@ function addElement(name, place, no_discover) {
 
   if (place !== undefined) {
     //a.offset({top: place.top+$(window).scrollTop(), left: place.left+$(window).scrollLeft()});
-    a.velocity(
+    a.animate(
       {
         "top": place.top,
         "left": place.left + $(window).scrollLeft(),
@@ -1355,7 +1355,7 @@ function placeElements(names, place, firstPush) {
         e.css("opacity", "0");
         anim.opacity = 1;
       }
-      e.velocity(anim, 600);
+      e.animate(anim, 600);
     }
   }
 }
