@@ -393,7 +393,7 @@ function countElement(name) {
     return;
   }
 
-  allElements[name] = {canCollected: true};
+  allElements[name] = { canCollected: true };
 }
 
 function textOrImage(a, name, checkingValue = true) {
@@ -684,7 +684,7 @@ function onSelectStop() {
   x = Math.floor(x / selected.length);
   y = Math.floor(y / selected.length);
 
-  selected.animate(
+  selected.velocity(
     {
       "left": x,
       "top": y,
@@ -1246,7 +1246,7 @@ function addElement(name, place, no_discover) {
 
   if (place !== undefined) {
     //a.offset({top: place.top+$(window).scrollTop(), left: place.left+$(window).scrollLeft()});
-    a.animate(
+    a.velocity(
       {
         "top": place.top,
         "left": place.left + $(window).scrollLeft(),
@@ -1355,7 +1355,7 @@ function placeElements(names, place, firstPush) {
         e.css("opacity", "0");
         anim.opacity = 1;
       }
-      e.animate(anim, 600);
+      e.velocity(anim, 600);
     }
   }
 }

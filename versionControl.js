@@ -24,6 +24,7 @@ function versionCheck() {
     "0.5.2": ["version0_5_2.js"],
     "0.6": [
       "counterParser.js",
+      "velocity.js",
       "version0_6/conditions.js",
       "version0_6/alch.js"
     ]
