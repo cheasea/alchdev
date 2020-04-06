@@ -1021,7 +1021,7 @@ function react(r, b = false) {
 
         updateCounters();
 
-        if (!counterChanged || results.length === 0) return 0;
+        if (!counterChanged && results.length === 0) return 0;
 
         if (!b) logReaction(results.join(', '), reagents);
         if (messages[reagents]) message(reagents, 'highlight');
