@@ -344,10 +344,6 @@ function deleteElements(name) {
         if (allElements[name]) {
             allElements[name].onBoard = false;
         }
-        
-        if (allCounters[name]) {
-          allCounters[name].onBoard = false;
-        }
 
         $(this).data('isDead', 1);
         $(this).draggable('disable');
@@ -679,9 +675,6 @@ function destroyElement(element, anim = true) {
         allElements[name].onBoard = false;
       }
 
-      if (allCounters[name]) {
-          allCounters[name].onBoard = false;
-      }
 
       if (typeof classes[name] === 'string' && classes[name].match(/group_block/)) return;
     });
@@ -940,9 +933,9 @@ function react(r, b = false) {
                         if (elem[0]) pulsate(elem);
                     }
 
-                    if (!allCounters[name].onBoard) {
+                    if (!allElements[name].onBoard) {
                         resultsTemp.push(name);
-                        allCounters[name].onBoard = true;
+                        allElements[name].onBoard = true;
                     }
                 } else if (name.charAt(0) == '-') { //name starts with at least one minus
                     name = name.substr(1);
@@ -953,9 +946,6 @@ function react(r, b = false) {
                                 $('#board .element').data('maybeKill', '1');
                                 for (let name in allElements) {
                                     allElements[name].onBoard = false;
-                                    if (allCounters[name]) {
-                                        allCounters[name].onBoard = false
-                                    }
                                 }
                             }
                             else { //clear identical elements
@@ -971,12 +961,10 @@ function react(r, b = false) {
                                 if (classExists) {
                                     $('#board .element.' + l).not('.ui-selected').data('maybeKill', '1');
                                     if (allElements[l]) allElements[l].onBoard = false;
-                                    if (allCounters[l]) allCounters[l].onBoard = false;
                                 }
                                 else {
                                     $('#board .element:data(elementName,"' + name + '")').not('.ui-selected').data('maybeKill', '1');
                                     if (allElements[name]) allElements[name].onBoard = false;
-                                    if (allCounters[name]) allCounters[name].onBoard = false;
                                 }
                             }
                         } else { //double minus - required element
@@ -991,7 +979,6 @@ function react(r, b = false) {
                                 return 0;
                             } else {
                                 if (allElements[name]) allElements[name].onBoard = false;
-                                if (allCounters[name]) allCounters[name].onBoard = false;
                             }
                         }
                     } else if (name.charAt(0) == '?') {
@@ -1004,7 +991,6 @@ function react(r, b = false) {
                         var e = $('#board .element:data(elementName,"' + name + '")');
                         e.data('toDelete', true);
                         if (allElements[name]) allElements[name].onBoard = false;
-                        if (allCounters[name]) allCounters[name].onBoard = false;
                     }
                 } else {
                     results.push(name);
