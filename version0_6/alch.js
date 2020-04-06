@@ -377,6 +377,7 @@ function deleteElements(name) {
 function countElements(elements) {
   elements.forEach((element) => {
     countElement(element);
+    allElements[element].canCollected = true;
   });
 }
 
