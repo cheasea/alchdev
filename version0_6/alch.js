@@ -815,6 +815,7 @@ function updateCounters() {
 function react(r, b = false) {
     let reagents;
     let results = [];
+    let counterChanged;
 
     if (!b) reagents = r.sort().join('+');
     else reagents = r.join('+');
@@ -927,6 +928,7 @@ function react(r, b = false) {
 
                         let counterChecked = checkCounterValue(name, +newValue);
                         if (counterChecked === 0) return 0;
+                        else counterChanged = true;
 
                         resultsTemp = resultsTemp.concat(counterChecked);
 
@@ -1019,7 +1021,7 @@ function react(r, b = false) {
 
         updateCounters();
 
-        if (results.length === 0) return 0;
+        if (!counterChanged || results.length === 0) return 0;
 
         if (!b) logReaction(results.join(', '), reagents);
         if (messages[reagents]) message(reagents, 'highlight');
