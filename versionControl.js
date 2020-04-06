@@ -10,7 +10,7 @@ function loadScripts(scripts) {
   script.defer = true;
   document.head.appendChild(script);
 
-  script.onload = function() {
+  script.onload = function () {
     loadScripts(scripts);
   };
 }
@@ -24,10 +24,10 @@ function versionCheck() {
     "0.5.2": ["version0_5_2.js"],
     "0.6": [
       "counterParser.js",
-      "velocity.js",
       "version0_6/conditions.js",
-      "version0_6/alch.js"
-    ]
+      "version0_6/alch.js",
+      "velocity.js",
+    ],
   };
 
   let scripts = updates[settings.version];
@@ -37,9 +37,7 @@ function versionCheck() {
 
 versionCheck();
 $("title").text(
-  $("title")
-    .text()
-    .replace("Алхимия 0.5 beta", "Алхимия 0.6 beta")
+  $("title").text().replace("Алхимия 0.5 beta", "Алхимия 0.6 beta")
 );
 
 let winterLogo = false;
