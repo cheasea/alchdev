@@ -684,7 +684,7 @@ function onSelectStop() {
   x = Math.floor(x / selected.length);
   y = Math.floor(y / selected.length);
 
-  selected.velocity(
+  selected.animate(
     {
       "left": x,
       "top": y,
