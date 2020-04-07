@@ -635,12 +635,12 @@ function cloneElement(elem) {
   destroyElement(elem);
 }
 
-function onSelectStop() {
+function onSelectStop(selected) {
   let reagents = [];
   let x = 0,
     y = 0;
 
-  let selected = $(".ui-selected").not(':data("isDead", 1)');
+  selected = $(selected).not(':data("isDead", 1)');
 
   selected.each(function () {
     $(this).not(".static").data("isDead", 1);
@@ -790,28 +790,7 @@ function runGame() {
   $("body").selectable("enable");
 }
 
-$("body").selectable({
-  cancel: ".element:not(:data(isDead,1)), .ui-dialog, #abyss, #info, #stack",
-  distance: 2,
-  filter:
-    ".element:not(.group_block):not(#stack .element):not(:data(isDead,1))",
-  stop: onSelectStop,
-  selecting: function (e, ui) {
-    var el = $(ui.selecting);
-    el.css("margin-top", "-" + el.css("border-top-width"));
-    el.css("margin-left", "-" + el.css("border-top-width"));
-  },
-  unselecting: function (e, ui) {
-    var el = $(ui.unselecting);
-    el.css("margin-top", "0px");
-    el.css("margin-left", "0px");
-  },
-  selected: function (e, ui) {
-    var el = $(ui.selected);
-    el.css("margin-top", "0px");
-    el.css("margin-left", "0px");
-  },
-});
+$("body").selectable('disable');
 
 function updateCounter(name) {
   let elem = $(`#board .element:data(elementName,"${name}")`);
