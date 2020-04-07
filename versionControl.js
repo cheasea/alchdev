@@ -28,6 +28,7 @@ function versionCheck() {
       "counterParser.js",
       "version0_6/conditions.js",
       "version0_6/alch.js",
+      "version0_6/selectable.js"
     ],
   };
 
