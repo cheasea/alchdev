@@ -311,6 +311,7 @@ function checkCounterValue(name, value) {
   }
 
   allCounters[name].value = value;
+  updateCounter(name);
   return result;
 }
 
@@ -704,7 +705,6 @@ function onSelectStop(selected) {
   }
 
   refreshHint();
-  updateCounters();
 }
 
 function destroyElement(element, anim = true) {
@@ -830,12 +830,6 @@ function updateCounter(name) {
 
   if (customChar) elem.text(`${counterOutput}`);
   else elem.text(`${counterOutput}: ${value}`);
-}
-
-function updateCounters() {
-  for (let name in allCounters) {
-    updateCounter(name);
-  }
 }
 
 function react(r, b = false) {
@@ -1077,8 +1071,6 @@ function react(r, b = false) {
       message(reagents, "highlight");
     }
 
-    updateCounters();
-
     if (!counterChanged && results.length === 0) return 0;
 
     if (!b) logReaction(results.join(", "), reagents);
@@ -1130,7 +1122,6 @@ function onDrop(event, ui) {
   placeElements(result, pos);
 
   refreshHint();
-  updateCounters();
 }
 
 var wrongs = [];
@@ -1467,7 +1458,6 @@ function gameInit() {
       },
       true
     );
-    updateCounters();
   }
 }
 
