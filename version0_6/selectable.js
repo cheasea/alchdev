@@ -9,7 +9,12 @@ const selection = new Selection({
   selectionAreaContainer: 'body'
 });
 
-selection.on('move', evt => {
+selection.on('beforestart', evt => {
+  return !evt.oe.path.some(item => {
+    if (item.classList)
+      return item.classList.contains('element')
+  });
+}).on('move', evt => {
   let added = evt.changed.added;
   let removed = evt.changed.removed;
 
