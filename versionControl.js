@@ -23,10 +23,11 @@ function versionCheck() {
   let updates = {
     "0.5.2": ["version0_5_2.js"],
     "0.6": [
+      "velocity.js",
+      "selection.js",
       "counterParser.js",
       "version0_6/conditions.js",
       "version0_6/alch.js",
-      "velocity.js",
     ],
   };
 
