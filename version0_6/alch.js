@@ -1214,6 +1214,10 @@ function addElement(name, place, no_discover) {
   // a.html(parseBBCode($('<div/>').text(name).html()));
   textOrImage(a, name);
 
+  if (allCounters[name]) {
+    updateCounter(name);
+  }
+
   if (place !== undefined) {
     //a.offset({top: place.top+$(window).scrollTop(), left: place.left+$(window).scrollLeft()});
     a.animate(
