@@ -22,8 +22,6 @@ $("#board").empty();
 $("#order_group").empty();
 $("#order_123").empty();
 $("#order_abc").empty();
-
-$('#board').append('<div id="selecting-board"></div>');
 var opened = [];
 
 let allElements = {};
