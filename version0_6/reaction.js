@@ -1,130 +1,340 @@
-class Reaction {
-  // возвращает объект со свойством status:
-  // 0 - fail
-  // 1 - success
-  // 2 - no prefix
-  static parsePrefix(str, reagents) {
-    let prefix = findElementPrefix.exec(str);
-    let operation = prefix[1];
-    let elem = prefix[2];
-    let e;
+function react(r) {
+  let reagents = r.sort().join('+');
+
+  if (!reactions[reagents]) {
+    logReaction(false, reagents);
+    return;
+  }
+
+  let result = reactions[reagents];
+
+  result = filterElements(result, {reagents: r});
+
+  if (!reactions[reagents] && messages[reagents]) {
+    message(reagents, 'highlight');
+  }
+
+  if (result)
+    logReaction(result.join(', '), reagents);
+
+  if (messages[reagents]) 
+    message(reagents, 'highlight');
+
+  return result;
+}
+
+function processCounter(counterString) {
+  let counterParsed = parseCounter(counterString);
+
+  let operation = counterParsed.operation,
+      value     = counterParsed.value;
+      name      = counterParsed.name;
+      min       = counterParsed.min;
+      max       = counterParsed.max;
+      at        = counterParsed.at;
+
+  if (!allElements[name]) {
+    allElements[name] = {};
+  }
+
+  if (!allCounters[name]) {
+    allCounters[name] = {
+      min: {},
+      max: {},
+      at: {},
+    };
+  }
+
+  if (min) {
+    if (min.value) allCounters[name].min.value = min.value;
+    if (min.result) {
+      allCounters[name].min.result = min.result;
+      min.result.forEach((item) => {
+        let cleanName = getCleanName(item);
+
+        countElement(cleanName);
+        if (allElements[cleanName])
+          allElements[cleanName].canCollected = true;
+      });
+    }
+  }
+
+  if (max) {
+    if (max.value) allCounters[name].max.value = max.value;
+    if (max.result) {
+      allCounters[name].max.result = max.result;
+      max.result.forEach((item) => {
+        let cleanName = getCleanName(item);
+
+        countElement(cleanName);
+        if (allElements[cleanName])
+          allElements[cleanName].canCollected = true;
+      });
+    }
+  }
+
+  if (at) {
+    for (let atValue in at) {
+      at[atValue].forEach((item) => {
+        let cleanName = getCleanName(item);
+
+        countElement(cleanName);
+        if (allElements[cleanName])
+          allElements[cleanName].canCollected = true;
+      });
+
+      allCounters[name].at[atValue] = at[atValue];
+    }
+  }
+
+  if (allCounters[name].value === undefined)
+    allCounters[name].value = 0;
+
+  if (value === undefined) 
+    value = 0;
+
+  if (!operation)
+    operation = '=';
+
+  let elem = document.querySelector(`#board .element[name="${name}"]`);
+
+  if (value !== undefined) {
+    let getValue = +allCounters[name].value;
+    let length = String(value).length - 2;
+    let newValue;
+    if (length < 0) length = 0;
 
     switch (operation) {
+      case "=":
+        newValue = (+value).toFixed(length);
+        break;
+      case "+":
+        newValue = computeExpression(`${getValue} + ${+value}`);
+        break;
       case "-":
-        e = getElements(elem).first();
-        e.data("toDelete", true);
-        return { status: 1 };
-
-      case "--":
-        e = getElements(elem)
-          .not(".ui-selected")
-          .not(":data(toKill,1)")
-          .not(":data(maybeKill,1)")
-          .first();
-        if (e.length == 0)
-          e = getElements(elem)
-            .not(".ui-selected")
-            .not(":data(toKill,1)")
-            .first();
-        e.data("toKill", "1");
-
-        if (e.length == 0) {
-          logReaction(
-            "Для этой реакции необходимо, чтобы на поле присутствовал еще " +
-              elem,
-            reagents
-          );
-          $("#board .element:data(toKill,1)").data("toKill", "0");
-          $("#board .element:data(maybeKill,1)").data("maybeKill", "0");
-          return { status: 0 };
-        }
-
-        return { status: 1 };
-
-      case "---":
-        //удалить всё
-        if (elem.length == 0) $("#board .element").data("maybeKill", "1");
-        else {
-          // удалить одинаковые элементы
-          let classExists = false;
-          let l;
-          for (l in classes_strings)
-            if (classes_strings[l] == elem) {
-              classExists = true;
-              break;
-            }
-
-          if (classExists)
-            $("#board .element." + l)
-              .not(".ui-selected")
-              .data("maybeKill", "1");
-          else
-            getElements(elem)
-              .not(".ui-selected")
-              .data("maybeKill", "1");
-        }
-        return elem;
-
-      default:
-        return false;
+        newValue = computeExpression(`${getValue} - ${+value}`);
+        break;
+      case "*":
+        newValue = computeExpression(`${getValue} * ${+value}`);
+        break;
+      case "/":
+        newValue = computeExpression(`${getValue} / ${+value}`);
+        break;
+      case "%":
+        newValue = computeExpression(`${getValue} % ${+value}`);
+        break;
+      case "^":
+        newValue = computeExpression(`${getValue} ^ ${+value}`);
+        break;
     }
+
+    let counterChecked = checkCounterValue(name, +newValue);
+
+    if (elem && counterChecked)
+      pulsate(elem);
+
+    let counterSettings = {
+      result: counterChecked,
+      name: name
+    };
+
+    return counterSettings;
+  }
+}
+
+function processNegativeElem(value) {
+  let toDelete;
+
+  if (value === '---') {
+    toDelete = document.querySelectorAll('#board .element');
+
+    for (let name in allElements) {
+      allElements[name].onBoard = false;
+    }
+
+    return toDelete;
   }
 
-  static process(toProcess) {
-    let result = [];
+  let isClearClasses = value.match(/---(.+)/);
 
-    for (let str of toProcess) {
-      // ПЕРВЫЙ ЭТАП: анализ условий
-      let goodRes = Conditions.parse(str);
-      if (!goodRes) continue;
+  if (isClearClasses) {
+    if (isClearClasses[0].length !== value.length)
+      return;
 
-      // ВТОРОЙ ЭТАП: анализ на наличие удаления элементов
-      let prefixFound = parsePrefix(goodRes);
-      // если обязательное удаление не выполнено, прерываем цикл
-      if (prefixFound.status === 0) return 0;
-      else if (prefixFound.status === 1) continue;
+    let elemClass;
+    let classExists;
 
-      // ТРЕТИЙ ЭТАП: анализ на счётчик
-      let changedCounter = changeCounter(str);
-      if (changedCounter) {
-        result.push(changedCounter);
-        continue;
+    for (elemClass in classes_strings) {
+      if (elemClass === isClearClasses[1]) {
+        classExists = true;
+        break;
       }
-
-      // ЧЕТВЁРТЫЙ ЭТАП: появление элемента
     }
 
-    let toDelete = $("#board :data(toDelete)");
+    if (classExists) {
+      toDelete = document.querySelectorAll(`#board .element[name="${isClearClasses[1]}"]`);
 
-    if (toDelete[0]) {
-      deleteElements(toDelete);
+      deleteGroupBlock(isClearClasses[1]);
+    } else {
+      toDelete = document.querySelectorAll(`#board .element .${elemClass}`);
     }
 
-    destroyElement($("#board :data(toKill,1)"));
-    destroyElement($("#board :data(maybeKill,1)"));
-
-    return result;
+    return toDelete;
   }
 
-  // reagents - массив с названиями реагентов
-  static find(reagents) {
-    // находим реакцию
-    let reactionKey = r.sort().join("+");
-    let toProcess = reactions[reactionKey];
+  let isRequiredElem = value.match(/--(.+)/);
 
-    if (toProcess) {
-      let results = this.processReaction(toProcess);
+  if (isRequiredElem) {
+    if (isRequiredElem[0].length !== value.length)
+      return;
+    
+    toDelete = document.querySelectorAll(`#board .element[name="${isRequiredElem[1]}"]`);
 
-      if (messages[reagents]) message(reagents, "highlight");
+    if (!toDelete) {
+      logReaction(`Для этой реакции необходимо, чтобы на поле присутствовал ещё ${name}`, reagents);
+      return;
+    }
 
-      if (results.length === 0) return 0;
+    deleteGroupBlock(isRequiredElem[1]);
 
-      return results;
-    } else {
-      logReaction(false, reagents);
-      return 0;
+    return toDelete;
+  }
+
+  let isNegativeElem = value.match(/-(.+)/);
+
+  if (isNegativeElem) {
+    if (isNegativeElem[0].length !== value.length)
+      return;
+    
+    toDelete = document.querySelectorAll(`#board .element[name="${isNegativeElem[1]}"]`);
+
+    deleteGroupBlock(isNegativeElem[1]);
+
+    return toDelete;
+  }
+
+  let isOpenedElem = value.match(/-\?(.+)/);
+
+  if (isOpenedElem) {
+    if (isOpenedElem[0].length !== value.length)
+      return;
+    
+    if (!allElements[isOpenedElem[1]].opened) {
+      logReaction(`Эта реакция будет работать, если открыть ${isOpenedElem[1]}`, reagents);
+      return;
     }
   }
 }
 
-Reaction.findElementPrefix = /^(-{0,3})(.*)/;
+function filterElements(array, settings = {reagents: []}) {
+  let result = [];
+
+  for (let elem in array) {
+    let name = Conditions.parse(array[elem]);
+
+    if (!name) continue;
+
+    let isCounter = /^set (.+$)/.test(name);
+
+    if (isCounter) {
+      let counterChecked = processCounter(name);
+
+      if (!counterChecked || !counterChecked.result) {
+        return;
+      }
+
+      result = result.concat(counterChecked.result);
+      name = counterChecked.name;
+
+      if (allElements[name] && !allElements[name].onBoard) {
+        if (!result.includes(name))
+          result.push(name);
+      }
+    } else if (name[0] === '-') {
+      let toDelete = processNegativeElem(name);
+      deleteElements(toDelete);
+    } else {
+      result.push(name);
+
+      if (!settings['reagents'].includes(name)) {
+        let reagents = settings['reagents'].sort().join('+');
+        update_recipes(name, reagents);
+      }
+    }
+  }
+
+  return result;
+}
+
+function checkCounterValue(name, value) {
+  let min    = allCounters[name].min;
+  let max    = allCounters[name].max;
+  let at     = allCounters[name].at;
+  let result = [];
+
+  if (min.value !== undefined && value < min.value) {
+    if (min.result === undefined) {
+      logReaction(`Эта реакция невозможна, т.к. ${name} не может быть меньше ${min.value}`);
+      return 0;
+    } else {
+      allCounters[name].value = min.value;
+
+      if (min.result.length > 0) {
+        let minResult = filterElements(min.result);
+        result = result.concat(minResult);
+      }
+
+      if (at[min.value]) {
+        let atResult = filterElements(at[min.value]);
+        result = result.concat(atResult);
+      }
+
+      return result;
+    }
+  }
+
+  if (max.value !== undefined && value > max.value) {
+    if (!max.result || max.result.length === 0) {
+      logReaction(`Эта реакция невозможна, т.к. ${name} не может быть больше ${max.value}`);
+      return 0;
+    } else {
+      allCounters[name].value = max.value;
+
+      if (max.result.length > 0) {
+        let maxResult = filterElements(max.result);
+        result = result.concat(maxResult);
+      }
+
+      if (at[max.value]) {
+        let atResult = filterElements(at[max.value]);
+        result = result.concat(atResult);
+      }
+
+      return result;
+    }
+  }
+
+  if (at[value]) {
+    let atResult = filterElements(at[value]);
+    result = result.concat(atResult);
+  }
+
+  allCounters[name].value = value;
+  updateCounter(name);
+
+  return result;
+}
+
+function logReaction(result = 'Нет реакции', reagents) {
+  if (!settings.reaction)
+    return;
+
+  $('#info').html('');
+  
+  if (reagents)
+    $('#info').text(`${reagents} = ${result}`);
+  else 
+    $('#info').text(`${result}`);
+
+	$('#info').append('<br>');
+}
