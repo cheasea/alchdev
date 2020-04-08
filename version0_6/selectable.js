@@ -51,10 +51,8 @@ function onSelectStop(selected) {
   selected.forEach(item => {
     let name = item.getAttribute('name');
 
-    if (statics.includes(name))
-      return;
-
-    item.className += ' deleted';
+    if (!statics.includes(name))
+      item.className += ' deleted';
 
     let pos = {
       x: item.offsetLeft,
