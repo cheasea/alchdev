@@ -27,6 +27,13 @@ interact('.element').draggable({
   }
 }).styleCursor(false);
 
+interact('#abyss').dropzone({
+  accept: '.element:not(.deleted)',
+  ondrop: function (event) {
+    deleteElements([event.relatedTarget]);
+  }
+});
+
 function onDrop(firstElem, secondElem) {
   let reagents = [firstElem.getAttribute('name'), secondElem.getAttribute('name')];
   let result = react(reagents);
