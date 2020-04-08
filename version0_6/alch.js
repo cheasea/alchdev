@@ -672,31 +672,6 @@ function applySettings(settings) {
   }
 }
 
-function onDrop(event, ui) {
-  let isReady = ui.helper.data("isDead") !== 1 && $(this).data("isDead") !== 1;
-
-  if (!isReady) {
-    return;
-  }
-
-  let reagents = [ui.helper.data("elementName"), $(this).data("elementName")];
-  let pos = $(this).offset();
-  let result = react(reagents);
-  let counter;
-
-  if (!result) {
-    return;
-  }
-
-  destroyElement($(this));
-  destroyElement(ui.helper);
-
-  /* Reaction */
-  placeElements(result, pos);
-
-  refreshHint();
-}
-
 var wrongs = [];
 var finals = [];
 
