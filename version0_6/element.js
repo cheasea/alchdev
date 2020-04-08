@@ -162,7 +162,10 @@ function deleteElements(value) {
     return;
   
   value.forEach(item => {
-    let name = item.getAttribute('elementName');
+    let name = item.getAttribute('name');
+
+    if (statics.includes(name))
+      return;
 
     item.className += ' deleted';
 
