@@ -1,4 +1,4 @@
-interact('.element').draggable({
+interact('#board .element').draggable({
   listeners: {
     move(event) {
       let x = +event.target.getAttribute('x');
