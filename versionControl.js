@@ -15,27 +15,44 @@ function loadScripts(scripts) {
   };
 }
 
+function loadStyles(styles) {
+  if (!styles) return;
+  if (styles.length === 0) return;
+
+  styles.forEach((style) => {
+    let link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('type', 'text/css');
+    link.setAttribute('href', githubRepLink + style);
+    document.head.appendChild(style);
+  });
+}
+
 function versionCheck() {
   if (!settings.version) return;
 
   if (settings.version === 'last') settings.version = '0.5.2';
 
   let updates = {
-    '0.5.2': ['version0_5_2.js'],
-    '0.6': [
-      'velocity.js',
-      'selection.js',
-      'counterParser.js',
-      'version0_6/conditions.js',
-      'version0_6/alch.js',
-      'version0_6/selectable.js',
-      'version0_6/borders.css',
-    ],
+    '0.5.2': { js: ['version0_5_2.js'], css: [] },
+    '0.6': {
+      js: [
+        'velocity.js',
+        'selection.js',
+        'counterParser.js',
+        'version0_6/conditions.js',
+        'version0_6/alch.js',
+        'version0_6/selectable.js'
+      ],
+      css: ['version0_6/borders.css']
+    }
   };
 
-  let scripts = updates[settings.version];
+  let scripts = updates.js[settings.version];
+  let styles = updates.css[settings.version];
 
   loadScripts(scripts);
+  loadStyles(styles);
 }
 
 versionCheck();
