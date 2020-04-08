@@ -17,3 +17,14 @@ interact('.element').draggable({
     }
   }
 });
+
+interact('.element').dropzone({
+  accept: '.element',
+  overlap: 0.25,
+  ondrop: function(event) {
+    let firstElement = event.target;
+    let secondElement = event.relatedTarget;
+
+    onDrop(firstElement, secondElement);
+  }
+});
