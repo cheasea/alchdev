@@ -54,7 +54,7 @@ function addElement(name, place, no_discover) {
   });
 
   $(elem).droppable({
-    accept: ".element:not(:data(isDead,1))",
+    accept: ".element:not(:data(isDead,1)):not(.deleted)",
     drop: onDrop,
   });
 
