@@ -40,9 +40,11 @@ function versionCheck() {
         'velocity.js',
         'selection.js',
         'counterParser.js',
+        'version0_6/element.js',
+        'version0_6/reaction.js',
         'version0_6/conditions.js',
-        'version0_6/alch.js',
-        'version0_6/selectable.js'
+        'version0_6/selectable.js',
+        'version0_6/alch.js'
       ],
       css: ['version0_6/borders.css']
     }
