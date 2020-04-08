@@ -44,20 +44,6 @@ function addElement(name, place, no_discover) {
     }, 0);
   }
 
-  $(elem).draggable({
-    scroll: false,
-    start: function () {
-      if ($(this).data("isDead")) return;
-      $(this).stop();
-      $(this).css("opacity", 1);
-    },
-  });
-
-  $(elem).droppable({
-    accept: ".element:not(:data(isDead,1)):not(.deleted)",
-    drop: onDrop,
-  });
-
   $(elem).bind("dblclick", e => {
     cloneElement($(elem));
     e.stopPropagation();
