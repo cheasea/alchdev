@@ -1,6 +1,6 @@
 interact('.element').draggable({
   listeners: {
-    move (event) {
+    move(event) {
       let x = +event.target.getAttribute('x');
       let y = +event.target.getAttribute('y');
 
@@ -16,18 +16,16 @@ interact('.element').draggable({
       event.target.setAttribute('y', newPosition.y);
     }
   }
-});
-
-interact('.element').dropzone({
+}).dropzone({
   accept: '.element:not(.deleted)',
   overlap: 0.25,
-  ondrop: function(event) {
+  ondrop: function (event) {
     let firstElement = event.target;
     let secondElement = event.relatedTarget;
 
     onDrop(firstElement, secondElement);
   }
-});
+}).styleCursor(false);
 
 function onDrop(firstElem, secondElem) {
   let reagents = [firstElem.getAttribute('name'), secondElem.getAttribute('name')];
