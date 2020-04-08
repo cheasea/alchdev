@@ -19,7 +19,7 @@ interact('.element').draggable({
 });
 
 interact('.element').dropzone({
-  accept: '.element',
+  accept: '.element:not(.deleted)',
   overlap: 0.25,
   ondrop: function(event) {
     let firstElement = event.target;
@@ -28,3 +28,24 @@ interact('.element').dropzone({
     onDrop(firstElement, secondElement);
   }
 });
+
+function onDrop(firstElem, secondElem) {
+  let reagents = [firstElem.getAttribute('name'), secondElem.getAttribute('name')];
+  let result = react(reagents);
+
+  if (!result)
+    return;
+
+  let translate = firstElem.style.transform.match(/translate\((\d+)px, (\d+)px\)/);
+  let pos = {
+    x: translate[1],
+    y: translate[2]
+  };
+
+  deleteElements([firstElem, secondElem]);
+
+  /* Reaction */
+  placeElements(result, pos);
+
+  refreshHint();
+}
