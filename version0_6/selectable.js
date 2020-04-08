@@ -11,6 +11,8 @@ const selection = new Selection({
 
 selection
   .on('beforestart', (evt) => {
+    $('#info').html('');
+
     return !evt.oe.composedPath().some((item) => {
       if (item.classList) return item.classList.contains('element');
     });
