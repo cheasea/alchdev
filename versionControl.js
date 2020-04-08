@@ -24,7 +24,7 @@ function loadStyles(styles) {
     link.setAttribute('rel', 'stylesheet');
     link.setAttribute('type', 'text/css');
     link.setAttribute('href', githubRepLink + style);
-    document.head.appendChild(style);
+    document.head.appendChild(link);
   });
 }
 
