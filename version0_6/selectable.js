@@ -3,7 +3,7 @@ const selection = new Selection({
   frame: document,
   startThreshold: 0,
   tapMode: 'touch',
-  selectables: ['#board .element'],
+  selectables: ['#board .element:not(.deleted)'],
   startareas: ['body'],
   boundaries: ['body'],
   selectionAreaContainer: 'body',
