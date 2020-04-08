@@ -34,12 +34,16 @@ function versionCheck() {
   if (settings.version === 'last') settings.version = '0.5.2';
 
   let updates = {
-    '0.5.2': { js: ['version0_5_2.js'], css: [] },
+    '0.5.2': {
+      js: ['version0_5_2.js'],
+      css: []
+    },
     '0.6': {
       js: [
         'velocity.js',
         'selection.js',
         'counterParser.js',
+        'interact.js',
         'version0_6/element.js',
         'version0_6/reaction.js',
         'version0_6/conditions.js',
