@@ -206,7 +206,7 @@ function parseCounter(str) {
         endPos = counterSetting[1].length;
         let settingName = counterSetting[2],
           settingValue =
-            counterSetting[3] || computeExpression(counterSetting[4]),
+          counterSetting[3] || computeExpression(counterSetting[4]),
           settingResult = processingBrackets(counterSetting[5]);
 
         counter[settingName] = counter[settingName] || {};
@@ -221,9 +221,9 @@ function parseCounter(str) {
         if (settingResult) {
           countElements(settingResult.result);
           endPos +=
-            settingResult.index === -1
-              ? settingResult.length
-              : settingResult.index;
+            settingResult.index === -1 ?
+            settingResult.length :
+            settingResult.index;
         }
 
         str = str.substr(endPos);
@@ -418,8 +418,8 @@ function addToStack(name) {
   else var group = "_no_group";
   if (
     $("#order_group")
-      .children("." + group)
-      .size() === 0
+    .children("." + group)
+    .size() === 0
   ) {
     var groupBox = $("<span/>", {
       "class": group + " element " + classes[name],
@@ -638,7 +638,7 @@ function updateCounter(name) {
       );
       customChar = true;
     } // иначе просто используем кастомное название
-    else counterOutput = counterOutputName;
+  else counterOutput = counterOutputName;
   // если счётчика нет в кастомном выводе, то выводим чистое название
   else counterOutput = sameName;
 
@@ -788,7 +788,7 @@ function gameInit() {
       if (errors.length > 0) {
         errMsg(
           "В этом моде не удастся открыть все элементы, потому что некоторые из них невозможно получить: " +
-            errors.join(",")
+          errors.join(",")
         );
       }
 

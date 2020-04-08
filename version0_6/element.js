@@ -2,11 +2,11 @@ function addElement(name, place, no_discover) {
   if (classes[name] === 'group_block') {
     allElements[name].onBoard = true;
     allElements[name].opened = true;
-    
+
     return;
   }
 
-  let cleanName = clearName(name);
+  let cleanName = getOutputName(name);
   let elem = document.createElement('div');
 
   elem.className = `element ${classes[name]}`;
@@ -16,7 +16,7 @@ function addElement(name, place, no_discover) {
 
   if (statics.includes(name))
     elem.className += ' static';
-  
+
   elem.setAttribute('name', cleanName)
   elem.innerText = cleanName;
   elem.title = cleanName;
@@ -33,7 +33,7 @@ function addElement(name, place, no_discover) {
 
   if (allCounters[name])
     updateCounter(name);
-  
+
   allElements[name].onBoard = true;
   allElements[name].opened = true;
 
@@ -104,7 +104,7 @@ function placeElements(names, place, firstPush) {
     if (isGroupBlock) {
       allElements[item].onBoard = true;
       allElements[item].opened = true;
-      
+
       return false;
     }
     return true;
@@ -116,7 +116,7 @@ function placeElements(names, place, firstPush) {
   filtered.forEach((item, index) => {
     let staticElem = statics.includes(item);
     let isOpened;
-    
+
     if (allElements[item])
       isOpened = allElements[item].opened;
 
@@ -124,8 +124,8 @@ function placeElements(names, place, firstPush) {
       return;
     }
 
-    top  = Math.floor( (c - 1) * r * Math.sin(start_angle + index * a) );
-    left = Math.floor( (c - 1) * r * Math.cos(start_angle + index * a) );
+    top = Math.floor((c - 1) * r * Math.sin(start_angle + index * a));
+    left = Math.floor((c - 1) * r * Math.cos(start_angle + index * a));
 
     if (place.left + left < 0)
       left = place.left;
@@ -160,7 +160,7 @@ function placeElements(names, place, firstPush) {
 function deleteElements(value) {
   if (!value || value.length === 0)
     return;
-  
+
   value.forEach(item => {
     let name = item.getAttribute('name');
 
@@ -197,11 +197,11 @@ function setElements(type) {
     countElements(reactions[r]);
 
     let reagents = r.split('+');
-    
+
     reagents.forEach(item => {
       if (item[0] === '-')
         return;
-      
+
       removeFromArray(item, finals, false);
 
       if (item === '')
@@ -251,25 +251,27 @@ function countElement(name) {
     return;
   }
 
-  allElements[name] = { canCollected: true };
+  allElements[name] = {
+    canCollected: true
+  };
 }
 
 function pulsate(elem) {
-  if ($(elem).data('pulsating')) 
+  if ($(elem).data('pulsating'))
     return;
 
   $(elem).data('pulsating', true);
   $(elem).effect('pulsate', {
     'times': 4,
-  }, 250, function() {
+  }, 250, function () {
     $(this).data('pulsating', false);
   });
 }
 
-function clearName(value) {
+function getOutputName(value) {
   if (!value)
     return;
-  
+
   let cleanName;
 
   if (settings.output[value]) {
