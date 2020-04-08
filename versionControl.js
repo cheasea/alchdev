@@ -48,8 +48,8 @@ function versionCheck() {
     }
   };
 
-  let scripts = updates.js[settings.version];
-  let styles = updates.css[settings.version];
+  let scripts = updates[settings.version].js;
+  let styles = updates[settings.version].css;
 
   loadScripts(scripts);
   loadStyles(styles);
