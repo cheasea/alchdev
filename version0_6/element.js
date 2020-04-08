@@ -42,6 +42,8 @@ function addElement(name, place, no_discover) {
       'top': place.top,
       'left': place.left + $(window).scrollLeft()
     }, 0);
+    elem.setAttribute('x', place.left);
+    elem.setAttribute('y', place.top);
   }
 
   $(elem).bind("dblclick", e => {
