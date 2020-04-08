@@ -38,10 +38,8 @@ function addElement(name, place, no_discover) {
   allElements[name].opened = true;
 
   if (place) {
-    $(elem).animate({
-      'top': place.top,
-      'left': place.left + $(window).scrollLeft()
-    }, 0);
+    elem.style.transform =
+      `translate(${place.left}px, ${place.top}px)`;
     elem.setAttribute('x', place.left);
     elem.setAttribute('y', place.top);
   }
