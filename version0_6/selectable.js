@@ -42,3 +42,68 @@ selection
       onSelectStop(selected);
     }
   });
+
+function onSelectStop(selected) {
+  let reagents = [];
+  let x = 0;
+  let y = 0;
+
+  selected.forEach(item => {
+    let name = item.getAttribute('name');
+
+    if (statics.includes(name))
+      return;
+
+    item.className += ' deleted';
+
+    let pos = {
+      x: item.offsetLeft,
+      y: item.offsetTop
+    };
+
+    x += pos.x;
+    y += pos.y;
+    reagents.push(name);
+  });
+
+  result = react(reagents);
+
+  if (!result) {
+    selected.forEach(item => {
+      item.className = item.className.replace(/\sdeleted/, '');
+    });
+
+    return;
+  }
+
+  let hasCounter;
+
+  if (reactions[reagents.sort().join("+")]) {
+    let counter = reactions[reagents.sort().join("+")].find((item) => {
+      return item.match(/set .+ .+$/);
+    });
+
+    if (counter) hasCounter = true;
+  }
+
+  selected.forEach(item => {
+    item
+  });
+
+  x = Math.floor(x / selected.length);
+  y = Math.floor(y / selected.length);
+
+  $(selected).animate({
+    'left': x,
+    'top': y,
+  }, 500, () => {
+    deleteElements(selected);
+  });
+
+  placeElements(result, {
+    'left': x,
+    'top': y,
+  });
+
+  refreshHint();
+}
