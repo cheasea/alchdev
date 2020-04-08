@@ -34,7 +34,7 @@ function onDrop(firstElem, secondElem) {
   if (!result)
     return;
 
-  let translate = firstElem.style.transform.match(/translate\((\d+)px, (\d+)px\)/);
+  let translate = firstElem.style.transform.match(/translate\(\-?(\d+(?:\.\d+)?)px, (\-?\d+(?:\.\d+)?)px\)/);
   let pos = {
     x: translate[1],
     y: translate[2]
