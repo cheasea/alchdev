@@ -1,5 +1,8 @@
 interact('#board .element').draggable({
   listeners: {
+    start(event) {
+      event.target.className = event.target.className.replace(/\sanimated/, '');
+    },
     move(event) {
       let stackOffset = document.querySelector("#stack").getBoundingClientRect().top;
 
