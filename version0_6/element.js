@@ -142,7 +142,7 @@ function placeElements(names, place, firstPush) {
 function changePos(elem, pos) {
   elem.className += ' animated';
   elem.style.transform =
-    `translate(${pos.x}px, ${pos.y}px)`;
+    `translate(${pos.left}px, ${pos.top}px)`;
   elem.style.opacity = 1;
 
   setTimeout(() => {
