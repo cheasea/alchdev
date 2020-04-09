@@ -5,7 +5,7 @@ interact('#board .element').draggable({
 
       let newPosition = {
         x: event.rect.left + event.dx,
-        y: event.rect.top + event.dy + stackOffset
+        y: event.rect.top + event.dy - stackOffset
       };
 
       event.target.style.transform =
