@@ -1,9 +1,11 @@
 interact('#board .element').draggable({
   listeners: {
     move(event) {
+      let stackOffset = document.querySelector("#stack").getBoundingClientRect().top;
+
       let newPosition = {
         x: event.rect.left + event.dx,
-        y: event.rect.top + event.dy
+        y: event.rect.top + event.dy + stackOffset
       };
 
       event.target.style.transform =
