@@ -136,10 +136,9 @@ function placeElements(names, place, firstPush) {
 
     if (!$.browser.msie) {
       $(elem).css('opacity', 0);
-      animation.opacity = 1;
     }
 
-    $(elem).animate(animation, 600);
+    changePos(elem, animation);
   });
 }
 
@@ -147,6 +146,8 @@ function changePos(elem, pos) {
   elem.className += ' animated';
   elem.style.transform =
     `translate(${pos.x}px, ${pos.y}px)`;
+  elem.style.opacity = 1;
+
   setTimeout(() => {
     elem.className = elem.className.replace(/\sanimated/, '');
   }, 600);
