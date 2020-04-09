@@ -4,5 +4,5 @@
 }
 
 .animated {
-    transition: transform 600ms;
+    transition: transform 600ms, opacity 600ms;
 }
