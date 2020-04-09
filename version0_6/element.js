@@ -121,17 +121,14 @@ function placeElements(names, place, firstPush) {
       top = place.top + $('#tools').position().top + $('#tools').height();
     }
 
-    top < 0 ? (top = "-" + -top + "px") : (top = "+" + top + "px");
-    left < 0 ? (left = "-" + -left + "px") : (left = "+" + left + "px");
-
     let elem = addElement(item, {
-      'top': y + top,
-      'left': x + left
+      'top': y,
+      'left': x
     });
 
     let animation = {
-      top: top,
-      left: left
+      top: y + top,
+      left: x + left
     }
 
     if (!$.browser.msie) {
