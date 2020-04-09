@@ -143,6 +143,15 @@ function placeElements(names, place, firstPush) {
   });
 }
 
+function changePos(elem, pos) {
+  elem.className += ' animated';
+  elem.style.transform =
+    `translate(${pos.x}px, ${pos.y}px)`;
+  setTimeout(() => {
+    elem.className = elem.className.replace(/\sanimated/, '');
+  }, 600);
+}
+
 function deleteElements(value) {
   if (!value || value.length === 0)
     return;
