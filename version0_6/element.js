@@ -125,8 +125,8 @@ function placeElements(names, place, firstPush) {
     left < 0 ? (left = "-" + -left + "px") : (left = "+" + left + "px");
 
     let elem = addElement(item, {
-      'top': y,
-      'left': x
+      'top': y + top,
+      'left': x + left
     });
 
     let animation = {
