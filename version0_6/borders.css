@@ -4,5 +4,5 @@
 }
 
 .animated {
-    transition: 'translate 600ms';
+    transition: transform 600ms;
 }
