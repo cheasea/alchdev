@@ -1,4 +1,4 @@
-interact('#board .element').draggable({
+interact('#board .element:not(.deleted)').draggable({
   listeners: {
     start(event) {
       event.target.className = event.target.className.replace(/\sanimated/, '');

@@ -40,7 +40,6 @@ function versionCheck() {
     },
     '0.6': {
       js: [
-        'velocity.js',
         'selection.js',
         'counterParser.js',
         'interact.js',
