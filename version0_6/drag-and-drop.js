@@ -1,22 +1,12 @@
 interact('#board .element:not(.deleted)').draggable({
   listeners: {
-    start(event) {
-      event.target.classList.remove("animated");
-    },
     move(event) {
-      let x = +event.target.getAttribute('x');
-      let y = +event.target.getAttribute('y');
-
-      let newPosition = {
-        x: x + event.dx,
-        y: y + event.dy
-      };
-
-      event.target.style.transform =
-        `translateX(${newPosition.x}px) translateY(${newPosition.y}px)`;
-
-      event.target.setAttribute('x', newPosition.x);
-      event.target.setAttribute('y', newPosition.y);
+      anime({
+        targets: event.target,
+        translateX: `+=${event.dx}`,
+        translateY: `+=${event.dy}`,
+        duration: 0
+      });
     }
   }
 }).dropzone({
