@@ -11,12 +11,7 @@ interact('#board .element:not(.deleted)').draggable({
   }
 }).dropzone({
   accept: '.element:not(.deleted)',
-  ondrop: function (event) {
-    let firstElement = event.target;
-    let secondElement = event.relatedTarget;
-
-    onDrop(firstElement, secondElement);
-  }
+  ondrop: onDrop
 }).styleCursor(false);
 
 interact('#abyss').dropzone({
@@ -26,17 +21,19 @@ interact('#abyss').dropzone({
   }
 });
 
-function onDrop(firstElem, secondElem) {
+function onDrop(event) {
+  let firstElem = event.target,
+    secondElem = event.relatedTarget;
   let reagents = [firstElem.getAttribute('name'), secondElem.getAttribute('name')];
   let result = react(reagents);
 
   if (!result)
     return;
 
-  let translate = firstElem.style.transform.match(/translate\(\-?(\d+(?:\.\d+)?)px, (\-?\d+(?:\.\d+)?)px\)/);
+  let rect = firstElem.rect;
   let pos = {
-    x: translate[1],
-    y: translate[2]
+    x: rect.left,
+    y: rect.top
   };
 
   deleteElements([firstElem, secondElem]);
