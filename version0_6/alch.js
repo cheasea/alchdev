@@ -18,7 +18,7 @@ $("#err_msg").dialog("close");
 
 $("#info").empty();
 $("#board").empty();
-$("#board").prependTo($("#board").parent())
+$("#board").prependTo($("body"))
 
 $("#order_group").empty();
 $("#order_123").empty();
