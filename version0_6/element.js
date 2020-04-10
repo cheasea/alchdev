@@ -254,14 +254,20 @@ function countElement(name) {
 }
 
 function pulsate(elem) {
-  if ($(elem).data('pulsating'))
-    return;
-
-  $(elem).data('pulsating', true);
-  $(elem).effect('pulsate', {
-    'times': 4,
-  }, 250, function () {
-    $(this).data('pulsating', false);
+  anime({
+    targets: elem,
+    keyframes: [
+      {'opacity': 0},
+      {'opacity': 1},
+      {'opacity': 0},
+      {'opacity': 1},
+      {'opacity': 0},
+      {'opacity': 1},
+      {'opacity': 0},
+      {'opacity': 1},
+    ],
+    easing: 'linear',
+    duration: 800
   });
 }
 
