@@ -32,8 +32,8 @@ function onDrop(event) {
 
   let rect = firstElem.getBoundingClientRect();
   let pos = {
-    x: rect.left,
-    y: rect.top
+    left: rect.left,
+    top: rect.top
   };
 
   deleteElements([firstElem, secondElem]);
