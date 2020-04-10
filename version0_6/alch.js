@@ -336,6 +336,7 @@ function textOrImage(a, name, checkingValue = true) {
       e.preventDefault();
     });
 
+    a.text('');
     a.append(img);
     a.addClass("img-element");
     a.data("image", filename);
