@@ -4,15 +4,19 @@ interact('#board .element').draggable({
       event.target.className = event.target.className.replace(/\sanimated/, '');
     },
     move(event) {
-      let stackOffset = document.querySelector("#stack").getBoundingClientRect().top;
+      let x = +event.target.getAttribute('x');
+      let y = +event.target.getAttribute('y');
 
       let newPosition = {
-        x: event.rect.left + event.dx,
-        y: event.rect.top + event.dy - stackOffset
+        x: x + event.dx,
+        y: y + event.dy
       };
 
       event.target.style.transform =
         `translate(${newPosition.x}px, ${newPosition.y}px)`;
+
+      event.target.setAttribute('x', newPosition.x);
+      event.target.setAttribute('y', newPosition.y);
     }
   }
 }).dropzone({
