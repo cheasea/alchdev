@@ -54,7 +54,7 @@ function onSelectStop(selected) {
     let name = item.getAttribute('name');
 
     if (!statics.includes(name))
-      item.className += ' deleted';
+      item.classList.add('deleted');
 
     let rect = item.getBoundingClientRect();
 
@@ -88,10 +88,6 @@ function onSelectStop(selected) {
     if (counter) hasCounter = true;
   }
 
-  selected.forEach(item => {
-    item
-  });
-
   x = Math.floor(x / selected.length);
   y = Math.floor(y / selected.length);
 
@@ -99,9 +95,10 @@ function onSelectStop(selected) {
     targets: selected,
     translateX: x,
     translateY: y,
-    duration: 500
+    easing: "easeInOutSine",
+    duration: 400
   });
-  
+
   deleteElements(selected);
 
   placeElements(result, {

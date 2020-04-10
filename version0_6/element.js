@@ -162,21 +162,23 @@ function deleteElements(value) {
     if (statics.includes(name))
       return;
 
-    item.className += ' deleted';
+    item.classList.add('deleted');
 
     if (allElements[name]) {
       allElements[name].onBoard = false;
     }
 
-    $(item).draggable('disable');
-    $(item).fadeOut(1000, () => {
-      $(item).remove();
-    });
+    anime({
+      targets: item,
+      easing: "easeInOutSine",
+      duration: 1000,
+      opacity: 0
+    }).finished.then(item.parentNode.removeChild(item));
   });
 }
 
 function deleteGroupBlock(value) {
-  let isGroupBlock = /\s?group_block/.test(classes[value]);
+  let isGroupBlock = classes[value].split(" ").contains("group_block");
 
   if (isGroupBlock) {
     allElements[value].onBoard = false;
