@@ -267,7 +267,7 @@ function pulsate(elem) {
       {'opacity': 1},
     ],
     easing: 'linear',
-    duration: 800
+    duration: 1000
   });
 }
 
