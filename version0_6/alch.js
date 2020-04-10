@@ -671,6 +671,11 @@ function applySettings(settings) {
   } else {
     $(document).bind("dblclick", function (e) {});
   }
+  
+  if (settings['images']) {
+    let abyss = document.querySelector('#abyss');
+    abyss.addEventListener('click', clearBoard);
+  }
 }
 
 var wrongs = [];
