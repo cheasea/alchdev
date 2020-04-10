@@ -96,7 +96,7 @@ function processCounter(counterString) {
   if (!operation)
     operation = '=';
 
-  let elem = document.querySelector(`#board .element[name="${name}"]`);
+  let elements = document.querySelectorAll(`#board .element[name="${name}"]`);
 
   if (value !== undefined) {
     let getValue = +allCounters[name].value;
@@ -130,8 +130,8 @@ function processCounter(counterString) {
 
     let counterChecked = checkCounterValue(name, +newValue);
 
-    if (elem && counterChecked)
-      pulsate(elem);
+    if (elements && counterChecked)
+      pulsate(elements);
 
     let counterSettings = {
       result: counterChecked,
