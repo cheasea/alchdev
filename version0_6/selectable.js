@@ -56,9 +56,11 @@ function onSelectStop(selected) {
     if (!statics.includes(name))
       item.className += ' deleted';
 
+    let rect = item.getBoundingClientRect();
+
     let pos = {
-      x: item.offsetLeft,
-      y: item.offsetTop
+      x: rect.left,
+      y: rect.top
     };
 
     x += pos.x;
