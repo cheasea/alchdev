@@ -30,7 +30,7 @@ function loadStyles(styles) {
 
 function versionCheck() {
   if (!settings.version) return;
-
+  $('#board').hide()
   if (settings.version === 'last') settings.version = '0.5.2';
 
   let updates = {
@@ -62,6 +62,7 @@ function versionCheck() {
 
   loadScripts(scripts);
   loadStyles(styles);
+  $('#board').show()
 }
 
 versionCheck();
