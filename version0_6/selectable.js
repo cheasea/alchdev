@@ -95,12 +95,14 @@ function onSelectStop(selected) {
   x = Math.floor(x / selected.length);
   y = Math.floor(y / selected.length);
 
-  $(selected).animate({
-    'left': x,
-    'top': y,
-  }, 500, () => {
-    deleteElements(selected);
+  anime({
+    targets: selected,
+    translateX: x,
+    translateY: y,
+    duration: 500
   });
+  
+  deleteElements(selected);
 
   placeElements(result, {
     'left': x,
