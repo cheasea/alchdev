@@ -2,6 +2,7 @@ interact('#board .element:not(.deleted)').draggable({
   listeners: {
     start(event) {
       anime.remove(event.target);
+      event.target.style.opacity = 1;
     },
     move(event) {
       anime({

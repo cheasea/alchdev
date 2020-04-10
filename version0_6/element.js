@@ -168,13 +168,12 @@ function deleteElements(value) {
       allElements[name].onBoard = false;
     }
 
-    anime.timeline({
+    anime({
       targets: item,
       easing: "easeInOutSine",
       duration: 1000,
-    }).add({
       opacity: 0
-    }).finished.then(item.parentNode.removeChild(item));
+    }).finished.then(() => item.parentNode.removeChild(item));
   });
 }
 
