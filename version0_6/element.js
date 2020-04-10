@@ -12,10 +12,10 @@ function addElement(name, place, no_discover) {
   elem.className = `element ${classes[name]}`;
 
   if (!allElements[name].hasReaction)
-    elem.className += ' final';
+    elem.classList.add('final');
 
   if (statics.includes(name))
-    elem.className += ' static';
+    elem.classList.add('static');
 
   elem.setAttribute('name', cleanName)
   elem.innerText = cleanName;
@@ -39,7 +39,7 @@ function addElement(name, place, no_discover) {
 
   if (place) {
     elem.style.transform =
-      `translate(${place.left}px, ${place.top}px)`;
+      `translateX(${place.left}px) translateY(${place.top}px)`;
     elem.setAttribute('x', place.left);
     elem.setAttribute('y', place.top);
   }

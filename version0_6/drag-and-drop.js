@@ -1,7 +1,7 @@
 interact('#board .element:not(.deleted)').draggable({
   listeners: {
     start(event) {
-      event.target.className = event.target.className.replace(/\sanimated/, '');
+      event.target.classList.remove("animated");
     },
     move(event) {
       let x = +event.target.getAttribute('x');
