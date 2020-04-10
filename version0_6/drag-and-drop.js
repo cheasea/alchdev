@@ -30,7 +30,7 @@ function onDrop(event) {
   if (!result)
     return;
 
-  let rect = firstElem.rect;
+  let rect = firstElem.getBoundingClientRect();
   let pos = {
     x: rect.left,
     y: rect.top
