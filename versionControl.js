@@ -43,6 +43,7 @@ function versionCheck() {
         'selection.js',
         'counterParser.js',
         'interact.js',
+        'anime.min.js',
         'version0_6/element.js',
         'version0_6/reaction.js',
         'version0_6/conditions.js',

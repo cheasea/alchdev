@@ -135,19 +135,19 @@ function placeElements(names, place, firstPush) {
       $(elem).css('opacity', 0);
     }
 
-    changePos(elem, animation);
+    changePos(elem, animation, {
+      opacity: [0, 1]
+    });
   });
 }
 
-function changePos(elem, pos) {
-  elem.className += ' animated';
-  elem.style.transform =
-    `translate(${pos.left}px, ${pos.top}px)`;
-  elem.style.opacity = 1;
-
-  setTimeout(() => {
-    elem.className = elem.className.replace(/\sanimated/, '');
-  }, 600);
+function changePos(elem, pos, animations = {}) {
+  anime({
+    targets: elem,
+    duration: 600,
+    translateX: pos.left,
+    translateY: pos.top
+  }).add(animations);
 }
 
 function deleteElements(value) {
