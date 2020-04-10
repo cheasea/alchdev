@@ -533,41 +533,6 @@ function cloneElement(elem) {
   destroyElement(elem);
 }
 
-function destroyElement(element, anim = true) {
-  element = element
-    .filter(".element")
-    .not(".static")
-    .not(":data(isDeleting, 1)");
-
-  if (!element[0]) return;
-
-  $(element).each(function () {
-    let name = $(this).data("elementName");
-
-    if (allElements[name]) {
-      allElements[name].onBoard = false;
-    }
-
-    if (typeof classes[name] === "string" && classes[name].match(/group_block/))
-      return;
-  });
-
-  element.data("isDeleting", 1);
-  element.data("isDead", 1);
-  element.draggable("disable");
-  element.droppable("disable");
-
-  if (anim) {
-    element.fadeIn(0);
-    element.fadeOut(1000, function () {
-      element.remove();
-    });
-  } else {
-    element.fadeIn(0);
-    element.remove();
-  }
-}
-
 function getModId() {
   var regex = /[^\d]*(\d+)[^\d]*/gm;
   var res = regex.exec($("#load")[0].onclick.toString());
