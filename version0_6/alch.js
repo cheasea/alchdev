@@ -675,7 +675,6 @@ function applySettings(settings) {
   if (settings['images']) {
     let abyss = document.querySelector('#abyss');
     $('#abyss').unbind('click');
-    abyss.removeEventListener('click', clearBoard);
     abyss.addEventListener('click', () => {
       let abyss = document.querySelector('#abyss');
       let everyElement = document.querySelectorAll('#board .element:not(.deleted):not(.static)');
@@ -684,7 +683,8 @@ function applySettings(settings) {
         targets: everyElement,
         translateX: abyss.offsetLeft + 35,
         translateY: abyss.offsetTop + 35,
-        duration: 1000
+        duration: 1000,
+        easing: "easeInOutSine"
       });
 
       deleteElements(everyElement);

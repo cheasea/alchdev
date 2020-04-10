@@ -145,6 +145,7 @@ function changePos(elem, pos, animations = {}) {
   anime({
     targets: elem,
     duration: 600,
+    easing: "easeInOutSine",
     translateX: pos.left,
     translateY: pos.top,
     ...animations
