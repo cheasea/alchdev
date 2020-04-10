@@ -671,21 +671,22 @@ function applySettings(settings) {
   } else {
     $(document).bind("dblclick", function (e) {});
   }
-  
+
   if (settings['images']) {
     let abyss = document.querySelector('#abyss');
+    $('#abyss').unbind('click');
     abyss.removeEventListener('click', clearBoard);
     abyss.addEventListener('click', () => {
       let abyss = document.querySelector('#abyss');
       let everyElement = document.querySelectorAll('#board .element:not(.deleted):not(.static)');
-  
+
       anime({
         targets: everyElement,
         translateX: abyss.offsetLeft + 35,
         translateY: abyss.offsetTop + 35,
         duration: 1000
       });
-  
+
       deleteElements(everyElement);
     });
   }
