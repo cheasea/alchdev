@@ -13,7 +13,7 @@ interact('#board .element:not(.deleted)').draggable({
       };
 
       event.target.style.transform =
-        `translate(${newPosition.x}px, ${newPosition.y}px)`;
+        `translateX(${newPosition.x}px) translateY(${newPosition.y}px)`;
 
       event.target.setAttribute('x', newPosition.x);
       event.target.setAttribute('y', newPosition.y);

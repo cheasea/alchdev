@@ -136,7 +136,7 @@ function placeElements(names, place, firstPush) {
     }
 
     changePos(elem, animation, {
-      opacity: [0, 1]
+      opacity: 1
     });
   });
 }
