@@ -55,6 +55,9 @@ function versionCheck() {
     }
   };
 
+  if (!updates[settings.version])
+    return;
+
   let scripts = updates[settings.version].js;
   let styles = updates[settings.version].css;
 
