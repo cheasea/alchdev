@@ -72,7 +72,7 @@ function onSelectStop(selected) {
 
   if (!result) {
     selected.forEach(item => {
-      item.className = item.className.replace(/\sdeleted/, '');
+      item.classList.remove('deleted');
     });
 
     return;

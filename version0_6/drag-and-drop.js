@@ -1,5 +1,8 @@
 interact('#board .element:not(.deleted)').draggable({
   listeners: {
+    start(event) {
+      anime.remove(event.target);
+    },
     move(event) {
       anime({
         targets: event.target,
