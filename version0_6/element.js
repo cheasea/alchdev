@@ -146,8 +146,9 @@ function changePos(elem, pos, animations = {}) {
     targets: elem,
     duration: 600,
     translateX: pos.left,
-    translateY: pos.top
-  }).add(animations);
+    translateY: pos.top,
+    ...animations
+  });
 }
 
 function deleteElements(value) {
