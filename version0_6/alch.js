@@ -674,7 +674,7 @@ function applySettings(settings) {
   
   if (settings['images']) {
     let abyss = document.querySelector('#abyss');
-    abyss.removeEventListener('click', clearBoard);
+    abyss.removeEventListener('click');
     abyss.addEventListener('click', clearBoard);
   }
 }
