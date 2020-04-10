@@ -182,6 +182,20 @@ function deleteGroupBlock(value) {
   }
 }
 
+function clearBoard() {
+  let abyss = document.querySelector('#abyss');
+  let everyElement = document.querySelectorAll('#board .element:not(.deleted):not(.static)');
+  
+  anime({
+    targets: everyElement,
+    translateX: abyss.offsetLeft + 35,
+    translateY: abyss.offsetTop + 35,
+    duration: 1000
+  });
+  
+  deleteElements(everyElement);
+}
+
 function setElements(type) {
   let errors = [];
 
