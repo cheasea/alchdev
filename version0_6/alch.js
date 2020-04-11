@@ -367,8 +367,9 @@ function createShortcut(name, checkingValue) {
   let cleanName = clearName(name);
 
   $(elem).data('elementName', name);
+  elem.style.pointerEvents = 'none';
   elem.setAttribute('name', cleanName);
-  elem.className = `element ${classes[name]} stack-element`;
+  elem.className = `element ${classes[name]}`;
 
   if (finals.includes(name))
     elem.classList.add('final');
@@ -387,7 +388,7 @@ function createShortcut(name, checkingValue) {
     elem.title = recipe;
   }
 
-  o.draggable({
+  $(elem).draggable({
     distance: 5,
     helper: function () {
       return addElement(name, {
