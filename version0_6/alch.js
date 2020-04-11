@@ -375,7 +375,7 @@ function createShortcut(name, checkingValue) {
   textOrImage(elem, name, checkingValue);
 
   if (elem.innerHTML === '')
-    elem.innerHTML = name;
+    elem.innerHTML = cleanName;
 
   if ($(elem).data('image')) {
     elem.classList.add('img-stack-element');
