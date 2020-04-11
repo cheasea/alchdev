@@ -323,7 +323,7 @@ function textOrImage(elem, name, checkingValue = true) {
     filename = MEDIA_URL + labels[name];
 
   if (checkingValue && allCounters[name])
-    counterText = `${name} (${allCounters[name].value})`;
+    counterText = `${name}: ${allCounters[name].value}`;
 
   if (settings.images && filename) {
     let img = document.createElement('img');
@@ -339,27 +339,25 @@ function textOrImage(elem, name, checkingValue = true) {
     elem.innerHTML = '';
     elem.appendChild(img);
     elem.classList.add('img-element');
-    elem.innerHTML += '<div class="elem-text"></div>';
+
     $(elem).data("image", filename);
 
     if (allCounters[name] && !settings.output[name])
-      settings.output[name] = `(${settings.counterOutputChar})`
+      settings.output[name] = `(${settings.counterOutputChar})`;
+
+    if (checkingValue && allCounters[name])
+      elem.innerHTML += writeCounterValue(name, true);
 
     $(img).error(() => {
       if (counterText) 
         elem.innerHTML = `<span class="elem-text">${counterText}</span>`;
-      else 
+      else
         elem.innerHTML = `<span class="elem-text">${cleanName}</span>`;
 
       elem.classList.remove('img-element');
       elem.classList.remove('img-stack-element');
       $(elem).data('image', false);
     });
-  } else {
-    if (counterText) 
-      elem.innerHTML = `<span class="elem-text">${counterText}</span>`;
-    else 
-      elem.innerHTML = `<span class="elem-text">${cleanName}</span>`;
   }
 }
 
@@ -375,6 +373,9 @@ function createShortcut(name, checkingValue) {
     elem.classList.add('final');
 
   textOrImage(elem, name, checkingValue);
+
+  if (elem.innerHTML === '')
+    elem.innerHTML = name;
 
   if ($(elem).data('image')) {
     elem.classList.add('img-stack-element');
@@ -607,20 +608,23 @@ function updateCounter(name) {
   if (elements.length === 0)
     return;
 
+  elements.forEach(item => {
+    let value = item.querySelector('.counter-value');
+    value.innerText = allCounters[name].value;
+  });
+}
+
+function writeCounterValue(name, isDiv) {
   let counterOutputName = settings.output[name];
   let counterOutput, customChar;
   
   if (counterOutputName) {
-    if (customOutputRegex.test(counterOutputName)) {
-      counterOutput = name.replace(/\[.+\]$/, '');
+    counterOutput = counterOutputName.replace(
+      customOutputRegex, 
+      `<span class="counter-value">${allCounters[name].value}</span>`
+    );
 
-      counterOutput = counterOutputName.replace(
-        customOutputRegex,
-        allCounters[name].value
-      );
-
-      customChar = true;
-    }
+    customChar = true;
   } else {
     counterOutput = name;
   }
@@ -630,12 +634,12 @@ function updateCounter(name) {
   if (customChar)
     result = `${counterOutput}`;
   else
-    result = `${counterOutput}: ${allCounters[name].value}`;
+    result = `${counterOutput}: <span class="counter-value">${allCounters[name].value}</span>`;
 
-  elements.forEach(item => {
-    let text = item.querySelector('.elem-text');
-    text.innerText = result;
-  })
+  if (isDiv)
+    return `<div class="elem-text">${result}</div>`;
+
+  return `<span class="elem-text">${result}</span>`;
 }
 
 function applySettings(settings) {
