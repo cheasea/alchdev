@@ -308,68 +308,85 @@ function countElements(elements) {
   });
 }
 
-function textOrImage(a, name, checkingValue = true) {
+function textOrImage(elem, name, checkingValue = true) {
   let cleanName = name;
 
-  // кастомный вывод
-  if (settings.output[name]) cleanName = settings.output[name];
-  // иначе чистое название
-  else if (name.match(/.+\[.+\]/)) cleanName = name.replace(/\[.+\]$/, "");
+  if (settings.output[name]) 
+    cleanName = settings.output[name];
+  else if (name.match(/.+\[.+\]/)) 
+    cleanName = name.replace(/\[.+\]$/, '');
 
   let filename;
   let counterText;
 
-  if (labels[name]) {
+  if (labels[name])
     filename = MEDIA_URL + labels[name];
-  }
 
-  if (counters[name] && checkingValue) {
-    counterText = `${name} (${counters[name].value})`;
-  }
+  if (checkingValue && allCounters[name])
+    counterText = `${name} (${allCounters[name].value})`;
 
-  if (filename && settings.images) {
-    let img = $("<img/>", {
-      src: filename,
-      "class": "element-icon",
+  if (settings.images && filename) {
+    let img = document.createElement('img');
+
+    img.src = filename;
+    img.classList = 'element-icon';
+
+    img.addEventListener('mousedown', event => {
+      event.preventDefault();
     });
-    img.mousedown(function (e) {
-      e.preventDefault();
-    });
 
-    a.text('');
-    a.append(img);
-    a.addClass("img-element");
-    a.data("image", filename);
+    elem.innerHTML = '';
+    elem.appendChild(img);
+    elem.classList.add('img-element');
+    elem.innerHTML += '<div class="elem-text"></div>';
+    $(elem).data("image", filename);
 
-    img.error(function () {
-      if (counterText) a.text(counterText);
-      else a.text(cleanName);
+    if (allCounters[name] && !settings.output[name])
+      settings.output[name] = `(${settings.counterOutputChar})`
 
-      a.removeClass("img-element");
-      a.removeClass("img-stack-element");
-      a.data("image", false);
+    $(img).error(() => {
+      if (counterText) 
+        elem.innerHTML = `<span class="elem-text">${counterText}</span>`;
+      else 
+        elem.innerHTML = `<span class="elem-text">${cleanName}</span>`;
+
+      elem.classList.remove('img-element');
+      elem.classList.remove('img-stack-element');
+      $(elem).data('image', false);
     });
   } else {
-    if (counterText) a.text(counterText);
-    else a.text(cleanName);
+    if (counterText) 
+      elem.innerHTML = `<span class="elem-text">${counterText}</span>`;
+    else 
+      elem.innerHTML = `<span class="elem-text">${cleanName}</span>`;
   }
 }
 
 function createShortcut(name, checkingValue) {
-  var o = $("<span/>", {
-    "class": "element " + classes[name],
-  });
-  if (inArray(name, finals)) o.addClass("final");
-  textOrImage(o, name, checkingValue);
-  if (o.data("image")) {
-    o.attr("title", name);
-    o.addClass("img-stack-element");
-    o.removeClass("img-element");
-  } else
-    o.attr(
-      "title",
-      recipes[name] === undefined ? "" : recipes[name].join("; ")
-    );
+  let elem = document.createElement('span');
+  let cleanName = clearName(name);
+
+  $(elem).data('elementName', name);
+  elem.setAttribute('name', cleanName);
+  elem.className = `element ${classes[name]} stack-element`;
+
+  if (finals.includes(name))
+    elem.classList.add('final');
+
+  textOrImage(elem, name, checkingValue);
+
+  if ($(elem).data('image')) {
+    elem.classList.add('img-stack-element');
+    elem.classList.remove('img-element');
+  } else {
+    let recipe = '';
+
+    if (recipes[name])
+      recipe = recipes[name].join('; ');
+
+    elem.title = recipe;
+  }
+
   o.draggable({
     distance: 5,
     helper: function () {
@@ -385,8 +402,8 @@ function createShortcut(name, checkingValue) {
       }
     },
   });
-  o.data("elementName", name);
-  return o;
+  
+  return $(elem);
 }
 
 function addToStack(name) {
@@ -584,43 +601,40 @@ function runGame() {
 $("body").selectable('disable');
 
 function updateCounter(name) {
-  let elem = $(`#board .element:data(elementName,"${name}")`);
+  let elements = document.querySelectorAll(`#board .element[name="${name}"]`);
 
-  if (!elem) return;
+  if (elements.length === 0)
+    return;
 
-  let sameName = name.replace(/\[.+\]$/, "");
+  let counterOutputName = settings.output[name];
+  let counterOutput, customChar;
+  
+  if (counterOutputName) {
+    if (customOutputRegex.test(counterOutputName)) {
+      counterOutput = name.replace(/\[.+\]$/, '');
 
-  // кастомное имя счётчика
-  var counterOutputName = settings.output[name],
-    counterOutput = sameName;
-  (value = allCounters[name].value), (customChar = false);
-
-  // если счётчик есть в кастомном выводе
-  if (counterOutputName)
-    if (counterOutputName.match(customOutputRegex)) {
-      // если есть символ вывода значения, то выводим кастомное название
       counterOutput = counterOutputName.replace(
         customOutputRegex,
         allCounters[name].value
       );
-      customChar = true;
-    } // иначе просто используем кастомное название
-  else counterOutput = counterOutputName;
-  // если счётчика нет в кастомном выводе, то выводим чистое название
-  else counterOutput = sameName;
 
-  if (labels[name] && elem[0]) {
-    elem[0].innerHTML = "";
-    elem[0].innerHTML += `<img class="element-icon" src="${
-      MEDIA_URL + labels[name]
-    }"></img>`;
-    if (customChar) elem[0].innerHTML += `<div>${counterOutput}</div>`;
-    else elem[0].innerHTML += `<div>(${value})</div>`;
-    return;
+      customChar = true;
+    }
+  } else {
+    counterOutput = name;
   }
 
-  if (customChar) elem.text(`${counterOutput}`);
-  else elem.text(`${counterOutput}: ${value}`);
+  let result;
+
+  if (customChar)
+    result = `${counterOutput}`;
+  else
+    result = `${counterOutput}: ${allCounters[name].value}`;
+
+  elements.forEach(item => {
+    let text = item.querySelector('.elem-text');
+    text.innerText = result;
+  })
 }
 
 function applySettings(settings) {
