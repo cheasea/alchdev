@@ -11,8 +11,12 @@ function addElement(name, place, no_discover) {
   let elem = document.createElement('div');
 
   elem.className = `element ${classes[name]}`;
-  elem.innerHTML = `<span class="elem-text">${cleanName}</span>`;
   elem.setAttribute('name', cleanName);
+  
+  if (allCounters[name])
+    elem.innerHTML = writeCounterValue(name);
+  else
+    elem.innerHTML = `<span class="elem-text">${cleanName}</span>`;
 
   if (!allElements[name].hasReaction)
     elem.classList.add('final');
