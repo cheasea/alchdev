@@ -167,14 +167,12 @@ function deleteElements(value) {
   value.forEach(item => {
     let name = item.getAttribute('name');
 
-    if (statics.includes(name))
+    if (statics.includes(name) || !allElements[name].onBoard)
       return;
 
     item.classList.add('deleted');
 
-    if (allElements[name]) {
-      allElements[name].onBoard = false;
-    }
+    allElements[name].onBoard = false;
 
     anime({
       targets: item,
