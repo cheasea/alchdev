@@ -6,7 +6,7 @@ function addElement(name, place, no_discover) {
     return;
   }
 
-  let cleanName = getCleanName(name);
+  let cleanName = clearName(name);
   let outputName = getOutputName(name);
   let elem = document.createElement('div');
 
@@ -279,7 +279,7 @@ function pulsate(elem) {
   });
 }
 
-function getCleanName(value) {
+function clearName(value) {
   if (!value)
     return;
 
