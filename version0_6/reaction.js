@@ -147,7 +147,11 @@ function processNegativeElem(value) {
 
   if (value === '---') {
     toDelete = document.querySelectorAll('#board .element');
-
+		
+		for (let elem in allElements) {
+			allElements[elem].onBoard = false;
+		}
+		
     return toDelete;
   }
 
