@@ -186,7 +186,7 @@ function deleteElements(value) {
 }
 
 function deleteGroupBlock(value) {
-  let isGroupBlock = classes[value].split(' ').some(item => item === group_block);
+  let isGroupBlock = classes[value].split(' ').some(item => item === 'group_block');
 
   if (isGroupBlock) {
     allElements[value].onBoard = false;
