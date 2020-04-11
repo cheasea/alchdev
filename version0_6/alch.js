@@ -35,8 +35,8 @@ if (settings.counterOutputChar)
   );
 else settings.counterOutputChar = "@";
 
-var customOutputRegex = new RegExp(
-  "(?=.*)" + (settings.counterOutputChar || "@") + "(?=.*)",
+let customOutputRegex = new RegExp(
+  settings.counterOutputChar || "@",
   "g"
 );
 
