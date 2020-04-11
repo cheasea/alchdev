@@ -165,6 +165,9 @@ function deleteElements(value) {
     return;
 
   value.forEach(item => {
+    if (item.classList.contains('group_block'))
+      return;
+
     let name = item.getAttribute('name');
 
     if (statics.includes(name))
