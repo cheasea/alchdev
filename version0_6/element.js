@@ -278,8 +278,8 @@ function getOutputName(value) {
   let cleanName;
 
   if (settings.output[value]) {
-    cleanName = settings.output[name];
-  } else if (name.match(/.+\[.+\]/)) {
+    cleanName = settings.output[value];
+  } else if (value.match(/.+\[.+\]/)) {
     cleanName = value.replace(/\[.+\]$/, '');
   }
 
