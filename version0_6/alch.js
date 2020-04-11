@@ -330,6 +330,7 @@ function textOrImage(elem, name, checkingValue = true) {
 
     img.src = filename;
     img.classList = 'element-icon';
+    img.draggable = false;
 
     img.addEventListener('mousedown', event => {
       event.preventDefault();
@@ -367,7 +368,6 @@ function createShortcut(name, checkingValue) {
   let cleanName = clearName(name);
 
   $(elem).data('elementName', name);
-  elem.style.pointerEvents = 'none';
   elem.setAttribute('name', cleanName);
   elem.className = `element ${classes[name]}`;
 
