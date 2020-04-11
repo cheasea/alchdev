@@ -7,21 +7,23 @@ function addElement(name, place, no_discover) {
   }
 
   let cleanName = clearName(name);
+  let outputName = getOutputName(name);
   let elem = document.createElement('div');
 
   elem.className = `element ${classes[name]}`;
   elem.innerHTML = `<span class="elem-text">${cleanName}</span>`;
+  elem.setAttribute('name', cleanName);
 
   if (!allElements[name].hasReaction)
     elem.classList.add('final');
 
   if (statics.includes(name))
     elem.classList.add('static');
-
-  let outputName = getOutputName(name);
-
-  elem.setAttribute('name', cleanName)
-  elem.title = outputName.replace(customOutputRegex, allCounters[name].value);
+  
+  if (allCounters[name])
+    elem.title = outputName.replace(customOutputRegex, allCounters[name].value);
+  else
+    elem.title = outputName;
 
   $(elem).data('image', '');
   $(elem).data('elementName', name);
