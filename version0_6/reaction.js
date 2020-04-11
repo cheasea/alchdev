@@ -148,10 +148,6 @@ function processNegativeElem(value) {
   if (value === '---') {
     toDelete = document.querySelectorAll('#board .element');
 
-    for (let name in allElements) {
-      allElements[name].onBoard = false;
-    }
-
     return toDelete;
   }
 
