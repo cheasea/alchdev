@@ -6,12 +6,12 @@ function addElement(name, place, no_discover) {
     return;
   }
 
-  let cleanName = clearName(name);
+  let cleanName = getCleanName(name);
   let outputName = getOutputName(name);
   let elem = document.createElement('div');
 
   elem.className = `element ${classes[name]}`;
-  elem.setAttribute('name', cleanName);
+  elem.setAttribute('name', name);
   
   if (allCounters[name])
     elem.innerHTML = writeCounterValue(name);
@@ -277,6 +277,13 @@ function pulsate(elem) {
     easing: 'linear',
     duration: 1000
   });
+}
+
+function getCleanName(value) {
+  if (!value)
+    return;
+
+  return value.replace(/\[.+\]$/, '');
 }
 
 function getOutputName(value) {
