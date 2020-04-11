@@ -6,10 +6,11 @@ function addElement(name, place, no_discover) {
     return;
   }
 
-  let cleanName = getOutputName(name);
+  let cleanName = clearName(name);
   let elem = document.createElement('div');
 
   elem.className = `element ${classes[name]}`;
+  elem.innerHTML = `<span class="elem-text">${cleanName}</span>`;
 
   if (!allElements[name].hasReaction)
     elem.classList.add('final');
@@ -18,13 +19,12 @@ function addElement(name, place, no_discover) {
     elem.classList.add('static');
 
   elem.setAttribute('name', cleanName)
-  elem.innerText = cleanName;
   elem.title = cleanName;
 
   $(elem).data('image', '');
   $(elem).data('elementName', name);
 
-  textOrImage($(elem), name);
+  textOrImage(elem, name);
 
   board.appendChild(elem);
 
