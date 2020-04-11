@@ -18,8 +18,10 @@ function addElement(name, place, no_discover) {
   if (statics.includes(name))
     elem.classList.add('static');
 
+  let outputName = getOutputName(name);
+
   elem.setAttribute('name', cleanName)
-  elem.title = cleanName;
+  elem.title = outputName.replace(customOutputRegex, allCounters[name].value);
 
   $(elem).data('image', '');
   $(elem).data('elementName', name);
