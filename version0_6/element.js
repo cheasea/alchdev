@@ -165,9 +165,6 @@ function deleteElements(value) {
     return;
 
   value.forEach(item => {
-    if (item.classList.contains('group_block'))
-      return;
-
     let name = item.getAttribute('name');
 
     if (statics.includes(name))
@@ -184,7 +181,7 @@ function deleteElements(value) {
       easing: "easeInOutSine",
       duration: 1000,
       opacity: 0
-    }).finished.then(() => item.parentNode.removeChild(item));
+    }).finished.then(() => board.removeChild(item));
   });
 }
 
