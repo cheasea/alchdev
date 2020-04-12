@@ -11,8 +11,12 @@ function addElement(name, place, no_discover) {
   let elem = document.createElement('div');
 
   elem.className = `element ${classes[name]}`;
-  elem.innerHTML = `<span class="elem-text">${cleanName}</span>`;
-  elem.setAttribute('name', cleanName);
+  elem.setAttribute('name', name);
+  
+  if (allCounters[name])
+    elem.innerHTML = writeCounterValue(name);
+  else
+    elem.innerHTML = `<span class="elem-text">${cleanName}</span>`;
 
   if (!allElements[name].hasReaction)
     elem.classList.add('final');
@@ -163,26 +167,24 @@ function deleteElements(value) {
   value.forEach(item => {
     let name = item.getAttribute('name');
 
-    if (statics.includes(name))
+    if (statics.includes(name) || !allElements[name].onBoard)
       return;
 
     item.classList.add('deleted');
 
-    if (allElements[name]) {
-      allElements[name].onBoard = false;
-    }
+    allElements[name].onBoard = false;
 
     anime({
       targets: item,
       easing: "easeInOutSine",
       duration: 1000,
       opacity: 0
-    }).finished.then(() => item.parentNode.removeChild(item));
+    }).finished.then(() => board.removeChild(item));
   });
 }
 
 function deleteGroupBlock(value) {
-  let isGroupBlock = classes[value].split(" ").contains("group_block");
+  let isGroupBlock = classes[value].split(' ').some(item => item === 'group_block');
 
   if (isGroupBlock) {
     allElements[value].onBoard = false;
@@ -273,6 +275,13 @@ function pulsate(elem) {
     easing: 'linear',
     duration: 1000
   });
+}
+
+function clearName(value) {
+  if (!value)
+    return;
+
+  return value.replace(/\[.+\]$/, '');
 }
 
 function getOutputName(value) {
