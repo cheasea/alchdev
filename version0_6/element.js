@@ -167,7 +167,19 @@ function deleteElements(value) {
   value.forEach(item => {
     let name = item.getAttribute('name');
 
-    if (statics.includes(name) || !allElements[name].onBoard)
+    if (statics.includes(name))
+      return;
+    
+    let hasElem;
+
+    for (let elem of board.childNodes.values()) {
+      if (elem === item) {
+        hasElem = true;
+        break;
+      }
+    }
+
+    if (!hasElem)
       return;
 
     item.classList.add('deleted');

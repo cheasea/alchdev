@@ -602,17 +602,44 @@ function writeCounterValue(name, isDiv) {
 
 function applySettings(settings) {
   $(document).unbind("dblclick");
+
   if (settings["add"]) {
     $(document).bind("dblclick", function (e) {
-      placeElements(react(inits, true), {
+      let spawned = [];
+
+      let filtered = inits.map((item) => {
+        let counter = item.match(matchCounter);
+
+        if (counter || counters[item]) {
+          let name;
+
+          if (counter) {
+            name = counter[1];
+          } else {
+            name = item;
+          }
+
+          if (spawned.indexOf(name) !== -1) return;
+
+          spawned.push(name);
+          return name;
+        } else {
+          return item;
+        }
+      });
+
+      filtered = filtered.filter((item) => {
+        return typeof item !== "undefined";
+      });
+
+      placeElements(filtered, {
         top: e.pageY,
         left: e.pageX,
       });
+
       refreshHint();
       e.stopPropagation();
     });
-  } else {
-    $(document).bind("dblclick", function (e) { });
   }
 
   if (settings['images']) {
@@ -692,46 +719,6 @@ function gameInit() {
       });
 
       applySettings(settings);
-
-      if (settings["add"]) {
-        $(document).unbind("dblclick");
-        $(document).bind("dblclick", function (e) {
-          let spawned = [];
-
-          let filtered = inits.map((item) => {
-            let counter = item.match(matchCounter);
-
-            if (counter || counters[item]) {
-              let name;
-
-              if (counter) {
-                name = counter[1];
-              } else {
-                name = item;
-              }
-
-              if (spawned.indexOf(name) !== -1) return;
-
-              spawned.push(name);
-              return name;
-            } else {
-              return item;
-            }
-          });
-
-          filtered = filtered.filter((item) => {
-            return typeof item !== "undefined";
-          });
-
-          placeElements(filtered, {
-            top: e.pageY,
-            left: e.pageX,
-          });
-
-          refreshHint();
-          e.stopPropagation();
-        });
-      }
 
       toggleSort($("#order").val());
 
