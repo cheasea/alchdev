@@ -292,3 +292,47 @@ function getOutputName(value) {
 
   return cleanName;
 }
+
+function discoverElement(elem, verbose) {
+  let counter = elem.match(matchCounter);
+  let name;
+
+  if (counter) {
+    name = counter[1];
+  } else {
+    name = elem;
+  }
+
+  if (inArray(name, opened)) return;
+
+  opened.push(name);
+
+  if (verbose === undefined || verbose === true) {
+    message(name, "highlight");
+  }
+
+  if (settings["stack"]) {
+    if (!inArray(name, statics)) addToStack(name);
+
+    if (opened.length === 50) {
+      infoMsg(
+        'Вы открыли довольно много элементов и, возможно, они уже не помещаются у вас на экране или создают неудобства. Попробуйте включить сортировку по группам нажав <a href="#" onclick="toggleSort(\'group\')">здесь</a> или как показано на рисунке: <br><img src="/img/help/groups.PNG"/>'
+      );
+    }
+  }
+
+  $("#save").show();
+  refreshStat();
+}
+
+function cloneElement(elem) {
+  if (!settings.clone) return;
+
+  let name = elem.data("elementName");
+  let pos = elem.offset();
+
+  if (counters[name]) return;
+
+  placeElements([name, name], pos);
+  destroyElement(elem);
+}

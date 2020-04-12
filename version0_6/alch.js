@@ -207,7 +207,7 @@ function parseCounter(str) {
         endPos = counterSetting[1].length;
         let settingName = counterSetting[2],
           settingValue =
-          counterSetting[3] || computeExpression(counterSetting[4]),
+            counterSetting[3] || computeExpression(counterSetting[4]),
           settingResult = processingBrackets(counterSetting[5]);
 
         counter[settingName] = counter[settingName] || {};
@@ -223,8 +223,8 @@ function parseCounter(str) {
           countElements(settingResult.result);
           endPos +=
             settingResult.index === -1 ?
-            settingResult.length :
-            settingResult.index;
+              settingResult.length :
+              settingResult.index;
         }
 
         str = str.substr(endPos);
@@ -311,9 +311,9 @@ function countElements(elements) {
 function textOrImage(elem, name, checkingValue = true) {
   let cleanName = name;
 
-  if (settings.output[name]) 
+  if (settings.output[name])
     cleanName = settings.output[name];
-  else if (name.match(/.+\[.+\]/)) 
+  else if (name.match(/.+\[.+\]/))
     cleanName = name.replace(/\[.+\]$/, '');
 
   let filename;
@@ -346,9 +346,9 @@ function textOrImage(elem, name, checkingValue = true) {
       settings.output[name] = `(${settings.counterOutputChar})`
 
     $(img).error(() => {
-      if (counterText) 
+      if (counterText)
         elem.innerHTML = `<span class="elem-text">${counterText}</span>`;
-      else 
+      else
         elem.innerHTML = `<span class="elem-text">${cleanName}</span>`;
 
       elem.classList.remove('img-element');
@@ -356,9 +356,9 @@ function textOrImage(elem, name, checkingValue = true) {
       $(elem).data('image', false);
     });
   } else {
-    if (counterText) 
+    if (counterText)
       elem.innerHTML = `<span class="elem-text">${counterText}</span>`;
-    else 
+    else
       elem.innerHTML = `<span class="elem-text">${cleanName}</span>`;
   }
 }
@@ -403,7 +403,7 @@ function createShortcut(name, checkingValue) {
       }
     },
   });
-  
+
   return $(elem);
 }
 
@@ -438,8 +438,8 @@ function addToStack(name) {
   else var group = "_no_group";
   if (
     $("#order_group")
-    .children("." + group)
-    .size() === 0
+      .children("." + group)
+      .size() === 0
   ) {
     var groupBox = $("<span/>", {
       "class": group + " element " + classes[name],
@@ -507,50 +507,6 @@ function addToStack(name) {
   }
 }
 
-function discoverElement(elem, verbose) {
-  let counter = elem.match(matchCounter);
-  let name;
-
-  if (counter) {
-    name = counter[1];
-  } else {
-    name = elem;
-  }
-
-  if (inArray(name, opened)) return;
-
-  opened.push(name);
-
-  if (verbose === undefined || verbose === true) {
-    message(name, "highlight");
-  }
-
-  if (settings["stack"]) {
-    if (!inArray(name, statics)) addToStack(name);
-
-    if (opened.length === 50) {
-      infoMsg(
-        'Вы открыли довольно много элементов и, возможно, они уже не помещаются у вас на экране или создают неудобства. Попробуйте включить сортировку по группам нажав <a href="#" onclick="toggleSort(\'group\')">здесь</a> или как показано на рисунке: <br><img src="/img/help/groups.PNG"/>'
-      );
-    }
-  }
-
-  $("#save").show();
-  refreshStat();
-}
-
-function cloneElement(elem) {
-  if (!settings.clone) return;
-
-  let name = elem.data("elementName");
-  let pos = elem.offset();
-
-  if (counters[name]) return;
-
-  placeElements([name, name], pos);
-  destroyElement(elem);
-}
-
 function getModId() {
   var regex = /[^\d]*(\d+)[^\d]*/gm;
   var res = regex.exec($("#load")[0].onclick.toString());
@@ -609,7 +565,7 @@ function updateCounter(name) {
 
   let counterOutputName = settings.output[name];
   let counterOutput, customChar;
-  
+
   if (counterOutputName) {
     if (customOutputRegex.test(counterOutputName)) {
       counterOutput = name.replace(/\[.+\]$/, '');
@@ -650,7 +606,7 @@ function applySettings(settings) {
       e.stopPropagation();
     });
   } else {
-    $(document).bind("dblclick", function (e) {});
+    $(document).bind("dblclick", function (e) { });
   }
 
   if (settings['images']) {
