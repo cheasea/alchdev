@@ -566,7 +566,9 @@ function updateCounter(name) {
 
   elements.forEach(item => {
     let value = item.querySelector('.counter-value');
-    value.innerText = allCounters[name].value;
+
+    if (value)
+      value.innerText = allCounters[name].value;
   });
 }
 
