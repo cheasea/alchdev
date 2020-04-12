@@ -582,7 +582,7 @@ function writeCounterValue(name, isDiv) {
 
     customChar = true;
   } else {
-    counterOutput = name;
+    counterOutput = clearName(name);
   }
 
   let result;
