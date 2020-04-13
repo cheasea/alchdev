@@ -48,8 +48,6 @@ function addElement(name, place, no_discover) {
   if (place) {
     elem.style.transform =
       `translateX(${place.left}px) translateY(${place.top}px)`;
-    elem.setAttribute('x', place.left);
-    elem.setAttribute('y', place.top);
   }
 
   $(elem).bind("dblclick", e => {
