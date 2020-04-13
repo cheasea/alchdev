@@ -114,12 +114,17 @@ function placeElements(names, place, firstPush) {
     top = Math.floor((c - 1) * r * Math.sin(start_angle + index * a));
     left = Math.floor((c - 1) * r * Math.cos(start_angle + index * a));
 
-    let height = document.querySelector('#controls').offsetHeight;
+    let height = document.querySelector('#controls').offsetHeight
+      + document.querySelector('#tools').offsetHeight;
+
+    let width = document.querySelector('#board').offsetWidth;
  
     if (y + top < height)
       top = -y + height;
     if (x + left < 0)
       left = -x;
+    if (x + left > width)
+      left = width - x;
 
     let elem = addElement(item, {
       'top': y,
