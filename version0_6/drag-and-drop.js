@@ -3,6 +3,9 @@ interact('#board .element:not(.deleted)').draggable({
     start(event) {
       anime.remove(event.target);
       event.target.style.opacity = 1;
+
+      let name = event.target.getAttribute('name');
+      message(name, 'highlight');
     },
     move(event) {
       anime({
