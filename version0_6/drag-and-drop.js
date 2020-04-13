@@ -18,6 +18,8 @@ interact('#board .element:not(.deleted)').draggable({
   ondrop: onDrop
 }).on("down", function (event) {
   let name = event.target.getAttribute('name');
+  $(event.target).topZIndex();
+  $('#info').html('');
   message(name, 'highlight');
 }).styleCursor(false);
 

@@ -12,7 +12,7 @@ function addElement(name, place, no_discover) {
 
   elem.className = `element ${classes[name]}`;
   elem.setAttribute('name', name);
-  
+
   if (allCounters[name])
     elem.innerHTML = writeCounterValue(name);
   else
@@ -23,7 +23,7 @@ function addElement(name, place, no_discover) {
 
   if (statics.includes(name))
     elem.classList.add('static');
-  
+
   if (allCounters[name])
     elem.title = outputName.replace(customOutputRegex, allCounters[name].value);
   else
@@ -57,12 +57,7 @@ function addElement(name, place, no_discover) {
     e.stopPropagation();
   });
 
-  $(elem).bind("mousedown", e => {
-    $(elem).topZIndex();
-    $('#info').html('');
-    message(name, 'highlight');
-    e.preventDefault();
-  });
+  $(elem).unbind("mousedown")
 
   if (!$.browser.msie) {
     $(elem).corner();
@@ -169,7 +164,7 @@ function deleteElements(value) {
 
     if (statics.includes(name))
       return;
-    
+
     let hasElem;
 
     for (let elem of board.childNodes.values()) {
@@ -275,14 +270,14 @@ function pulsate(elem) {
   anime({
     targets: elem,
     keyframes: [
-      {'opacity': 0},
-      {'opacity': 1},
-      {'opacity': 0},
-      {'opacity': 1},
-      {'opacity': 0},
-      {'opacity': 1},
-      {'opacity': 0},
-      {'opacity': 1},
+      { 'opacity': 0 },
+      { 'opacity': 1 },
+      { 'opacity': 0 },
+      { 'opacity': 1 },
+      { 'opacity': 0 },
+      { 'opacity': 1 },
+      { 'opacity': 0 },
+      { 'opacity': 1 },
     ],
     easing: 'linear',
     duration: 1000
