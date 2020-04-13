@@ -114,13 +114,12 @@ function placeElements(names, place, firstPush) {
     top = Math.floor((c - 1) * r * Math.sin(start_angle + index * a));
     left = Math.floor((c - 1) * r * Math.cos(start_angle + index * a));
 
-    if (place.left + left < 0)
-      left = place.left;
-    if (place.left + left > $(window).width() - 30)
-      left = $(window).width() - place.left - 30;
-    if (place.top + top < $("#tools").position().top + $("#tools").height()) {
-      top = place.top + $('#tools').position().top + $('#tools').height();
-    }
+    let height = document.querySelector('#controls').offsetHeight;
+ 
+    if (y + top < height)
+      top = -y + height;
+    if (x + left < 0)
+      left = -x;
 
     let elem = addElement(item, {
       'top': y,
