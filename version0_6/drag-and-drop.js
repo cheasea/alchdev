@@ -3,9 +3,6 @@ interact('#board .element:not(.deleted)').draggable({
     start(event) {
       anime.remove(event.target);
       event.target.style.opacity = 1;
-
-      let name = event.target.getAttribute('name');
-      message(name, 'highlight');
     },
     move(event) {
       anime({
@@ -19,6 +16,9 @@ interact('#board .element:not(.deleted)').draggable({
 }).dropzone({
   accept: '.element:not(.deleted)',
   ondrop: onDrop
+}).on("down", function (event) {
+  let name = event.target.getAttribute('name');
+  message(name, 'highlight');
 }).styleCursor(false);
 
 interact('#abyss').dropzone({
