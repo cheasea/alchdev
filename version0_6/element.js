@@ -15,6 +15,8 @@ function addElement(name, place, no_discover) {
 
   if (allCounters[name])
     elem.innerHTML = writeCounterValue(name);
+  else if (outputName)
+    elem.innerHTML = `<span class="elem-text">${outputName}</span>`;
   else
     elem.innerHTML = `<span class="elem-text">${cleanName}</span>`;
 
