@@ -17,8 +17,9 @@ interact('#board .element:not(.deleted)').draggable({
   accept: '.element:not(.deleted)',
   ondrop: onDrop
 }).on("down", function (event) {
-  let name = event.currentTarget.getAttribute('name');
-  $(event.target).topZIndex();
+  let elem = event.currentTarget;
+  let name = elem.getAttribute('name');
+  $(elem).topZIndex();
   $('#info').html('');
   message(name, 'highlight');
 }).styleCursor(false);
