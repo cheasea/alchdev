@@ -672,9 +672,6 @@ function gameInit() {
     if (finals.length == 0) {
       $("#vote_stats").hide();
       $("#vote_result").hide();
-      $('body').click(() => {
-        $('#info').html('');
-      });
       $("#abyss").droppable({
         drop: function (e, ui) {
           destroyElement(ui.helper);
