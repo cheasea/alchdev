@@ -1,4 +1,4 @@
-interact('body').on('down', function () {
+interact('body', { ignoreFrom: ".element" }).on('down', function () {
   $('#info').html('');
 });
 
