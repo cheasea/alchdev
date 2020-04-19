@@ -1,3 +1,7 @@
+interact('body').on('down', function () {
+  $('#info').html('');
+});
+
 interact('#board .element:not(.deleted)').draggable({
   listeners: {
     start(event) {
