@@ -1,8 +1,3 @@
-interact('body').on('down', function (event) {
-  console.log(event);
-  $('#info').html('');
-});
-
 interact('#board .element:not(.deleted)').draggable({
   listeners: {
     start(event) {
