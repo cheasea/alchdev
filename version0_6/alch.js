@@ -117,9 +117,18 @@ function processingBrackets(str) {
     res = {
       result: [],
       index: -1,
-    };
+    }, afterComma = false;
   for (let i = 0; i < str.length; i++) {
-    switch (str[i]) {
+    let sym = str[i];
+    if (afterComma) {
+      if (sym == " ") {
+        lastIndex = i + 1;
+        continue;
+      } else {
+        afterComma = false;
+      }
+    }
+    switch (sym) {
       case "{":
         bracketsCounter++;
         break;
@@ -131,7 +140,8 @@ function processingBrackets(str) {
       case ",":
         if (bracketsCounter === 1) {
           res.result.push(str.slice(lastIndex, i));
-          lastIndex = i + 2;
+          lastIndex = i + 1;
+          afterComma = true;
         }
         break;
     }
