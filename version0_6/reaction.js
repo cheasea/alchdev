@@ -91,7 +91,7 @@ function processCounter(counterString) {
     allCounters[name].value = 0;
 
   if (value === undefined) 
-    value = 0;
+    value = allCounters[name].value || 0;
 
   if (!operation)
     operation = '=';
