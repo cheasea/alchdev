@@ -13,6 +13,7 @@ function addElement(name, place, no_discover) {
   elem.className = `element ${classes[name]}`;
   elem.setAttribute('name', name);
 
+  $(elem).html("")
   // если счётчик есть на поле, дать ему существующее значение
   if (allCounters[name]) {
     elem.append(writeCounterValue(name));

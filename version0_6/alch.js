@@ -346,7 +346,7 @@ function textOrImage(elem, name, checkingValue = true) {
       event.preventDefault();
     });
 
-    $("#cart_item").html("");
+    $(elem).html("");
     elem.appendChild(img);
     elem.classList.add('img-element');
 
