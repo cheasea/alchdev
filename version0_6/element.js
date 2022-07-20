@@ -21,7 +21,7 @@ function addElement(name, place, no_discover) {
     let elementText = document.createElement('span')
     elementText.className = 'elem-text'
     elementText.innerText = outputName || cleanName;
-    elementText.appendTo(elem)
+    elem.append(elementText);
   }
 
   if (!allElements[name].hasReaction)
