@@ -13,12 +13,16 @@ function addElement(name, place, no_discover) {
   elem.className = `element ${classes[name]}`;
   elem.setAttribute('name', name);
 
-  if (allCounters[name])
-    elem.innerHTML = writeCounterValue(name);
-  else if (outputName)
-    elem.innerHTML = `<span class="elem-text">${outputName}</span>`;
-  else
-    elem.innerHTML = `<span class="elem-text">${cleanName}</span>`;
+  // если счётчик есть на поле, дать ему существующее значение
+  if (allCounters[name]) {
+    elem.append(writeCounterValue(name));
+    // если на поле нет, делаем новый элемент
+  } else {
+    let elementText = document.createElement('span')
+    elementText.className = 'elem-text'
+    elementText.innerText = outputName || cleanName;
+    elementText.appendTo(elem)
+  }
 
   if (!allElements[name].hasReaction)
     elem.classList.add('final');
@@ -295,6 +299,7 @@ function clearName(value) {
   return value.replace(/\[.+\]$/, '');
 }
 
+// получить название элемента с учётом custom output
 function getOutputName(value) {
   if (!value)
     return;
@@ -303,6 +308,7 @@ function getOutputName(value) {
 
   if (settings.output[value]) {
     cleanName = settings.output[value];
+    // если это одноимённый элемент, то мы убираем из него часть с [id]
   } else if (value.match(/.+\[.+\]/)) {
     cleanName = value.replace(/\[.+\]$/, '');
   }

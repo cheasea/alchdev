@@ -346,7 +346,7 @@ function textOrImage(elem, name, checkingValue = true) {
       event.preventDefault();
     });
 
-    elem.innerHTML = '';
+    $("#cart_item").html("");
     elem.appendChild(img);
     elem.classList.add('img-element');
 
@@ -356,13 +356,15 @@ function textOrImage(elem, name, checkingValue = true) {
       settings.output[name] = `(${settings.counterOutputChar})`;
 
     if (checkingValue && allCounters[name])
-      elem.innerHTML += writeCounterValue(name, true);
+      elem.append(writeCounterValue(name, true));
 
     $(img).error(() => {
-      if (counterText)
-        elem.innerHTML = `<span class="elem-text">${counterText}</span>`;
-      else
-        elem.innerHTML = `<span class="elem-text">${cleanName}</span>`;
+      let elementSpan = document.createElement("span");
+      elementSpan.classList.add("elem-text");
+      elementSpan.innerText = counterText || cleanName
+      
+      $(elem).html("");
+      elem.append(elementSpan);
 
       elem.classList.remove('img-element');
       elem.classList.remove('img-stack-element');
@@ -385,7 +387,7 @@ function createShortcut(name, checkingValue) {
   textOrImage(elem, name, checkingValue);
 
   if (elem.innerHTML === '')
-    elem.innerHTML = cleanName;
+    elem.append(cleanName);
 
   if ($(elem).data('image')) {
     elem.classList.add('img-stack-element');
@@ -582,32 +584,41 @@ function updateCounter(name) {
   });
 }
 
+function getStandartCounterFormat(name) {
+  // очищаем от []
+  let clearedName = clearName(name);
+  let outputChar = settings.counterOutputChar;
+  return `${clearedName}: ${outputChar}`
+}
+
+// возвращает HTML-элемент с текстом счётчика (учитывает кастомный аутпут)
 function writeCounterValue(name, isDiv) {
-  let counterOutputName = settings.output[name];
-  let counterOutput, customChar;
+  // берём имя кастомного аптпута в настройках, или если его нет, то берём стандартное имя Counter: @
+  let counterOutputName = settings.output[name] || getStandartCounterFormat(name);
 
-  if (counterOutputName) {
-    counterOutput = counterOutputName.replace(
-      customOutputRegex,
-      `<span class="counter-value">${allCounters[name].value}</span>`
-    );
+  // разделяем строку кастомного аутпута по символу кастомного аутпута
+  // пример: C@ounter: @ -> ['C', 'ounter: ', '']
+  counterOutputName = counterOutputName.split(
+    customOutputRegex,
+  );
 
-    customChar = true;
-  } else {
-    counterOutput = clearName(name);
-  }
+  // главный HTML-элемент, куда добавляются весь текст и значения счётчика
+  let rootElement = document.createElement(isDiv ? "div" : "span");
+  rootElement.classList.add("elem-text");
 
-  let result;
+  // span со значением счётчика
+  let counterValueSpan = document.createElement("span");
+  counterValueSpan.classList.add("counter-value")
+  counterValueSpan.innerText = allCounters[name].value;
 
-  if (customChar)
-    result = `${counterOutput}`;
-  else
-    result = `${counterOutput}: <span class="counter-value">${allCounters[name].value}</span>`;
+  // теперь нам надо между каждым элементом массива добавить span со значением счётчика
+  // для этого делаем цикл для всех элементов массива кроме последнего
+  for (let i = 0; i < counterOutputName.length - 1; i++)
+    rootElement.append(counterOutputName[i], counterValueSpan);
+  // также добавить последний элемент
+  rootElement.append(counterOutputName[counterOutputName.length-1])
 
-  if (isDiv)
-    return `<div class="elem-text">${result}</div>`;
-
-  return `<span class="elem-text">${result}</span>`;
+  return rootElement;
 }
 
 function applySettings(settings) {
