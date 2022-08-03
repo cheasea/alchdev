@@ -52,6 +52,21 @@ function versionCheck() {
         'version0_6/drag-and-drop.js'
       ],
       css: ['version0_6/borders.css']
+    },
+    '0.6.1': {
+      js: [
+        'selection.js',
+        'counterParser.js',
+        'anime.min.js',
+        'interact.js',
+        'version0_6_1/element.js',
+        'version0_6_1/reaction.js',
+        'version0_6_1/conditions.js',
+        'version0_6_1/alch.js',
+        'version0_6_1/selectable.js',
+        'version0_6_1/drag-and-drop.js'
+      ],
+      css: ['version0_6_1/borders.css']
     }
   };
 
