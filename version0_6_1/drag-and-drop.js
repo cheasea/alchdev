@@ -5,12 +5,7 @@ interact('#board .element:not(.deleted)').draggable({
       event.target.style.opacity = 1;
     },
     move(event) {
-      anime({
-        targets: event.target,
-        translateX: `+=${event.dx}`,
-        translateY: `+=${event.dy}`,
-        duration: 0
-      });
+      event.target.style.transform = `translateX(${event.rect.left}px) translateY(${event.rect.top}px)`;
     }
   }
 }).dropzone({
