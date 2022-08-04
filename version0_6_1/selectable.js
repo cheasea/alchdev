@@ -12,6 +12,7 @@ const selection = new Selection({
 selection
   .on('beforestart', (evt) => {
     return !evt.oe.composedPath().some((item) => {
+      if (item.id === "mod_action") return true;
       if (item.classList) return item.classList.contains('element');
     });
   })

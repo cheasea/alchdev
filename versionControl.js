@@ -40,7 +40,6 @@ function versionCheck() {
     },
     '0.6': {
       js: [
-        'selection.js',
         'counterParser.js',
         'anime.min.js',
         'interact.js',
@@ -53,7 +52,7 @@ function versionCheck() {
       ],
       css: ['version0_6/borders.css']
     },
-    '0.6.1': {
+    '0.6.1b': {
       js: [
         'selection.js',
         'counterParser.js',
