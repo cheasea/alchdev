@@ -526,6 +526,116 @@ function getModId() {
   return res[1];
 }
 
+function save(to){
+  var a = $('#board').children('.element');
+  var elements = [];
+  $('#board').children('.element').each(function(){
+      elements.push({'name':$(this).data('elementName'), 'offset':$(this).offset()});
+  });
+  var data = {"opened":opened, "recipes":recipes, "elements": elements, "counters":counters};
+  
+  var success = function() {
+      $('#save').fadeOut();
+  };
+  var error = function() {
+      alert("Не удалось сохранить игру.");
+  };
+  
+  if (use_local_storage_to_save) {
+      try {
+          window.localStorage[local_mod_save_key] = $.toJSON(data);
+          success();
+      } catch(e) {
+          error();
+      }
+  } else {
+      var saveToServer = function() {
+          $.post(to,{"data": $.toJSON(data)}, function(data){
+              if(data=='OK'){
+                  success();
+              }
+              else{
+                  error();
+              }
+          });
+      };
+      
+      if (typeof(VK_api) != 'undefined') {
+          VK_StorageSetJSON({
+              key: local_mod_save_key,
+              value: $.toJSON(data),
+              success: success,
+              error: saveToServer
+          });
+      } else {
+          saveToServer();
+      }
+  }
+}
+
+function load(str){
+  var load_data = function(data) {
+      $('#info').html('');
+      $('.element').remove();
+      $('#order_123').empty();
+      $('#order_abc').empty();
+      $('#order_group').empty();
+      $('#stack').show();
+      opened = [];
+      recipes ={};
+      //recipes = data.recipes;
+      $('#recipe_list').empty();
+      for(var i in data.recipes){
+          for(var j in data.recipes[i]){
+              update_recipes(i, data.recipes[i][j]);
+          }
+      }
+      for(var i in data.opened){
+          discoverElement(data.opened[i], false);
+      }
+      $.each(data.elements, function(key, val){
+          addElement(val.name, val.offset, true);
+      });
+  counters = data.counters
+  updateCounters()
+      refreshStat();
+  };
+  var error = function() {
+      log('Не удалось загрузить эту игру.');
+  };
+  
+  var loadFromServer = function() {
+      $.getJSON(str, function(data) {
+          if(data){
+              load_data(data);
+          }else{
+              error();
+          }
+      });
+  };
+  if (typeof(VK_api) != 'undefined') {
+      VK_StorageGetJSON({
+          key: local_mod_save_key,
+          success: load_data,
+          error: loadFromServer
+      });
+  } else if (use_local_storage_to_save) {
+      var data = window.localStorage[local_mod_save_key];
+      try {
+          data = $.evalJSON(data);
+      } catch (e) {
+          data = null;
+      }
+      if (data) {
+          load_data(data);
+      } else {
+          loadFromServer();
+      }
+  } else {
+      loadFromServer();
+  }
+}
+
 let isSaving = false;
 
 $("#save a")[0].onclick = () => {
