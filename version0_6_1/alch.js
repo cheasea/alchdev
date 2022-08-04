@@ -669,15 +669,15 @@ $("#save a")[0].onclick = () => {
 };
 
 function stopGame() {
-  $(".element").draggable("disable");
-  $(".element").droppable("disable");
-  $("body").selectable("disable");
+  interactElement.draggable(false);
+  interactElement.dropzone(false);
+  selection.disable();
 }
 
 function runGame() {
-  $(".element").draggable("enable");
-  $(".element").droppable("enable");
-  $("body").selectable("enable");
+  interactElement.draggable(true);
+  interactElement.dropzone(true);
+  selection.enable();
 }
 
 $("body").selectable('disable');
