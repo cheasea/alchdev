@@ -1,6 +1,5 @@
 $('#err_msg').dialog('close');
 
-$('#info').empty();
 $('#board').empty();
 
 $('#order_group').empty();
@@ -736,6 +735,8 @@ function gameInit() {
     if (!inited) {
         inited = true;
         $('#board').children('.element').remove();
+        $("#board").show();
+        $("#info").empty();
         if (finals.length == 0) {
             $("#vote_stats").hide();
             $("#vote_result").hide();

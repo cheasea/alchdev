@@ -16,7 +16,6 @@ parser.functions.random = function (n) {
 };
 $("#err_msg").dialog("close");
 
-$("#info").empty();
 $("#board").empty();
 $("#board").prependTo($("body"))
 
@@ -690,6 +689,8 @@ function gameInit() {
   if (!inited) {
     inited = true;
     $("#board").children(".element").remove();
+    $("#board").show();
+    $("#info").empty();
     if (finals.length == 0) {
       $("#vote_stats").hide();
       $("#vote_result").hide();
