@@ -1,8 +1,10 @@
 let githubRepLink = 'https://cheasea.github.io/alchdev/';
 
 function loadScripts(scripts) {
-  if (!scripts) return;
-  if (scripts.length === 0) return;
+  if (!scripts || scripts.length === 0) {
+    console.log(`Версия загружена (JS): ${settings.version}`)
+    return;
+  }
 
   let link = scripts.shift();
   let script = document.createElement('script');
@@ -16,8 +18,10 @@ function loadScripts(scripts) {
 }
 
 function loadStyles(styles) {
-  if (!styles) return;
-  if (styles.length === 0) return;
+  if (!styles || styles.length === 0) {
+    console.log(`Версия загружена (CSS): ${settings.version}`)
+    return;
+  }
 
   styles.forEach((style) => {
     let link = document.createElement('link');
