@@ -532,7 +532,7 @@ function save(to){
   $('#board').children('.element').each(function(){
       elements.push({'name':$(this).data('elementName'), 'offset':$(this).offset()});
   });
-  var data = {"opened":opened, "recipes":recipes, "elements": elements, "counters":counters};
+  var data = {"opened":opened, "recipes":recipes, "elements": elements, "counters":allCounters, "allElements": allElements};
   
   var success = function() {
       $('#save').fadeOut();
@@ -583,6 +583,8 @@ function load(str){
       $('#stack').show();
       opened = [];
       recipes ={};
+      allCounters = data.counters;
+      allElements = data.allElements || {};
       //recipes = data.recipes;
       $('#recipe_list').empty();
       for(var i in data.recipes){
@@ -596,8 +598,9 @@ function load(str){
       $.each(data.elements, function(key, val){
           addElement(val.name, val.offset, true);
       });
-  counters = data.counters
-  updateCounters()
+      for (let counterName in allCounters) {
+        updateCounter(counterName);
+      };
       refreshStat();
   };
   var error = function() {
