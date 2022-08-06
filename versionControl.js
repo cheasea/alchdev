@@ -86,7 +86,7 @@ function versionCheck() {
 
 versionCheck();
 $('title').text(
-  $('title').text().replace('Алхимия 0.5 beta', 'Алхимия 0.6 beta')
+  $('title').text().replace('Алхимия 0.5 beta', 'Алхимия 0.6.1 beta')
 );
 
 let winterLogo = false;
