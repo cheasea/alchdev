@@ -274,6 +274,7 @@ function getElements(name) {
 
   if (element[0]) {
     return element;
+  // for group blocks check .onBoard property
   } else if (allElements[name] && allElements[name].onBoard) {
     return [true];
   } else {
