@@ -584,6 +584,18 @@ function load(str){
       opened = [];
       recipes ={};
       allCounters = data.counters;
+      if (data.allElements){
+        for (let i in allElements) {
+          // если в сейве нет нового элемента из обноваления мода, добавляем
+          if (data.allElements[i] === undefined) {
+            data.allElements[i] = allElements[i];
+          // если же элемент есть, переопределяем его hasReaction -
+          // тогда в случае добавления реакций для него, он не будет финальным
+          } else if (allElements[i].hasReaction) {
+            data.allElements[i].hasReaction = allElements[i].hasReaction;
+          }
+        }
+      }
       allElements = data.allElements || {};
       //recipes = data.recipes;
       $('#recipe_list').empty();
