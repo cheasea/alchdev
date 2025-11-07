@@ -94,7 +94,7 @@ let month = today.getMonth();
 let day = today.getDate();
 
 let winterLogo =
-  (month === 6 && day >= 6) || // December 20–31
+  (month === 10 && day >= 6) || // December 20–31
   (month === 0 && day <= 10);    // January 1–10
 
 if (winterLogo) {
