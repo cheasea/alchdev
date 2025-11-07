@@ -89,7 +89,13 @@ $('title').text(
   $('title').text().replace('Алхимия 0.5 beta', 'Алхимия 0.6.1 beta')
 );
 
-let winterLogo = false;
+let today = new Date();
+let month = today.getMonth();
+let day = today.getDate();
+
+let winterLogo =
+  (month === 6 && day >= 6) || // December 20–31
+  (month === 0 && day <= 10);    // January 1–10
 
 if (winterLogo) {
   $('#ingamelogo').css(
